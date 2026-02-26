@@ -1,0 +1,914 @@
+La Profezia dell’Eterna Notte
+Introduzione e Premessa Narrativa
+Dopo un secolo di conflitto devastante noto come l’Ultima Guerra, il continente di Khorvaire ha
+finalmente trovato una fragile pace. Ma nelle ombre, antiche forze tramano per infrangerla. I
+personaggi – un gruppo di 4 avventurieri al 4º livello – si ritrovano al centro di una cospirazione che
+minaccia di far ripiombare il mondo nel caos e nella tenebra. Hanno sede a Wroat, la capitale del
+Breland, dove possiedono un modesto quartier generale fornitogli dalla loro patrona: Lady Saela
+ir’Valant, una nobildonna brelandese e agente delle Lanterne Oscure (i servizi segreti del re). Sarà lei a
+coinvolgerli in missioni delicate all’inizio, fungendo da mentore e contatto con le autorità.
+Antefatto: Una figura oscura e potente, la lich Lady Illmarrow (nota anche come Vol), sta tentando di
+realizzare una profezia draconica personale. Illmarrow è la più grande necromante di questa era 1 ,
+ultima erede della stirpe elfica dei Vol, e brama di restaurare il perduto Marchio della Morte sul suo
+corpo per ottenere il potere di una divinità 2 . Per farlo, intende trasformare l’intero Khorvaire in una
+nuova Landa Gemente – un deserto magico di morte e pianto eterno – e regnare su un impero di non-
+morti. La Profezia Draconica ha rivelato a Illmarrow le condizioni necessarie: solo provocando una
+tragedia su scala continentale, pari o superiore al disastro che distrusse Cyre (la Giornata del Pianto),
+potrà canalizzare abbastanza energia necromantica da avvelenare la terra. In particolare, frammenti di
+Profezia suggeriscono che la morte violenta di Re Boranel ir’Wynarn di Breland sia un evento chiave:
+“Quando l’Orso cadrà all’Ombra della Tragedia, il suo regno crollerà e la notte senza fine calerà su Khorvaire.”
+(Boranel è spesso associato all’orso araldico di Breland 3 4 ). Interpretando queste criptiche parole,
+Illmarrow è convinta che l’assassinio del monarca brelandese in un contesto di rinnovata guerra sarà il
+catalizzatore perfetto per scatenare un nuovo disastro magico.
+I Burattinai Oscuri: Lady Illmarrow non agisce apertamente. Dalla sua fortezza segreta (forse annidata
+nelle gelide Waste di Karrnath o in un remoto angolo della Landa Gemente), la lich tira i fili di un
+complotto politico tramite alleati insospettabili. Ha stretto un patto con le Figlie di Sora Kell, le tre
+streghe leggendarie che governano la nazione di mostri di Droaam, e ha sedotto alla causa un
+influente ufficiale di Karrnath, il Generale Thoren. Droaam e Karrnath furono esclusi dai più favorevoli
+accordi di pace: Droaam non è riconosciuto come regno legittimo, e Karrnath ha patito carestie e
+umiliazioni diplomatiche. Illmarrow promette loro ricompense: alle Figlie di Sora Kell offre armi, magia e
+la prospettiva di un Breland indebolito da spartire; a Thoren (e ai suoi seguaci nell’esercito karrnathi)
+offre la gloria di una guerra vittoriosa e il segreto per creare un nuovo esercito di non-morti imbattibili.
+In realtà, costoro sono solo pedine ai suoi ordini – pedine ignare che, realizzando il piano,
+consegneranno anche le proprie nazioni alla “notte eterna” di Vol.
+Il Complotto: In sintesi, il piano segreto è questo: far stringere un’alleanza occulta tra Droaam e
+Karrnath, due potenze che insieme minaccerebbero il resto dei regni; assassinare Re Boranel di Breland
+secondo i termini profetici; e scatenare così un nuovo conflitto totale. L’omicidio di Boranel priverebbe
+Breland della sua guida più amata e capace, gettando il paese nel caos politico e nello sconforto.
+Approfittando di ciò, Karrnath e Droaam muoverebbero guerra da due fronti opposti. Si prevede che
+anche Thrane (governato dalla fervente chiesa della Fiamma d’Argento) e forse altri regni verrebbero
+trascinati nella mischia, ciascuno con le proprie agende (Thrane in particolare non tollererà un’altra
+ondata di necromanzia karrnathi né l’avanzata di un’orda mostruosa). Un tale bagno di sangue su larga
+scala alimenterà le energie di Mabar, il piano dell’Eterna Notte, e Illmarrow potrà effettuare un rituale
+1
+
+apocalittico per sovrapporre la Landa Gemente all’intero continente. I personaggi giocanti (PG) avranno il
+compito di sventare questa macchinazione, ma come lo faranno dipenderà totalmente dalle loro scelte.
+La campagna è progettata per offrire massima libertà d’azione: non esiste un unico percorso
+predeterminato verso la vittoria. I PG potranno muoversi in un intrigo di avventure, politica e
+dramma, stringendo alleanze con varie fazioni o inimicandosele, influenzando l’esito degli eventi in
+modo significativo.
+Nei quattro atti seguenti è delineata la struttura generale della campagna. Ogni atto presenta scenari,
+eventi chiave, nodi decisionali in cui le scelte dei PG contano, e una panoramica di luoghi e PNG
+principali coinvolti. Sono anche intrecciate sottotrame coerenti con l’ambientazione (Eberron: Rinascita
+dopo l’Ultima Guerra e Esplorando Eberron) per arricchire la vicenda: ad esempio, il traffico della droga
+alchemica nota come Sangue di Drago, le manovre dei Casati Portatori del Marchio e dei culti segreti,
+tensioni religiose in Thrane, e manifestazioni cosmiche della Profezia Draconica. La campagna coprirà
+almeno 20 sessioni di gioco, portando i personaggi dal 4º fino almeno al livello 10–12, a fronte di sfide
+via via più pericolose. Il tono è inizialmente avventuroso e investigativo, ma diventerà sempre più
+politico e drammatico man mano che i PG si addentrano nei giochi di potere dei regni e affrontano le
+conseguenze delle loro scelte.
+Atto I – Ombre su Wroat
+Trama e Obiettivi: L’Atto I introduce i personaggi all’intreccio attraverso missioni localizzate in Breland.
+I PG iniziano a Wroat, dove godono del sostegno di Lady Saela e delle Lanterne Oscure. L’obiettivo
+primario di questo atto è gettare luce sulle “ombre” che si allungano su Breland: strani traffici, crimini
+e spie che preludono a un complotto ben più grande. I personaggi avranno l’opportunità di svolgere
+indagini urbane, spezzare le prime trame nemiche e guadagnarsi la fiducia di potenti patroni. Allo
+stesso tempo, faranno scelte importanti su chi aiutare, a chi credere e come procedere, scelte che già
+ora possono cambiare il corso degli eventi successivi.
+Eventi Possibili: (Nota: gli eventi elencati non devono avvenire in un ordine rigido; il DM può distribuirli
+liberamente in base alle azioni dei giocatori. I PG possono affrontarli tutti o in parte.)
+• 1. L’Incubo di Sharn: Lady Saela convoca il gruppo per un incarico sotto copertura a Sharn, la
+più grande metropoli di Breland. Nelle torri basse della Città delle Torri si sta diffondendo una
+droga alchemica chiamata Sangue di Drago, che provoca euforia, potenziamento magico e
+grave dipendenza 5 . Saela sospetta (correttamente) che dietro questa droga vi sia
+l’organizzazione criminale Daask, un gruppo di mostri di Droaam attivi nel sottobosco di Sharn e
+legati alle Figlie di Sora Kell 6 . I Daask stanno inondando la città di Sangue di Drago per
+arricchirsi e minare la stabilità sociale di Breland 7 8 . Lady Saela incarica i PG di collaborare
+con un contatto locale (ad esempio un agente mediano della Gilda degli Scopritori di Casato
+Medani, esperti nell’individuare minacce) per tracciare la fonte della droga. Questa missione
+permette ai PG di avventurarsi nei bassifondi di Sharn, tra covi criminali nei quartieri di
+Malanova e Fonderia. Possibili incontri includono: teppisti gnoll del Daask, un artificiere di
+Droaam che produce la droga in un laboratorio segreto, e magari un clan rivale (come il Clan
+Boromar, la mafia halfling di Sharn) disposto a scambiare informazioni pur di danneggiare i
+concorrenti mostruosi. In questa fase, i PG potrebbero scoprire che il Sangue di Drago viene
+fabbricato in Droaam e introdotto di contrabbando attraverso Graywall (Murogrigio), la città di
+confine gestita dai mostri 9 . Scopriranno anche che il Daask agisce su ordine di Sora Katra,
+una delle Figlie di Sora Kell, e che il ricavato di questa attività finanzia qualcosa di molto più
+grande. Questa rivelazione getta il seme di una sottotrama: perché Droaam sta raccogliendo
+2
+
+risorse e indebolendo Breland?. I PG possono decidere di approfondire oltre (magari
+infiltrandosi tra i contrabbandieri) oppure riferire subito a Saela.
+• 2. Il Segreto nel Bosco: Di ritorno a Wroat, i PG vengono inviati da Saela in missione
+nell’entroterra brelandese. Alcuni villaggi sul confine occidentale (verso le montagne di
+Frontiera, adiacenti al Droaam) hanno subito razzie misteriose. Inizialmente si sospettano mostri
+di Droaam, ma investigando sul campo i PG trovano non-morti tra i razziatori: zombi e scheletri
+recanti marchi militari karrnathi! Questa inquietante scoperta indica che qualcuno sta
+segretamente schierando truppe non-morte di Karrnath entro i confini di Breland, violando
+apertamente il Trattato di Thronehold (che aveva posto fine all’Ultima Guerra). Gli abitanti
+descrivono anche banditi umani in armature nere con simboli di artiglio verde – riconoscibili, per
+chi ha competenze storiche o arcane, come l’emblema dell’Ordine dell’Artiglio di Smeraldo, un
+ordine fanatico bandito da Karrnath anni fa. In uno scontro in un villaggio o in una cripta, i PG
+possono affrontare uno di questi cellule dell’Artiglio di Smeraldo. Tra le loro fila potrebbe esservi
+un necromante del Sangue di Vol che anima i morti sul campo. Al termine, i PG possono
+recuperare prove cruciali: mappe che segnano rotte di passaggio dal Droaam a Karrnath
+attraverso zone remote, o messaggi cifrati che alludono a una “trattativa” in corso tra due
+misteriosi corvi (metafora di due potenze oscure). Questa è la prima traccia concreta della
+cospirazione Droaam-Karrnath. I PG potranno decidere se riferire immediatamente tutto a
+Lady Saela (che a sua volta dovrà convincere la corte di Boranel della minaccia), oppure agire più
+cautamente, ad esempio cercando di decifrare i messaggi da soli per cogliere i nemici sul fatto.
+Da questa scelta dipenderà il livello di fiducia che Saela e i servizi segreti riporranno nei PG e il
+grado di allerta di Breland nelle prossime fasi.
+• 3. Intrigo a Corte: Nel frattempo, Wroat brulica di diplomatici e intrighi politici. Re Boranel,
+ignaro del complotto, sta organizzando una conferenza diplomatica invitando dignitari di altre
+nazioni (ad esempio un inviato di Thrane o di Aundair) per discutere di sicurezza comune e
+riconoscimento di nuovi stati (Breland ha interesse a formalizzare la sovranità su Nuova Cyre,
+l’enclave dei profughi di Cyre, cosa che crea tensioni regionali). I PG possono essere chiamati da
+Lady Saela a sorvegliare discretamente gli ospiti o investigare su possibili spie. Qui possono
+entrare in scena importanti PNG: ad esempio Cardinale Theron di Thrane (un ecclesiastico
+inviato a trattare, col segreto scopo di valutare l’influenza del culto del Sangue di Vol a Wroat), o
+Mister Haldren di Karrnath (ufficialmente un attache commerciale, in realtà un agente
+doppiogiochista legato al Generale Thoren). Durante un ricevimento a palazzo, i PG potrebbero
+sventare un tentativo di avvelenamento o notare segnali in codice tra il delegato karrnathi e
+figure sospette. Un assalto improvviso potrebbe verificarsi: assassini changeling al soldo di
+Droaam si infiltrano travestiti da servitori per rapire o eliminare un ospite chiave (forse il
+cardinale di Thrane, per inasprire le relazioni Breland-Thrane). Sta ai PG reagire prontamente.
+Questo evento mette in risalto la politica: se salvano il diplomatico di Thrane, guadagnano
+gratitudine e forse un favore dalla Fiamma d’Argento; se falliscono, Thrane accuserà Breland di
+scarsa sicurezza (peggiorando i rapporti) e i PG dovranno gestire le conseguenze. In ogni caso, i
+vari indizi raccolti (documenti sottratti allo spione karrnathi, confessioni di un assassino
+catturato, ecc.) delineano un quadro allarmante: qualcuno sta cercando di destabilizzare Breland
+dall’interno e di sabotare l’equilibrio diplomatico tra le nazioni.
+Luoghi Principali in Atto I:
+- Wroat: La capitale brelandese, con il Palazzo Reale e la Cittadella (sede delle Lanterne Oscure). I PG
+potrebbero visitare la corte di Re Boranel, vivere momenti mondani ma tesi e conoscere personalità
+influenti. Wroat è anche base logistica: da qui Lady Saela coordina le missioni.
+- Sharn: La metropoli verticale, scenario di intrighi urbani. Luoghi specifici: il Porto di Wroann (ingresso
+di contrabbando via fiume), i quartieri bassi come Malandro o Fonderia dove il Daask imperversa, e le
+3
+
+torri di Medani (contatto con investigatori House Medani).
+- Confine Occidentale (Dagger River e Foresta di King’s Forest): Villaggi rurali attorno alla foresta
+reale, dove i PG affrontano i banditi non-morti. Un luogo possibile è Xandrar, cittadina di frontiera sulla
+via per Droaam, dove case mercantili (come Casato Tharashk) commerciano con i mostri. Qui i PG
+possono reperire rifornimenti e informazioni sul Droaam.
+PNG Principali in Atto I:
+- Lady Saela ir’Valant: Il patrono dei PG. In Atto I è una guida sicura e autorevole, che assegna missioni
+e offre risorse (equipaggiamenti, contatti). Mostra sincera dedizione al Breland e ai PG, ma tiene
+nascosti alcuni segreti di stato. Il suo sviluppo: man mano che la situazione precipita, Saela dovrà
+bilanciare il dovere verso il Re con la fiducia nei PG, e potrebbe entrare in conflitto con superiori miopi
+nella Cittadella.
+- Agenti del Daask: Es. Kalaash’arr: mezzogorgone (medusa) capo di una cellula di spaccio a Sharn,
+contatto diretto con Graywall; Brug l’ogre tirapiedi. Questi antagonisti forniscono ai PG i primi pezzi del
+puzzle sul coinvolgimento di Droaam.
+- Spie Karrnathi / Artiglio di Smeraldo: Es. Sir Demian ir’Karrn, cavaliere karrnathi in incognito che
+guida le razzie con non-morti; Merrix d’Cannith (giovane tecnico di Cannith Est segretamente a fianco dei
+cospiratori, fornisce armi e infusioni al nemico).
+- Diplomatici Stranieri:Cardinale Theron (Thrane, devoto alla Fiamma, potenziale alleato se trattato con
+rispetto), Capitano Oth ir’Laisha (Aundair, veterano diffidente, potrebbe sospettare i PG stessi), Mister
+Haldren (Karrnath, viscido e manipolatore – in realtà riferisce a Thoren).
+Nodi Decisionali e Scelte Chiave in Atto I:
+- Come affrontare il Daask: I PG possono scegliere un approccio brutale (raid nel covo, catturare o
+eliminare i criminali) o subdolo (infiltrarsi come potenziali clienti o alleati per carpire informazioni). Un
+approccio astuto potrebbe farli risalire fino a Graywall per scoprire chi produce il Sangue di Drago,
+mentre uno diretto potrebbe spaventare i nemici ma rischia di bruciare contatti.
+- Fiducia nelle autorità: Dopo aver raccolto prove di un complotto Karrnath–Droaam, i PG devono
+decidere se consegnarle subito a Lady Saela (attivando la macchina diplomatica brelandese) o se
+indagare per conto proprio ancora un po’. Condividere tutto immediatamente aumenterà le risorse
+messe in campo da Breland (ad esempio più sorveglianza a corte), ma potrebbe anche far sì che i
+traditori allertati si nascondano più a fondo. Agire da soli darà libertà ai PG e l’elemento sorpresa, ma li
+priva dell’aiuto istituzionale e può incrinare la fiducia di Saela se scopre omissioni.
+- Destini dei nemici minori: I PG potrebbero catturare un necromante dell’Artiglio di Smeraldo o un sicario
+changeling. Cosa farne? Consegnarlo alla giustizia di Breland (che lo giustizierà o imprigionerà),
+interrogarlo (rischiando informazioni fuorvianti o maledizioni) o persino cercare di reclutarlo/sfruttarlo
+come infiltrato. Ad esempio, un changeling potrebbe essere convinto a fare il doppio gioco all’interno
+del Daask. Queste decisioni influenzeranno le informazioni disponibili negli atti seguenti.
+- Alleanze Sociali: Durante l’intrigo a corte, i PG potrebbero decidere con chi schierarsi nelle piccole
+dispute: ad esempio, dare credito ai timori del cardinale di Thrane sul Sangue di Vol (ottenendo il favore
+di Thrane ma forse irritando i karrnathi) oppure mostrare comprensione verso l’inviato karrnathi
+(guadagnando forse la sua fiducia e ulteriori dettagli su Karrnath, ma sospetti da parte di Thrane).
+Queste scelte moduleranno l’atteggiamento di Thrane e Karrnath nei loro confronti in seguito.
+Conclusione Atto I: Idealmente, l’atto si conclude quando i PG hanno raccolto abbastanza indizi da
+comprendere che Droaam e Karrnath sono coinvolti in un complotto comune contro Breland, e che
+l’ordine dell’Artiglio di Smeraldo (legato al culto del Sangue di Vol) è attivo nella regione. Potrebbero non
+conoscere ancora l’esistenza di Lady Illmarrow dietro le quinte – quella rivelazione è destinata a fasi
+successive – ma forse avranno sentito sussurri su una “regina non-morta” o “la Lady delle Ossa”
+sussurrati con terrore dai cultisti. Al termine dell’atto, i personaggi dovrebbero avanzare al livello 5,
+pronti a viaggiare oltre i confini di Breland per approfondire il mistero.
+4
+
+Atto II – Venti di Guerra
+Trama e Obiettivi: Nell’Atto II, i personaggi seguono le piste raccolte sino a ora e cominciano a uscire
+da Breland, esplorando territori ostili in cerca di prove definitive e alleati. Mentre “venti di guerra”
+iniziano a soffiare – segni premonitori di un nuovo conflitto – i PG possono letteralmente percepire le
+tensioni montare. In questo atto l’attenzione si sposta su Droaam e Karrnath: i PG potranno infiltrarsi
+nel regno dei mostri per scoprire l’entità dell’alleanza segreta, e/o recarsi a Karrnath per smascherare i
+traditori e prevenire il colpo di stato militare ordito dal Generale Thoren. L’atto prevede molta libertà: i
+PG potrebbero scegliere quale fronte esplorare per primo (Droaam o Karrnath, o eventualmente Thrane
+per cercare appoggio religioso), e l’ordine delle loro azioni influirà sugli eventi. L’obiettivo generale è
+ottenere informazioni cruciali e possibilmente sabotare la cospirazione prima che sia troppo tardi.
+Tuttavia, le loro azioni potrebbero anche accelerare inavvertitamente il piano dei nemici, se non stanno
+attenti, trasformando questi venti minacciosi in una tempesta di guerra vera e propria.
+Eventi Possibili:
+• 1. Viaggio a Murogrigio: Se i PG decidono di seguire la pista del Sangue di Drago fino alla fonte,
+si avventureranno nel Droaam. Attraversare la frontiera non è facile: potrebbero ingaggiarsi
+come scorta di una carovana di mercanti di Casato Tharashk diretta a Murogrigio (Graywall), la
+città di confine, oppure viaggiare di nascosto attraverso sentieri montuosi (dove li attendono
+predatori come gargoyle, arpie o ladri orchi). Giunti a Murogrigio, scoprono una città
+cosmopolita al contrario: qui i mostri sono cittadini e gli umanoidi civilizzati sono minoranza
+tollerata. A Murogrigio vige la legge delle Figlie di Sora Kell, fatta rispettare dalla medusa
+Xor’chylic, il governatore illithid della città. I PG possono muoversi nel Mercato di Sangue (il
+bazaar locale) in cerca di contatti. Spacciatori e alchimisti vendono apertamente droghe come il
+Sangue di Drago e il Gin di Sangue. Indagando (magari con un travestimento o l’aiuto di un
+mediatore Tharashk), i PG scoprono il laboratorio principale della droga: una struttura occultata
+sotto un’arena di lotta. Lì, la strega Jabra – una megera notturna alleata di Sora Katra –
+supervisiona la produzione. I PG possono decidere se distruggere il laboratorio (combattendo
+Jabra e i suoi ogre) o se invece introdursi con astuzia e interrogare la strega per ottenere
+informazioni. In entrambi i casi, apprendono due cose vitali: primo, che enormi profitti ottenuti
+dalla droga vengono dirottati verso l’acquisto di armi, mercenari e rituali oscuri; secondo, che
+Sora Katra in persona ha da poco lasciato Graywall per recarsi alla Grande Rupe (capitale di
+Droaam) dove, a porte chiuse, ospita emissari karrnathi. Questo è uno shock: Karrnath e Droaam
+teoricamente sono nemici (i mostri di Droaam si scontrarono spesso con Karrnath nel passato),
+perché mai starebbero trattando? Con queste rivelazioni i PG possono passare al passo
+successivo: forse infiltrarsi alla Grande Rupe stessa, oppure tornare di corsa a Breland con le
+prove. (Sottotrama aggiuntiva: durante la permanenza a Graywall, i PG potrebbero imbattersi in
+Sora Teraza, la strega veggente, che appare loro in incognito. Ella potrebbe pronunciare versi
+enigmatici della Profezia Draconica mettendo in guardia i PG: ad esempio “Il fuoco e l’argento si
+leveranno contro l’ombra di sangue…” – alludendo alla Fiamma d’Argento di Thrane contro il
+Sangue di Vol – oppure potrebbe insinuare dubbi su Lady Saela o su un traditore insospettato.
+Questa misteriosa interazione può seminare spunti per più avanti.)
+• 2. Infiltrati a Korth: Parallelamente o successivamente al viaggio nel Droaam, i PG potrebbero
+decidere di recarsi a Karrnath, magari per avvertire il suo sovrano, Re Kaius III, di ciò che sta
+accadendo sotto il suo naso. Lady Saela stessa, o agenti di Breland, potrebbero facilitare il
+viaggio fornendo identità di copertura. Karrnath però è una terra austera e militarista, e
+l’ingresso di stranieri è sorvegliato. I PG possono arrivare via mare a Karrlakton (città portuale)
+5
+
+o via terra passando per Thaliost (in Thrane) e poi il confine orientale: entrambe le rotte
+comportano rischi diplomatici (le guardie di confine potrebbero arrestarli se scoprono la vera
+identità). Una volta a Korth, la capitale karrnathi, i PG possono investigare sul generale Thoren.
+Scoprono che Thoren è un eroe di guerra molto stimato dall’esercito, ma recentemente è stato
+sollevato dal comando sul campo e assegnato a ruolo amministrativo al Ministero della Difesa. In
+realtà, questo gli ha dato modo di cospirare lontano dai campi di battaglia. I PG possono
+introdursi nelle caserme di Vedykar o nell’Accademia Strategica, magari con l’aiuto di un
+contatto locale – ad esempio un ufficiale leale a Kaius, se ne hanno trovato uno, o una spia
+Phiarlan (gli elfi di Casato Phiarlan gestiscono una rete informativa in Karrnath). Qui potrebbero
+rubare documenti o ascoltare conversazioni fra ufficiali: emergono piani di mobilitazione segreti,
+truppe richiamate al fronte senza spiegazioni pubbliche, e ordini firmati da Thoren stesso che
+trasferiscono alcuni reparti ai confini con Breland. È chiaro che Karrnath si sta preparando alla
+guerra, nonostante ufficialmente aderisca alla pace. Se i PG giocano bene le loro carte,
+potrebbero persino ottenere udienza con Re Kaius. Kaius III è cauto e intelligente (nonché egli
+stesso con oscuri segreti, essendo un vampiro, sebbene questo i PG forse non lo sapranno). Se
+presentano prove solide, Kaius potrebbe allearsi con loro temporaneamente: egli non desidera
+che Karrnath cada preda di una guerra non voluta, né vede di buon occhio l’Ordine dell’Artiglio di
+Smeraldo (che lui stesso bandì tempo fa). Kaius potrebbe allora segretamente incaricare i PG di
+“risolvere” il problema Thoren, dando loro mano libera per arrestarlo o eliminarlo, mentre lui
+pubblicamente finge di nulla per smascherare altri cospiratori. Tuttavia, qualora i PG
+commettano passi falsi (es. vengano scoperti prima di raggiungere Kaius, o scelgano un
+approccio violento in Korth), potrebbero diventare ricercati: Thoren li dipingerà come spie
+brelandesi, creando un incidente diplomatico. In tal caso, i PG potrebbero dover fuggire
+attraverso i canali sotterranei di Atur (la “Città Notturna” sede del culto del Sangue di Vol)
+inseguiti da guardie e non-morti. Ad Atur, volendo, i PG possono consultare i sacerdoti del
+Sangue di Vol: la Chiesa ufficiale nega ogni coinvolgimento con Illmarrow (che non venerano
+come divinità, benché alcuni fanatici la idolatrino). Un alto sacerdote potrebbe offrire ai PG
+informazioni su antiche profezie di morte o persino fornire loro un’udienza con la Cavaliere
+Cremisi – la misteriosa leader (alias Lady Illmarrow in uno dei suoi travestimenti). Questo è un
+evento ad alto rischio: incontrare Illmarrow di persona travestita potrebbe portare a un conflitto
+immediato (se i PG capiscono la sua vera natura) oppure a un confronto dialettico inquietante in
+cui lei cerca di fuorviarli. È possibile che Illmarrow/Vol, in questa fase, metta gli occhi sui PG e
+cominci a considerarli una vera minaccia, ordinando ai suoi agenti di occuparsene. Da qui in
+avanti, la campagna diventa una corsa contro il tempo.
+• 3. Accordi di Sangue (Droaam e Karrnath si incontrano): Un evento cruciale, che può
+verificarsi come conseguenza delle azioni dei PG, è la firma dell’alleanza segreta tra Droaam e
+Karrnath. Questo potrebbe essere giocato in modi diversi a seconda di dove si trovano i PG. Se
+sono in Droaam: potrebbero infiltrarsi alla Grande Rupe durante il summit tra le Figlie di Sora
+Kell e il Generale Thoren (o i suoi emissari). Immaginate una scena nella sala del trono delle
+streghe, con Sora Katra che accoglie il generale karrnathi e alcune guardie (magari dei cavalieri
+scheletro). I PG potrebbero origliare la stipula del patto: Droaam fornirà mostri mercenari e il
+micidiale Sangue di Drago rosso ai negromanti karrnathi, in cambio Karrnath riconoscerà
+Droaam come nazione sovrana e aprirà un fronte contro Breland per distrarlo mentre Droaam
+invade da ovest. Se i PG decidono di intervenire qui, può scatenarsi una battaglia campale contro
+Sora Maenya (la strega più marziale) e i soldati presenti – uno scontro difficilissimo da cui forse
+dovranno fuggire. Oppure possono rubare il trattato scritto e sgattaiolare via, portando alla luce
+la prova del tradimento karrnathi. Se invece i PG sono in Karrnath quando l’alleanza si
+formalizza: potrebbero assistere al ritorno di Thoren dalla sua missione in Droaam, oppure
+intercettare un messaggero con i dettagli dell’accordo. In entrambi i casi, il patto sarà concluso
+a meno che i PG non lo impediscano drasticamente, e ciò significa che il prossimo passo dei
+6
+
+cospiratori sarà eliminare Boranel e aprire le ostilità. I PG ora dovrebbero avere un quadro
+completo: sanno di Droaam e Karrnath insieme, conoscono il pericolo per Boranel, e avranno
+nomi e volti dei principali nemici (Sora Katra, Generale Thoren, e forse un’ombra più oscura
+dietro di loro di cui avranno sentito sussurri, Illmarrow). È il momento di tornare di corsa a
+Breland (se ne erano lontani) per prevenire il disastro imminente.
+Luoghi Principali in Atto II:
+- Graywall (Murogrigio): Città di confine nel Droaam. Quartieri come il Mercato di Sangue e l’arena di
+pittura di Daask offrono sia minacce sia opportunità di informazioni. Murogrigio mostra
+l’organizzazione di Droaam: mercenari gargoyle sorvegliano i bastioni e un’atmosfera da “Casablanca
+mostruosa” pervade le strade.
+- Great Crag (Grande Rupe): La capitale di Droaam, arroccata tra formazioni rocciose. Qui risiede il
+palazzo rozzo ma imponente delle Figlie di Sora Kell. Può essere teatro di un’audace infiltrazione o di un
+disperato tentativo di negoziazione con le streghe (vedi Nodi Decisionali).
+- Korth: Capitale di Karrnath. Città fortificata, severa, con strade pattugliate sia da soldati che da non-
+morti “legalizzati” (come guardie scheletriche nelle caserme). Luoghi: il Palazzo di Ghiaccio (residenza
+reale di Kaius, austera e sorvegliatissima), l’Accademia Militare, i giardini cenere (parco cittadino dove
+spie si incontrano furtivamente).
+- Atur: Città Karrnathi famosa per le luci rosse e la presenza della Chiesa del Sangue di Vol. Atmosfera
+gotica: catacombe, templi oscuri ma aperti al pubblico, taverne dove necromanti e cittadini convivono
+stranamente. Può fungere da rifugio segreto o trappola mortale.
+- Flamekeep (opzionale): Se i PG cercano l’alleanza di Thrane, potrebbero recarsi a Flamekeep, capitale
+di Thrane, durante questo atto. Lì la Custode della Fiamma Jaela Daran potrebbe ascoltarli, ma
+convincere la teocrazia ad agire preventivamente è difficile senza prove schiaccianti. Flamekeep è una
+città sacra, con il grande cattedrale e ferventi paladini: un netto contrasto con Atur. Anche qui però si
+nascondono estremisti (come l’ordine degli Inquisitori della Fiamma) che potrebbero complicare i
+piani dei PG se vengono a sapere del Sangue di Vol nel complotto (ad esempio, alcuni zeloti potrebbero
+cercare di punire tutti i seguaci di Vol, creando caos).
+PNG Principali in Atto II:
+- Sora Katra: Una delle Figlie di Sora Kell, megera astuta e carismatica. A Graywall e alla Grande Rupe è
+lei a condurre i negoziati. Dipingetela come estremamente amichevole e arguta con i PG se li incontra,
+quasi materna, ma sempre con un sogghigno di chi sa più di quanto dice. È interessata a manipolare gli
+eventi a vantaggio di Droaam; se messa alle strette, non esiterà a far attaccare i PG dai suoi campioni
+(come il gigantesco minotauro Tzaryan Rrac o una chimera ammaestrata).
+- Generale Thoren ir’Karrn: Alto ufficiale umano di Karrnath, sulla cinquantina, duro e patriottico.
+Segretamente devoto al ritorno del Sangue di Vol come religione di Stato, crede che la pace abbia
+indebolito Karrnath. Thoren è l’antagonista “umano” più diretto per i PG in questo atto: possono
+affrontarlo politicamente (smontando il suo supporto) o fisicamente. Se costretto a combattere, Thoren
+potrebbe rivelare di essere egli stesso un cavaliere della morte – Illmarrow gli avrebbe concesso una
+forma di non-vita avanzata in cambio della lealtà. In caso di scontro, Thoren sarà scortato da guardie
+d’èlite karrnathi e forse da uno o due Cavalieri dell’Artiglio di Smeraldo (non-morti intelligenti).
+- Re Kaius III di Karrnath: Un possibile alleato riluttante. Se interpellato con prove, Kaius mostrerà
+pragmatismo: potrebbe fornire ai PG risorse segrete (es: un sigillo reale per far cessare
+temporaneamente attacchi di truppe karrnathi, o una spada sacra anti-nonmorto delle Crociate
+passate). Tuttavia, non può muoversi apertamente senza scatenare una guerra civile in casa: dipenderà
+molto da come i PG giocano la diplomazia. Kaius è segretamente un vampiro, ma è improbabile riveli o
+usi questa natura davanti ai PG a meno di circostanze estreme (un colpo di scena possibile se c’è
+bisogno di salvarli da altri vampiri dell’Artiglio, ad esempio).
+- Sora Teraza: La veggente cieca, un’altra Figlia di Sora Kell. Appare se vuoi fornire criptici indizi. È
+neutrale sotto certi aspetti: vede molte possibili linee del futuro. Potrebbe dare suggerimenti che
+7
+
+aiutano i PG o i nemici, difficile a dirsi. Ad esempio, potrebbe sussurrare a un PG dormiente una
+porzione di Profezia Draconica su misura, come “Quando la corona cadrà, l’Ombra sorriderà”, instillando
+urgenza.
+- Lady Illmarrow/Erandis d’Vol: Sebbene sia il mastermind, Illmarrow in persona resta dietro le quinte
+per gran parte di Atto II. Tuttavia, i suoi agenti si faranno sentire: un cellula superiore dell’Artiglio di
+Smeraldo guidata da un cavaliere nero potrebbe tendere un’imboscata ai PG lungo la via del ritorno,
+avendo ricevuto l’ordine di eliminarli. Questo cavaliere (che potrebbe essere un ex-eroe di Cyre risorto
+come morte vivente, ad esempio) potrebbe urlare frasi tipo “Per Vol!” durante lo scontro, dando ai PG
+per la prima volta il nome del vero nemico.
+- Altri:Kapitan Bren ir’Gadden, un ufficiale leale a Kaius che funge da contatto per i PG in Karrnath; Failin
+d’Orien, un mercante Casato Orien esiliato che con il suo carro magico può aiutare i PG ad attraversare
+la devastata Landa Gemente se scelgono una via pericolosa di ritorno (magari per guadagnare tempo,
+tagliando attraverso Cyre devastata… un percorso che li mette di fronte agli orrori della guerra passata
+e anticipa ciò che Illmarrow vuole replicare su scala maggiore).
+Nodi Decisionali e Scelte in Atto II:
+- Diplomazia vs. Sabotaggio: In Droaam, i PG possono decidere se provare un approccio diplomatico con
+le Figlie di Sora Kell (ad esempio presentandosi apertamente e cercando di convincerle a desistere
+dall’alleanza, magari offrendo qualcosa in cambio come future relazioni con Breland) oppure optare per
+il sabotaggio (infiltrarsi e rubare/distruggere). La diplomazia è rischiosa ma potrebbe funzionare
+parzialmente: Sora Katra potrebbe divertirsi della loro audacia e fare promesse vaghe, o addirittura
+stringere un patto temporaneo di non aggressione verso i PG in cambio di una ricompensa. Tuttavia
+potrebbe essere un inganno. Il sabotaggio, d’altro canto, può far saltare qualche piano (es. i PG
+riescono a distruggere una partita di armi o a liberare un mostro prigioniero per creare scompiglio
+durante la firma dell’accordo), ma se scoperti scateneranno l’ira immediata dei Droaamiti.
+- Uccidere o smascherare Thoren?: In Karrnath, il gruppo potrebbe avere l’opportunità di affrontare il
+Generale Thoren direttamente. Se scelgono di smascherarlo pubblicamente (ad esempio durante
+un’udienza con Kaius o davanti ad altri generali), devono presentare prove inconfutabili. Ciò potrebbe
+portare all’arresto di Thoren da parte di Kaius stesso. Un esito del genere potrebbe ritardare lo scoppio
+della guerra (Karrnath priva di leader cospiratore dovrà riorganizzarsi), ma non la scongiura: Illmarrow
+troverà un altro modo, magari puntando tutto su Droaam e su creare incidenti altrove. Se invece i PG
+tentano di eliminare fisicamente Thoren in segreto, per decapitare la cospirazione militare,
+potrebbero riuscire (Thoren muore) ma rischiano di diventare ricercati e accusati di assassinio da
+Karrnath, con conseguente casus belli diplomatico immediato! Oppure, se falliscono e Thoren scappa,
+egli anticiperà i piani per vendetta (ad esempio inviando immediatamente sicari contro Boranel).
+Questo nodo incarna un dilemma morale e strategico: giustizia pubblica contro esecuzione furtiva.
+- Allerta a Breland?: Se e quando i PG scoprono il piano per assassinare Boranel, devono decidere come
+agire al loro ritorno. Avvisare subito Lady Saela e Re Boranel garantirà protezione rafforzata al re
+(difficile colpirlo di sorpresa), ma rischia di far cambiare tattica ai nemici: se Boranel è troppo ben
+protetto, Illmarrow potrebbe ordinare di colpire un altro bersaglio di alto profilo (magari uno dei figli di
+Boranel o un leader di Thrane per innescare la guerra in altro modo). Se invece i PG mantengono
+segreta l’informazione per orchestrare loro stessi una trappola all’attentatore, giocano col fuoco: se
+sbagliano, Boranel potrebbe morire per la loro reticenza. Questa scelta condurrà a esiti molto diversi
+nell’Atto III.
+- Ricorso a forze esterne: I PG potrebbero valutare di coinvolgere Thrane attivamente prima che la guerra
+scoppi. Ad esempio, potrebbero consegnare alcune prove al Cardinale Theron o inviare una lettera a
+Flamekeep per allertare la Fiamma d’Argento sulla minaccia dei non-morti di Vol. Ciò potrebbe
+assicurare che, allo scoppio della crisi, Thrane entri in guerra dalla parte di Breland (un possibile aiuto),
+ma potrebbe anche peggiorare le cose: Thrane potrebbe decidere per un’azione preventiva unilaterale
+contro Karrnath (una crociata “preventiva” degli estremisti), che è esattamente ciò che Illmarrow
+desidera per far divampare il conflitto ovunque. I PG devono ponderare bene chi informare e di chi
+8
+
+fidarsi.
+- Uso del Sangue di Drago: Un dilemma etico personale potrebbe sorgere se i PG entrano in possesso di
+fiale di Sangue di Drago. L’alchemista di Graywall magari ne offre una dose “rossa” purissima in cambio
+della vita risparmiata. Questa droga conferisce poteri magici temporanei 10 , e qualche PG potrebbe
+essere tentato di usarla in situazioni disperate. Tuttavia, così facendo rischia dipendenza e terribili
+effetti collaterali 5 . Permettere o meno l’uso di questo “potere facile” è un nodo che potrebbe
+influenzare il carattere del PG e le reazioni degli NPC (es: un paladino di Thrane perderebbe fiducia in un
+alleato che abusa di droghe demoniache; al contrario, alcuni alleati opportunisti come agenti di Casato
+Tarkanan potrebbero rispettare la scelta). In ogni caso, l’uso del Sangue di Drago da parte dei PG
+potrebbe attirare l’attenzione di Illmarrow stessa: la lich vuole tutta la droga disponibile per i suoi rituali,
+e sentire il suo potere in mano ad altri le darà un ulteriore motivo per occuparsi di loro.
+Transizione ad Atto III: Idealmente, l’Atto II termina quando i PG tornano verso Breland (o si trovano
+comunque con Boranel) avendo in mano tutte le tessere del puzzle. Sanno chi sono i traditori (Thoren,
+Sora Kell e dietro di loro Illmarrow), sanno cosa vogliono fare (uccidere Boranel e far ripartire la guerra)
+e probabilmente hanno già tentato di prevenirlo in parte. Nonostante i loro sforzi, i nemici hanno
+comunque messo in moto gli ingranaggi della guerra: truppe di Droaam si ammassano al Passo di
+Orcbone e navi karrnathi salpano verso sud. Il tempo stringe. I PG potrebbero arrivare a Wroat giusto
+in tempo per assistere a… (vai Atto III). Personaggi a questo punto dovrebbero essere livello 8 o 9.
+Atto III – L’Alba di Sangue
+Trama e Obiettivi: L’Atto III rappresenta il punto di non ritorno: gli eventi precipitano in conflitto
+aperto. Nonostante gli sforzi dei PG, la guerra riprende – almeno nelle fasi iniziali – oppure viene sul
+punto di scoppiare. Il momento cruciale attorno a cui ruota questo atto è l’attentato a Re Boranel e le
+sue conseguenze immediate. Da qui in poi, il continente sprofonda nel caos: eserciti marciano, città
+tremano e la stessa realtà comincia a risentire di energie oscure (il cielo potrebbe scurirsi
+innaturalmente in alcuni giorni, presagi dal piano di Mabar che si fa più vicino). In questo clima, i PG
+devono fare scelte difficilissime: salvare vite o sacrificare pedine? Seguire la via della vendetta o della
+misericordia? Unire i regni contro il male o combattere da soli nell’ombra? L’obiettivo ultimo dell’atto è
+impedire che Illmarrow completi la Profezia Draconica usando l’orrore della guerra; in concreto, ciò
+significa proteggere (o vendicare) Boranel, limitare i danni iniziali della guerra e smascherare
+Illmarrow al mondo. Le possibilità di finali multipli iniziano a delinearsi qui in base a cosa accade al Re
+e all’andamento del conflitto. Il tono è epico e drammatico: battaglie campali, tradimenti sconvolgenti e
+forse un barlume di speranza se i PG giocheranno bene le proprie carte.
+Eventi Possibili:
+• 1. Il Giorno dell’Attentato: Questo è l’evento cardine. Le modalità esatte dipendono da quanto i
+PG abbiano scoperto e preparato. In una possibile versione, Re Boranel ha convocato una
+grande parata militare a Wroat per mostrare la forza di Breland di fronte alle recenti tensioni (o
+magari per festeggiare il compleanno di uno dei suoi figli, un’occasione pubblica ideale per un
+assassino). I PG, sapendo dell’imminente attentato, saranno sicuramente in allerta. L’attacco
+avviene in pieno giorno: un commando scelto dell’Artiglio di Smeraldo, infiltrato tra la folla,
+scaglia il suo assalto. Il leader degli attentatori potrebbe essere un guerriero non-morto in
+armatura nera (es. un cavaliere morte vivente) coadiuvato da un paio di maghi necromanti.
+Hanno un asso nella manica: una chimera zombie (inviata da Droaam) cala dal cielo gettando
+panico. La scena è caotica: mentre la gente fugge urlando, i PG devono raggiungere e
+proteggere Boranel. Se i PG avevano predisposto misure (trappole, allarmi con la magia, cecchini
+9
+
+alleati), possono mitigare la sorpresa. Sta di fatto che qui può accadere l’irreparabile: Boranel
+può morire. Possibilità: i PG riescono a salvarlo, uccidendo gli assassini prima che infliggano il
+colpo mortale; oppure arrivano un istante troppo tardi e il re viene trafitto da una lama
+avvelenata o da un colpo di balestra. In alternativa, Boranel potrebbe sopravvivere ma rimanere
+gravemente ferito o addirittura maledetto (es: un pugnale dell’Artiglio potrebbe avvelenarlo con
+un male incurabile di origine necromantica, ponendo un conto alla rovescia alla sua morte che i
+PG dovranno cercare di fermare). Questo è il momento di massima tensione, che indirizzerà la
+campagna verso diversi finali. (Nota: se per qualche ragione i PG avessero preventivamente
+evitato l’attentato – ad esempio arrestando Thoren e costringendo i nemici a rinviare – il DM può
+comunque orchestrare un momento analogo di svolta: forse Droaam lancia un attacco a
+sorpresa su una città di confine, causando migliaia di morti civili, un’altra tragedia atta a
+scatenare la profezia. Insomma, un “evento tragico” deve avvenire in questa fase per dare
+carburante ai rituali di Vol).
+• 2. Scoppio della Guerra: Subito dopo l’attentato (e indipendentemente dall’esito di esso), gli
+ingranaggi della guerra girano. Se Boranel è stato assassinato, Breland precipita nello
+scompiglio: il parlamento e i generali dichiarano immediatamente guerra a Karrnath e
+Droaam, avendo prove del coinvolgimento (fornite magari dai PG). Le armate Brelandesi
+vengono mobilitate. Thrane, vedendo un monarca amico caduto, potrebbe entrare in guerra al
+fianco di Breland (specialmente se i PG hanno stretto buoni rapporti con la Fiamma d’Argento).
+Se Boranel è vivo ma ferito/incapacitato, la reazione sarà comunque dura: Boranel affida
+temporaneamente il comando al suo fidato generale Allistair Daine e a Saela e ordina di
+contrattaccare preventivamente. In ogni caso, eserciti di Karrnath simultaneamente avanzano
+dal nord-est invadendo il confine brelandese (ad esempio prendendo la città di Vathirond),
+mentre dal nord-ovest orde di mostri di Droaam sciamano oltre le montagne, attaccando forti di
+frontiera come Orcbone. I PG potrebbero essere inviati a queste zone di guerra: ad esempio a
+Vathirond, occupata dai karrnathi, per salvare civili e sabotare le linee nemiche. In una sessione,
+potrebbero dover condurre una guerriglia urbana tra le rovine contro squadre di scheletri e
+golem d’ossa karrnathi. In un’altra, recarsi al Forte di Orcbone dove i brelandesi resistono
+disperatamente contro minotauri e troll di Droaam guidati da un’arpia. Queste scene belliche
+servono a sottolineare l’orrore e la scala del conflitto – e ricordare ai PG ciò che Illmarrow
+desidera: più stragi possibili. Durante tali missioni, potete inserire scelte morali: salvare un
+villaggio isolato attaccato da ghoul sapendo che intanto una fortezza vicina cadrà? Consegnare
+aiuti medici di Jorasco a un’unità di soldati in fin di vita o usarli per curare i propri compagni
+avvelenati? Inoltre, i PG possono iniziare ad avvertire effetti della Profezia: ad esempio, i cadaveri
+sul campo potrebbero cominciare a rianimarsi da soli, senza un necromante diretto – segno che
+l’energia di Mabar cresce con ogni morte (un fatto terrificante che i chierici di Thrane
+interpreteranno come presenza di un Signore Supremo oppure come “la terra che si ammala”).
+• 3. La Caduta delle Maschere: Con la guerra in corso, Illmarrow ritiene di aver quasi raggiunto lo
+scopo. Potrebbe quindi decidere di rivelarsi ai suoi nemici per distruggerli o spezzarne la
+volontà. Ad esempio, durante una missione dei PG sul fronte Karrnath-Breland, appare sul
+campo di battaglia un cavaliere spettrale: è Lady Illmarrow in persona, fluttuante sopra un
+drago zombie o circondata da un turbine di anime. Potrebbe non attaccare direttamente (forse i
+PG non sono ancora a livello sufficiente per affrontarla), ma lancia un incantesimo devastante su
+entrambe le armate in lotta – un fuoco fatuo verdastro che uccide decine di soldati
+istantaneamente, trasformandoli in zombi ai suoi ordini 11 . Con questo atto orrendo, Illmarrow
+ottiene due effetti: alimenta ulteriormente il massacro e si manifesta come nemico comune. I PG
+possono solo resistere come possono e magari salvare alcuni alleati dall’orda di nuovi non-morti,
+mentre la lich svanisce ridendo. Questa dimostrazione di potere è un momento di svolta: da
+ora, Breland e Thrane sanno che c’è un signore dei non-morti dietro la guerra. La propaganda
+10
+
+dipinge Illmarrow come un “demonio Vol” da distruggere. Karrnath, se Kaius è ancora al
+comando, può addirittura offrire un cessate il fuoco con Breland: Kaius dichiarerà che Thoren era
+un traditore e si unirà alla coalizione contro la lich (questo accade solo se i PG hanno in
+precedenza convinto Kaius o eliminato Thoren; se no, i karrnathi continueranno a combattere,
+convinti che la lich sia un’arma segreta al loro servizio). In pratica, da qui può nascere
+un’alleanza insperata: Breland, Thrane e magari Karrnath stessa uniscono le forze per fermare
+Illmarrow. In alternativa, se le cose sono andate male, la comparsa di Illmarrow può avere
+l’effetto opposto: i comandanti possono disperarsi o litigare su come procedere. Ad esempio,
+alcuni in Thrane potrebbero sostenere che la priorità è purgare tutti i non-morti ovunque
+(compresi quelli alleati in Karrnath, incrinando la potenziale cooperazione). I PG dovranno usare
+tutta la loro influenza – guadagnata attraverso le alleanze nei primi atti – per mantenere coesa
+la resistenza. Ad esempio, persuadere il nuovo reggente brelandese (se Boranel è morto, uno dei
+suoi figli o un consiglio reggenziale) a fidarsi di Kaius; oppure far da mediatori tra un generale
+thrane e un necromante karrnathi che si guardano in cagnesco sul campo.
+• 4. Missioni Secondarie e Sottotrame Attive: In mezzo alle battaglie principali, Atto III offre
+spazio per risolvere sottotrame accumulate:
+• La Cura di Boranel: Se il re è sopravvissuto ma è maledetto in fin di vita, i PG possono cercare una
+cura. Questo potrebbe significare avventurarsi in un piano esterno: forse recuperare acqua
+sacra da Irian, il piano dell’alba eterna per contrastare la maledizione di Mabar, oppure trovare
+un artefatto Aereni (gli elfi di Aerenal hanno potenti maghi della vita e della morte). Ciò può
+essere un mini-quest in cui un piccolo gruppo di PG (o loro emissari) corre contro il tempo in un
+dungeon o attraverso un portale planarale. Se hanno successo, Boranel si riprende in tempo per
+guidare il contrattacco finale in Atto IV; se falliscono, il Re perisce, gettando un’ombra oscura
+sulle sessioni finali.
+• I Traditori Interni: Potrebbe emergere che non solo Thoren, ma anche figure a Breland abbiano
+tradito. Ad esempio, un lord brelandese potrebbe aver segretamente complottato con Droaam
+(magari sperando di farsi re di una regione autonoma dopo la guerra). I PG potrebbero dover
+smascherare ed eliminare questo traditore a Wroat per assicurare l’unità del paese in guerra.
+Lady Saela stessa potrebbe essere sospettata ingiustamente se la propaganda nemica la dipinge
+come doppiogiochista (dopo tutto, è stata lei a coinvolgere i PG in missioni clandestine… facile
+per un rivale accusarla). I PG potrebbero dover difendere la reputazione di Saela, o persino
+indagare su di lei se sorgono dubbi (colpo di scena: Saela potrebbe aver tenuto nascosto un
+segreto – ad esempio, potrebbe appartenere alla famiglia ir’Wynarn e avere pretese sul trono?
+Oppure avere parentele in Karrnath – legandola suo malgrado al Sangue di Vol. Tali rivelazioni
+potrebbero mettere alla prova il rapporto di fiducia con i PG). In ogni caso, gestire i dissidi interni
+è cruciale perché Illmarrow spera nel “divide et impera”.
+• Reliquie e Artefatti: I PG potrebbero decidere di cercare armi o alleati insoliti. Ad esempio,
+consultare gli Aranathxi (i draghi dell’isola di Argonnessen) per capire meglio la Profezia –
+compito arduo ma possibile se hanno un contatto draconico (forse Sora Teraza li ha indirizzati).
+Un antico drago potrebbe fornire un indizio su come invertire la magia di Illmarrow. Oppure
+potrebbero recuperare il Calice di Kol Korran, un artefatto custodito a Thrane capace di
+purificare una terra maledetta (forse utile se parti di Breland iniziano a diventare come la Landa
+Gemente). Queste missioni secondarie sono opzionali ma possono dare un vantaggio ai PG per
+l’atto finale.
+• Sangue di Drago: I PG potrebbero sfruttare la conoscenza del Sangue di Drago in guerra. Ad
+esempio, convincere Casato Cannith o l’Arcane Congress di Aundair a creare un antidoto o
+neutralizzatore da spargere sui campi di battaglia, riducendo l’efficacia della droga sui maghi
+nemici. Oppure, se uno o più PG ne sono diventati dipendenti, questo è il momento in cui
+devono affrontare le conseguenze: in mezzo a una battaglia cruciale, il PG mago avverte il
+11
+
+bisogno della dose per continuare a lanciare incantesimi… come risolverà, con forza di volontà o
+cedendo? Questo potrebbe determinare vita o morte di molti.
+Luoghi Principali in Atto III:
+- Wroat e dintorni: Teatro dell’attentato e dei primi disordini. Dopo l’evento, Wroat potrebbe essere nel
+caos: se Boranel è morto, ci possono essere rivolte o saccheggi finché l’ordine non viene ristabilito. I PG
+potrebbero dover proteggere la famiglia reale (Boranel aveva figli e parenti) da eventuali ulteriori
+tentativi di eliminazione.
+- Campi di Battaglia di Breland: Ad esempio, Vathirond (città presa e poi liberata), le pianure vicino a
+Marguul Pass e Orcbone. Questi luoghi diventano nomi celebri nella nuova guerra. Il DM può
+descrivere il paesaggio segnato da fossati, trincee improvvisate, case bruciate, per far sentire che
+l’Ultima Guerra è tornata.
+- Thrane meridionale: Se Thrane si mobilita, regioni come Sigilstar o il confine con Breland vedono
+muoversi eserciti della Fiamma. Potrebbe avvenire un incontro tra forze thrane e brelandesi per
+coordinarsi (i PG potrebbero parteciparvi per rappresentare Saela/Breland), o forse una missione di
+commando thrane congiunta con i PG per distruggere un santuario segreto del Sangue di Vol a
+Sterngate (fortezza in Breland dove agenti di Vol si nascondono).
+- Cyre (Landa Gemente) Margini: La terra desolata di Cyre, se i PG la attraversano o se Illmarrow la
+utilizza in qualche modo, appare come un lugubre monito. Magari i confini della Landa iniziano ad
+espandersi man mano che la profezia si compie: i PG potrebbero vedere le erbacce appassire e il suolo
+spaccarsi sotto i loro piedi durante certe battaglie – segno che la Nuova Landa Gemente sta
+germogliando. Un luogo come Forte Trono (Thronehold, l’isola neutrale) potrebbe persino venire
+toccato dalle energie, simboleggiando la fine degli accordi di pace lì firmati.
+- Dolurrh/Mabar Planare: Non un luogo fisico su Eberron, ma i PG (soprattutto incantatori e religiosi)
+potrebbero avere visioni o veri e propri viaggi spirituali nei piani dell’oltretomba. Ad esempio, un
+chierico potrebbe pregare ferventemente la Fiamma e avere una visione di Dolurrh (il regno dei morti)
+dove vede le anime dei caduti incatenate da Illmarrow che recita un rituale. Oppure, durante un’eclissi o
+una notte innaturalmente oscura, una zona manifest di Mabar potrebbe sovrapporsi a una valle di
+Breland, facendo comparire spettri e ombre che i PG devono affrontare. Questo enfatizza gli elementi
+cosmici e dà un assaggio di ciò che accadrà se i PG falliscono del tutto.
+PNG Principali in Atto III:
+- Re Boranel / Erede al Trono: Se Boranel è vivo, egli diventa un PNG motivante ma vulnerabile. Magari
+dopo l’attentato (riuscito o fallito) decide testardamente di guidare le truppe al fronte, contro il consiglio
+di Saela. I PG dovranno spesso proteggerlo da se stesso e dalla sua voglia di vendetta. Se Boranel è
+morto, introduci il suo successore: forse suo figlio maggiore, Principe Bortan, giovane e inesperto, che
+avrà bisogno dei PG e di Saela come consulenti per reggere il peso; oppure il fratello Kor ir’Wynarn,
+politico navigato ma cinico (potrebbe perfino considerare una resa separata con Karrnath per egoismo,
+che i PG dovranno sventare).
+- Lady Illmarrow (Vol): Finalmente entra in scena attivamente. In Atto III appare come antagonista
+diretta, seppur fugace: la sua potenza è tale da rendere uno scontro diretto prematuro un suicidio.
+Tuttavia, i PG possono interagire con lei, anche solo parlando da lontano sul campo di battaglia o
+tramite messaggi telepatici (Illmarrow potrebbe prendere contatto per tentare di corrompere i PG:
+“Unitevi a me,” può sibilare nella mente di un mago del party, “e vi lascerò un posto nel nuovo regno
+immortale”). La personalità di Illmarrow è fredda, millenaria, disprezza i mortali ma è curiosa dei PG
+che le hanno dato filo da torcere.
+- Lady Saela: In Atto III, Saela è messa a dura prova. Se Boranel muore, lei potrebbe cadere in breve
+depressione o senso di colpa (avrebbe dovuto proteggerlo lei, come Lanterna Oscura). I PG dovranno
+spronarla a reagire, perché la sua esperienza è vitale per Breland. Se Boranel vive ma è ferito, Saela
+assume di fatto il ruolo di reggente ombra coordinando esercito e spie mentre il re è convalescente.
+Potrebbe delegare ai PG missioni top secret, come contattare agenti dormienti a Droaam o sabotare
+12
+
+linee di rifornimento nemiche. Saela può anche avere un momento eroico: ad esempio, gettarsi davanti
+a un dardo incantato destinato a Boranel o a uno dei PG, sacrificandosi (solo se drammaticamente
+appropriato e se i PG hanno altri validi contatti, altrimenti è preferibile conservarla per Atto IV). La sua
+fine o sopravvivenza dipende anche dalle scelte dei PG nel proteggerla.
+- Altri Alleati in Guerra: Generale Daine (comandante brelandese pragmatico, rispetta i PG se hanno
+prove il loro valore in battaglia; in caso di divergenza su piani strategici, potrebbe confliggere con loro
+su come impiegare le risorse), Jaela Daran (la giovane Custode della Fiamma di Thrane, che potrebbe
+compiere un miracolo sul campo se la fede della gente vacilla – ad esempio invocare un angelo di
+Syrania in una battaglia cruciale; i PG potrebbero partecipare a sua difesa quando i necromanti
+tenteranno di assassinarla), Re Kaius III (se ancora vivo e non smascherato come vampiro, combatte con
+onore – un momento toccante può essere Kaius che duella con un campione non-morto di Illmarrow,
+quasi come a espiare il passato oscuro di Karrnath).
+- Campioni Nemici: Oltre Illmarrow, attivi sono: Sora Maenya, la terza sorella di Droaam, di ogre crudele
+e quasi invincibile, potrebbe guidare personalmente l’assalto a una fortezza; Cavaliere Oscuro Lucan (un
+ex agente brelandese vampirizzato, ora serve Vol e potrebbe essere mandato per dare la caccia ai PG
+dietro le linee); The Keeper (un alto sacerdote corrotto del Sangue di Vol che cerca di completare un
+rituale di massa in un cimitero di Breland per trasformare i caduti in un esercito di zombie – i PG
+possono doverlo fermare prima che aggiunga altri non-morti all’orda).
+Nodi Decisionali e Scelte in Atto III:
+- Bene Superiore vs Legami Personali: In piena guerra, i PG potrebbero trovarsi a scegliere tra salvare
+persone a loro care o compiere la missione strategicamente più utile. Ad esempio, durante l’attacco a
+Vathirond, scoprono che nell’ospedale da campo ci sono la famiglia di uno dei PG o la famiglia di Lady
+Saela. Le truppe nemiche circondano la zona; se deviano per salvarli, permetteranno forse a un
+generale nemico di fuggire o perderanno tempo prezioso per chiudere un portale con Mabar. Questa
+scelta influirà sull’epilogo personale dei PG (avere o meno rimpianti, e quali PNG sopravvivono per
+celebrare o piangere).
+- Risparmiare i Nemici: Potrebbe capitare che i PG sconfiggano un avversario importante, come Sora
+Katra o il generale Thoren (se non ancora affrontati). In quel momento, devono decidere se ucciderlo o
+risparmiarlo/prenderlo prigioniero. Esempio: sconfiggono Sora Katra in duello; se la risparmiano, lei
+giura un cessate-il-fuoco di Droaam e magari in futuro Droaam si chiama fuori dalla guerra (riducendo i
+combattimenti). Ma risparmiarla è pericoloso: potrebbe essere traditrice e tornare più avanti. Se la
+uccidono, Droaam precipita nel caos (le altre due sorelle reagiranno furibonde; oppure, se anche
+Maenya e Teraza sono fuori gioco, i signori della guerra mostruosi sparsi potrebbero cessare di
+cooperare). Quindi entrambe le scelte hanno pro e contro tattici. Lo stesso per Thoren: giustiziarlo può
+placare lo spirito vendicativo di Breland/Thrane (settimane prima gridavano al suo sangue), ma lasciarlo
+in vita e farlo testimoniare pubblicamente potrebbe svelare al mondo i piani di Illmarrow, convincendo
+più fazioni a unirsi.
+- Fronte Unito?: I PG possono cercare attivamente di unificare le fazioni contro Illmarrow. Hanno
+l’orecchio dei generali e leader? Allora possono proporre un Consiglio di Guerra a Thronehold tra
+Breland, Thrane, Karrnath ed eventualmente Aundair (Aundair finora neutrale, ma se avvisata potrebbe
+contribuire con qualche squadra di arcanisti). Organizzare tale incontro è pericoloso: Illmarrow cercherà
+di attaccarlo con ogni mezzo (potrebbe inviare un prìncipe demone evocato per far saltare la
+conferenza). Se i PG riescono a far riunire i leader, sarà un grande colpo di scena positivo: i regni che
+fino a poco fa erano nemici dichiarano una Crociata Congiunta contro l’Ombra di Vol. Questo
+sicuramente predispone al finale migliore, ma non è garantito – dipende quanta fiducia hanno costruito
+i PG con ciascuna fazione. Se invece i PG ignorano questo aspetto e agiscono solo con forze brelandesi,
+la battaglia finale potrebbe essere molto più ardua, mancando l’aiuto di Thrane o di altri.
+- Uso di Potere Oscuro: Di fronte alla devastazione, i PG potrebbero considerare mosse disperate. Ad
+esempio, usare il Calice di Sangue di Vol (un immaginario artefatto che potrebbe dare controllo sugli
+undead, se caduto nelle loro mani) contro Illmarrow. Ma così facendo, utilizzerebbero un potere
+13
+
+malvagio e rischierebbero corruzione o conseguenze a lungo termine (magari liberare uno dei Signori
+Supremi demoniaci sigillati). In altri termini, c’è la scelta di combattere il male con il male. Consentire
+questo offre un finale più ambiguo: forse riescono a fermare Illmarrow controllando la sua armata di
+non-morti con l’artefatto, ma poi? Uno dei PG ne rimane posseduto? Oppure i draghi di Argonnessen
+decidono che i PG sono diventati a loro volta una minaccia e intervengono? Questa opzione è
+volutamente rischiosa e va maneggiata con cura dal DM per non deragliare la storia, ma aggiunge
+spessore morale.
+- Fiamma vs Vol: I PG con inclinazione religiosa (es. un chierico di Thrane o un seguace del Sangue di Vol
+redento) potrebbero proporre un estremo rituale di esorcismo sul campo. Tipo: il culto del Sangue di
+Vol “ortodosso” e la Chiesa della Fiamma d’Argento insieme tentano di creare un pilastro di luce che
+imprigioni Illmarrow. I PG devono proteggere i ritualisti finché completano il canto. Se scelgono questa
+strada, sacrificheranno risorse militari altrove per concentrare preti e paladini in un singolo luogo,
+quindi se falliscono pagheranno caro. Ma se funziona, Illmarrow potrebbe essere indebolita o confinata
+quando arriverà lo scontro finale. Ancora, scelte strategiche come questa alterano la difficoltà e i
+possibili sviluppi del finale.
+Verso l’Atto IV: Alla fine dell’Atto III, i PG dovrebbero aver guidato (o almeno influenzato) il corso della
+guerra iniziale. Idealmente, avranno fermato l’espansione inarrestabile della catastrofe quel tanto da
+guadagnare un’ultima chance: arrivare a confrontarsi direttamente con Illmarrow/Vol e impedirle di
+completare la Profezia. Il mondo è allo stremo: vaste aree di Breland o Thrane forse giacciono in rovina,
+decine di migliaia sono morti (le anime accumulate minacciano di alimentare un disastro magico). Ma
+c’è speranza se i regni resistono uniti e se i PG sono vivi e determinati. In caso contrario – se i PG hanno
+fallito molte mosse critiche – il DM potrebbe dipingere un Atto IV più cupo, dove i PG sono praticamente
+gli ultimi eroi rimasti in un mondo che collassa. In ogni caso, al termine di Atto III, dovrebbero essere di
+livello 10-11, pronti per la sfida finale al massimo delle forze.
+Atto IV – L’Eclissi Finale
+Trama e Obiettivi: In Atto IV si giunge allo scontro conclusivo con Lady Illmarrow e si tirano le fila di
+tutte le vicende. Questo atto può essere strutturato come un capitolo finale modulare, con diverse
+possibili situazioni di partenza a seconda degli esiti precedenti, ma con un elemento comune: Illmarrow
+sta tentando di completare il rituale apocalittico per annegare Khorvaire nell’oscurità eterna. I PG
+devono assolutamente impedirlo. Dove e come avviene questo confronto dipende da come è andata la
+guerra: potrebbe essere nell’epicentro di un fenomeno magico (ad esempio nella Landa Gemente
+originale, o nella capitale di Breland se è caduta e divenuta un nuovo focolaio di morte, o addirittura in
+un manifest zone planare). I PG e i loro alleati fanno irruzione per l’ultimo assalto, consci che il destino
+del mondo è in bilico. Questo atto è fortemente drammatico: include rivelazioni finali, colpi di scena
+conclusivi e prepara diversi possibili finali a seconda che i PG trionfino, falliscano o raggiungano un
+esito intermedio.
+Eventi Possibili:
+• 1. La Fortezza di Ossa: L’atto potrebbe aprirsi con i PG che individuano il covo finale di Lady
+Illmarrow. Forse è un luogo leggendario come Fortessa Illmarrow sulle coste ghiacciate di
+Karrnath, oppure la torre di Shae Mordai (una necropoli elfica abbandonata) o ancora il cuore
+della Landa Gemente, dove tutto ebbe inizio. Scegli un luogo che non sia stato toccato finora
+per dare epicità. Esempio: le rovine di Metrol, l’ex capitale di Cyre, ora al centro della Landa
+Gemente, dove Illmarrow ha costruito un’orrenda effigie con le ossa dei caduti. La terra qui pulsa
+energia negativa. I PG devono aprirsi la strada attraverso gli ultimi ostacoli: ad esempio, un
+14
+
+labirinto di mura d’ossa pieno di trappole, oppure affrontare i generali finali di Vol – un drago
+zombie adulto che sputa ombre velenose 12 , o i tre “figli di Vol” (vampiri creati da lei
+personalmente). Durante l’ascesa alla fortezza, includi frammenti di lore: ad esempio, incisioni
+che narrano la storia di Erandis d’Vol, il suo Marchio della Morte e come fu tradita sia dai draghi
+che dagli elfi di Aerenal. Questo darà ai PG (se non lo sanno già) un quadro tragico del nemico:
+Illmarrow non è solo malvagia, è anche figlia di una tragedia antica, il che rende la cosa più
+tragica (forse qualcuno tra i PG potrebbe quasi provare pietà… o comprendere la sua furia verso
+il mondo). Arrivati al cuore della fortezza, trovano Illmarrow intenta al rituale.
+• 2. La Profezia si Compie: Il rituale di Illmarrow probabilmente sfrutta i catalizzatori raccolti
+durante la campagna. Ad esempio, la lich potrebbe aver bisogno di tre componenti: il sangue di
+un re (Boranel, o se lui è salvo, di un altro nobile di alto lignaggio catturato), la sofferenza di
+una nazione intera (rappresentata dalle anime dei caduti in guerra) e il potere di un piano
+oscuro (un congegno o un portale che convoglia l’energia da Mabar). Quando i PG giungono, il
+rituale è già in corso: Boranel (o il sacrificio designato) potrebbe essere prigioniero su un altare,
+e un globo di tenebra crescente avvolge la zona, estendendosi a vista d’occhio. Illmarrow recita
+versi in draconico, mentre attorno a lei anelli di rune draconiche fluttuano nell’aria (un segno
+tangibile della Profezia che si sta scrivendo). I PG devono intervenire immediatamente. Questa
+scena è il culmine di tutto, quindi caricala di pathos: magari i PG arrivano accompagnati dai loro
+alleati più fidati – per esempio, Lady Saela in armatura da battaglia, o un angelo evocato da Jaela
+Daran, o persino un drago argento del Chamber se hanno stretto quell’alleanza improbabile. Lo
+scontro ha inizio e il rituale intanto prosegue: ogni round che passa, qualche effetto catastrofico
+si manifesta (DM può inventare fenomeni come: pioggia di cenere, ondate di energia necrotica
+che tirano TS su Costituzione ai vivi, spettri di caduti che si animano sul campo come minion
+aggiuntivi). I PG possono decidere se focalizzarsi su Illmarrow per ucciderla/fermarla, o
+spezzare il rituale distruggendo i pilastri magici/cerchi runici mentre magari i loro alleati
+tengono impegnata la lich. Questa scelta incide su come prosegue la battaglia: attaccare
+Illmarrow direttamente la disturba ma lei è estremamente potente (incantesimi di 9° livello
+preparati, azioni leggendarie e resistenze 13 11 ), quindi un confronto frontale è rischioso.
+Spezzare il rituale indebolirà Illmarrow (forse perde l’immortalità temporaneamente o non può
+più usare leggendary resistances se i nodi di potere sono distrutti), ma nel frattempo i PG o i loro
+alleati subiscono la sua furia indisturbata.
+• 3. Confronto Finale con Illmarrow: Alla fine, i PG dovranno affrontare Illmarrow stessa. Questa
+è la battaglia boss. Illmarrow potrebbe combattere in varie fasi: inizialmente dall’alto, volando e
+lanciando magie (come Cerchio della Morte, Parola del Potere Uccidere – terribile perché può
+uccidere un PG se ridotto male 14 15 ). Ha servitori non-morti di elite che sbarrano la strada.
+Mentre combatte, Illmarrow dileggia i PG: “Vi ho osservati, formichine... credete di poter cambiare il
+destino? La Profezia è scritta col sangue e non potete cancellarla!”. Puoi inserire momenti cinematici:
+ad esempio, se un PG la colpisce duramente, una parte della sua illusione cade mostrando per
+un attimo il suo vero volto lichiforme prima che si rigeneri; oppure visioni di Mabar appaiono
+attorno a loro (il terreno si trasforma in cimitero, ecc.). Se i PG hanno portato alleati, questi
+possono aiutare tenendo a bada eventuali rinforzi (es: Sora Katra pentita appare con i suoi ogre
+per contrastare gli scheletri di Illmarrow, o Kaius stesso con spadaccini vampiri rivali dell’Artiglio
+di Smeraldo). Il DM dovrebbe far sentire che è una battaglia epocale con tanti attori, ma
+mantenere i PG al centro: sono loro a dover dare il colpo decisivo, o a compiere l’atto chiave
+(chiudere il portale, liberare il sacrificio sul altare, ecc.). Possibili colpi di scena qui:
+• Vol rinasce? Se il rituale è quasi compiuto, Illmarrow potrebbe riuscire per un attimo a ristabilire il
+suo Marchio del Drago perduto sul corpo. Ciò potrebbe darle un potere assurdo (ad es.,
+rigenerazione continua o controllo su tutti i draghi/non-morti nell’area). I PG dovranno
+15
+
+fronteggiare questa “fase 2” finché magari il marchio non viene disattivato distruggendo il focus
+del rituale.
+• Intervento di un Signore Supremo: Qualora la campagna volesse davvero portare elementi cosmici
+estremi, si potrebbe rivelare che la stessa Profezia orchestrata da Illmarrow è stata manipolata
+da un Signore Supremo demoniaco (ad esempio Katashka, il Signore dei Morti). Se così fosse,
+durante la battaglia finale, l’ombra di Katashka potrebbe tentare di manifestarsi possedendo
+Illmarrow o emergendo come colossale abominio. In tal caso, incredibilmente Illmarrow e i PG
+avrebbero un nemico comune per un breve istante: la lich potrebbe gridare “Non ti ho servito per
+questo!” rifiutando di farsi possedere. Questo scenario è catastrofico: i PG dovrebbero allora
+compiere un rituale lampo (magari usando quell’artefatto draconico o la Fiamma d’Argento) per
+bandire l’Overlord di nuovo. È un optional twist per un finale davvero epico, ma rischia di rubare
+scena al conflitto principale, quindi va usato solo se il tavolo di gioco ama i plot twist cosmici.
+• Redenzione Impossibile: Un altro spunto: se uno dei PG è di allineamento buono e incline alla
+misericordia, potrebbe addirittura provare a raggiungere quel briciolo di Erandis d’Vol ancora
+presente in Illmarrow. Parlare durante il combattimento, esortarla a fermarsi. Questo non la
+convincerà mai a rinunciare, ma potrebbe distrarla o creare un’apertura (in termini di gioco,
+magari la priva di una reazione per un turno o le fa fallire un tiro salvezza chiave se colpita dalle
+parole). Sarà comunque tragico: Illmarrow potrebbe urlare “È troppo tardi per me!” prima di
+scagliare l’ennesimo incantesimo mortale. Sta ai PG decidere se offrire pietà all’ultimo secondo o
+finirla.
+• 4. Esiti della Battaglia: Il momento in cui Illmarrow cade (se cade) è cruciale. Forse il suo corpo
+si disfa in polvere con un urlo disumano – ma i PG sanno che il suo filatterio la farà risorgere in
+1d10 giorni altrove 16 , a meno che non lo trovino e lo distruggano. Quindi la missione potrebbe
+non essere finita: tra le macerie, devono individuare il filatterio di Vol. Potrebbe essere un
+oggetto in vista (es: un medaglione con il simbolo del drago e della rosa, emblema dei Vol)
+oppure nascosto (il DM può aver dato indizi su di esso in atti precedenti, tipo nelle incisioni della
+fortezza). Se i PG lo distruggono rapidamente, Illmarrow è sconfitta per sempre. Se non lo fanno,
+potrebbero comunque aver scongiurato l’apocalisse ma Vol potrebbe tornare in futuro (forse un
+aggancio per campagne successive). Anche se Illmarrow muore, restano da gestire gli effetti del
+rituale: se era già parzialmente attivo, parte di Khorvaire potrebbe essere contaminata da una
+maledizione. Ad esempio, un raggio di energia nera dal cielo ha colpito Sharn spezzando alcune
+torri e infestando la città di fantasmi. I PG e gli alleati dovranno bonificare questi strascichi col
+tempo (cosa che può diventare epilogo o spunto per nuove avventure).
+Possibili Finali e Conclusioni:
+L’esito finale della campagna può variare molto. Ecco alcuni scenari di finale multiplo:
+• Finale Eroico – Alba di Speranza: I PG sconfiggono Illmarrow e distruggono il suo filatterio,
+sventando totalmente la Profezia dell’Eterna Notte. Re Boranel (o il suo successore) è salvo. La
+guerra, priva della mente malvagia che l’ha causata, si conclude rapidamente: Karrnath, libero
+dall’influenza di Thoren e Vol, firma un nuovo armistizio; Droaam, decapitato della guida delle
+Figlie (se Katra e sorelle sono vive potrebbero prudentemente ritirarsi, se no i mostri cessano
+l’offensiva senza coordinamento). Breland e Thrane rafforzano i loro legami dopo aver
+combattuto fianco a fianco. In questo epilogo, i PG sono accolti come salvatori dei regni:
+medaglie, titoli nobiliari (se graditi), ballate cantate in loro onore. Lady Saela, se viva, diventa una
+figura di spicco – forse nominata Dama di corte o Capo delle Lanterne Oscure, e continua a
+collaborare con i PG in futuro per mantenere la pace. Questo finale vede anche la ricostruzione:
+i personaggi potrebbero essere messi a capo di iniziative di ricostruzione delle città distrutte, o
+16
+
+invitati a Thronehold per redigere nuovi trattati. Khorvaire ha un’occasione di pace duratura e
+forse un futuro più unito (magari nasce una Lega delle Nazioni grazie all’esperienza condivisa). La
+Profezia Draconica, questa volta, ha visto prevalere il libero arbitrio degli eroi sul destino scritto.
+• Finale Misto – Vittoria a Caro Prezzo: I PG fermano Illmarrow, ma a un costo elevato. Forse Re
+Boranel è morto, oppure uno dei regni (Breland stesso o Thrane) è devastato irreparabilmente
+da qualche cataclisma prima che riuscissero a impedirlo. Ad esempio, immagina che una parte di
+Breland occidentale sia diventata simile alla Landa Gemente – un’area maledetta inabitabile – a
+causa del rituale parzialmente eseguito. Droaam si ritira con pesanti perdite, ma Karrnath, anche
+senza Vol, finisce col tenere territori brelandesi occupati (forse Vathirond e dintorni) finché un
+lungo negoziato non li fa sloggiare. I PG vengono comunque osannati come eroi, ma il clima è
+agrodolce. Ci sono funerali di stato per Boranel e altri caduti illustri. Una nuova sovrana sale al
+trono di Breland (magari la figlia di Boranel, princess Borann, con Saela come consigliera
+fidata). I PG potrebbero essere stanchi e segnati: vedono ciò che hanno salvato ma anche ciò che
+è stato perso. Questo finale consente spunti di campagne future sul tema della ricostruzione o
+del contenere i residui malefici (magari i PG di tanto in tanto devono entrare nella zona
+maledetta rimasta a caccia di non-morti vaganti). Politicamente, c’è pace armata: Thrane e
+Aundair fanno pressioni per regolamentare Karrnath affinché bandisca per sempre la
+necromanzia; Karrnath stessa subisce tumulti interni (Kaius potrebbe rivelare la sua natura
+vampirica per reclamare di aver combattuto Vol dall’interno – uno scandalo che divide i suoi
+sudditi). Droaam torna nell’isolamento, con le Figlie di Sora Kell furenti ma con forze decimate:
+forse in futuro torneranno a minacciare, o forse no. Lady Saela potrebbe sopravvivere ma
+decidere di ritirarsi dalla vita di corte per i troppi traumi (a meno che uno dei PG non la convinca
+a restare – se c’è un legame personale, può essere un epilogo romantico ad esempio). In sintesi,
+il male è sconfitto ma Khorvaire sanguina: ci sarà bisogno di tempo (e magari di altri eroi) perché
+le ferite si rimarginino.
+• Finale Oscuro – Tenebra Calante: Questo è il finale di fallimento o semi-fallimento. I PG
+potrebbero perdere lo scontro finale (magari uno o più di loro muoiono, o devono ritirarsi) e
+Illmarrow completa il rituale. Khorvaire viene avvolto dalle tenebre di Mabar: una nuova Landa
+Gemente si espande su gran parte del continente. I morti sorgono dalle fosse ovunque per
+servire la Regina Lich. Solo poche enclave di luce resistono – forse l’ultimo bastione è a Thrane,
+protetto dalla fiamma sacra, o qualche valle druida nelle Terre Eldeen dove il potere dell’Eberron
+dragonshard contrasta l’oscurità. Se alcuni PG sopravvivono, diventano eroi guerriglieri di un
+mondo post-apocalittico, con la possibilità in futuro di cercare un modo per invertire l’apocalisse
+(campagne di livello epico per trovare antichi druidi o allearsi coi draghi). Oppure, in modo ancor
+più drammatico, Illmarrow offre loro un’ultima scelta: sottomettersi ed essere trasformati in
+immortali (vampiri, spettri al suo servizio) oppure essere distrutti. I PG potrebbero dover
+scegliere se preferiscono morire da eroi o vivere da malvagi. Un epilogo potrebbe descrivere i
+loro monumenti spezzati nelle città in rovina, o l’ultima preghiera di un sacerdote mentre
+l’oscurità cala. È un finale tragico che punisce i fallimenti ma può comunque essere
+narrativamente soddisfacente se il gruppo apprezza la tragedia eroica. Nota: Questo finale è da
+usare con cautela; in genere, in una campagna, si mira a dare ai giocatori un senso di
+compimento. Se però tutto è andato storto, è giusto mostrare le conseguenze. Si può sempre
+dare un barlume di speranza (es: la Profezia Draconica scritta in quel momento include un
+verso sul “Figlio del Sole” che un giorno spezzerà la notte eterna… lasciando intendere che la
+storia non finisce qui).
+• Finali Alternativi: Ci sono varianti sulle sfumature. Ad esempio, i PG potrebbero tecnicamente
+perdere contro Illmarrow ma riuscire con un gesto estremo a confinare lei e l’intera nuova Landa
+Gemente in un’unica regione (tipo chiudere una cupola magica su un regno, sacrificando vite –
+17
+
+un finale a la “il male è imprigionato ma a caro prezzo, e per sempre bisogna vigilare”). Oppure
+uno dei PG potrebbe accettare il dono oscuro e diventare il nuovo “campione di Vol” mentre gli
+altri la fermano – creando spaccature nel gruppo come epilogo. La presenza di piani esterni e
+forze cosmiche consente molto spazio creativo: magari i draghi del Chamber intervengono
+all’ultimo momento se i PG falliscono, incenerendo la zona ma devastando anche metà Khorvaire
+(una vittoria di Pirro che lascia i draghi poi in controllo di ciò che resta). Il modulo incoraggia il
+DM a scegliere il finale che meglio si adatta al tono del suo tavolo e alle scelte fatte: l’importante
+è che le conseguenze siano logiche rispetto a quanto accaduto.
+Epilogo: Qualunque finale si realizzi, è bene descrivere come le fazioni e i personaggi trovano
+collocazione dopo la conclusione. Se i PG trionfano, Breland e gli altri regni li onorano: potrebbero
+essere nominati Cavalieri dell’Alba in Thrane e Eroi di Wroat in Breland, magari con terre donate (magari
+quell’headquarter a Wroat diventa un vero e proprio feudo affidato a loro da amministrare). Lady Saela,
+se viva, ringrazia i PG profondamente: la sua fiducia in loro durante la campagna sarà stata ripagata e
+lei potrebbe considerarli come famiglia ormai. Potrebbe persino offrire di farli entrare ufficialmente
+nelle Lanterne Oscure, o suggerire a uno di loro di sposare un nobile di Breland per legare ancor di più
+le alleanze (dipende dalle dinamiche di gioco). Se invece la fine è oscura, si può narrare l’ultimo diario di
+Lady Saela che registra la caduta del regno mentre cerca disperatamente i PG dispersi, o la resistenza
+che continuerà in loro nome.
+Infine, collega tutto alla Profezia Draconica: qualunque cosa sia successa, la Profezia ha preso forma.
+Se i PG hanno vinto, forse i druidi e i draghi interpreteranno la nuova iscrizione profetica come un
+monito di speranza (es: “Quattro falchi hanno spento la Notte Eterna”), immortalando i PG nel destino del
+mondo. Se hanno perso, la Profezia avrà in sé un verso di speranza per le generazioni future come
+menzionato, o un severo ammonimento su ciò che accade quando l’odio e la morte prevalgono.
+Conclusione
+La campagna “La Profezia dell’Eterna Notte” offre ai giocatori un’esperienza completa di Eberron,
+intrecciando intrighi politici, battaglie epiche, misteri arcani e forti dilemmi morali. Dal microcosmo
+delle strade di Wroat e Sharn fino al macrocosmo di regni in guerra e piani di esistenza che collidono, i
+PG avranno sempre libertà di scegliere dove andare e come agire. Le alleanze dinamiche che
+stringeranno – con Breland, Thrane, Karrnath, Droaam, casati dragonmarked o persino creature
+extraplanari – determineranno quali aiuti avranno e quali ostacoli incontreranno. Allo stesso modo, le
+inimicizie che si creeranno (se ad esempio tradiranno la fiducia di un alleato o agiranno con metodi
+spietati) influenzeranno l’andamento degli eventi.
+Il ruolo di Lady Saela è il filo conduttore: da mentore iniziale diviene collega e infine, potenzialmente,
+amica intima o martire della causa. Attraverso lei i PG sentono il peso di Breland sulle spalle ma anche il
+sostegno di una figura che crede in loro. Il suo sviluppo, come quello di altri PNG, reagisce alle scelte
+dei PG: potrà crescere in fermezza e compassione vedendo il coraggio dei PG, oppure indurirsi e
+diventare più cinica se i PG prendono decisioni brutali.
+Le sottotrame come il Sangue di Drago arricchiscono la storia collegandola al contesto di Eberron: i PG
+non stanno agendo in un vuoto, ma in un mondo vivo. Vedono con i propri occhi gli effetti della droga
+su nobili e maghi decadenti 17 , scoprono le macchinazioni dei criminali del Daask a Sharn,
+interagiscono con i Casati (come Medani per le indagini, Orien e Lyrandar per i trasporti urgenti,
+Cannith per armi e tecnologie di guerra, Jorasco per curare feriti, Tharashk per trattare coi mostri,
+Phiarlan/Thuranni per spionaggio). Ogni fazione ha un’agenda: ad esempio, Casato Cannith potrebbe
+18
+
+approfittare della guerra per testare nuovi automi da battaglia proibiti; starà ai PG decidere se impedirlo
+o usarli. I culti (Sangue di Vol, Fiamma d’Argento, Culto dei Draghi Inferiori) forniscono depth spirituale
+– è una guerra non solo di eserciti ma anche di ideali e fede.
+Inoltre, integrando gli elementi cosmici, la campagna fa percepire che Eberron è legata ai suoi piani:
+Mabar (Notte Eterna) calando sul mondo, Dolurrh rigurgitando i morti, forse Xoriat (piano della follia)
+sussurra negli incubi di Sora Teraza, e Argonnessen (terra dei draghi) osserva da lontano le drammatiche
+evoluzioni della Profezia. I draghi potrebbero comparire come enigmatici spettatori o attori dell’ultimo
+momento, sottolineando che le azioni dei “piccoli” (i PG) hanno attirato l’attenzione di potenze antiche.
+Colpi di scena disseminati (il vampirismo di Kaius, eventuali tradimenti, l’offerta di Vol ai PG, ecc.)
+mantengono alta la tensione e sovvertono certezze, evitando una trama lineare. E soprattutto, nessun
+destino è scritto: i PG possono fallire in proteggere Boranel ma riuscire comunque a vincere dopo, o
+viceversa salvare Boranel ma commettere errori altrove che costano caro. Ogni scelta sposta l’equilibrio.
+Infine, come in ogni modulo ben fatto, il DM dovrebbe adattare il materiale all’andamento effettivo del
+gioco. Questa campagna modulare presenta scenari e conseguenze, ma starà al DM improvvisare e
+modificare incontri e difficoltà secondo le azioni creative dei giocatori. Se i PG decidono un approccio
+del tutto inaspettato – ad esempio cercare di allearsi con una Figlia di Sora Kell contro Illmarrow, o
+evocare un Celestiale potente – il DM è incoraggiato a seguirne il flusso, avendo fiducia che la struttura
+generale reggerà comunque grazie agli elementi posati.
+Quando i giocatori concluderanno questa saga, avranno lasciato un segno indelebile sul Khorvaire. Nel
+bene o nel male, l’Eterna Notte sarà stata evitata oppure compiuta a causa (o grazie) a loro. E le
+Lanterne Oscure di Breland narreranno per generazioni le gesta di questo gruppo – spie, guerrieri,
+eroi – che hanno sventato (o visto avverarsi) la più terribile Profezia Draconica dei nostri tempi.
+Buona avventura in Eberron, dove la magia pervade il mondo, il pericolo si cela dietro ogni angolo… e il
+futuro non è mai scritto fino in fondo. 4
+1 2 3 4 5 6 7 8 11 12 13 14 15 16 eberron rinascita dopo l'ultima guerra.txt
+file://file-6czyngHUwYb6RxMPTu573x
+9 esplorando eberron.txt
+file://file-1KPTDWxhe6w1BTTSgntfZ5
+10 17 Dragon's blood | Eberron Wiki | Fandom
+https://eberron.fandom.com/wiki/Dragon%27s_blood
+19
+
