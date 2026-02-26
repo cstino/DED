@@ -76,22 +76,31 @@ Questo sistema permette al Master di generare NPC credibili e meccanicamente cor
 
 ---
 
+## ✅ Decisioni Funzionali
+
+| Domanda | Decisione |
+|---|---|
+| **Edizione D&D** | 5e classica |
+| **Multi-campagna** | Sì, un Master può avere più campagne attive |
+| **Tracker iniziativa** | Sì, tracker di combattimento condiviso in tempo reale |
+| **Mappe** | No — solo note testuali, niente mappe per non complicare |
+| **Visibilità schede** | Ogni giocatore vede la propria scheda + quelle degli altri PG |
+| **Accesso offline** | No — connessione internet richiesta |
+| **Design responsivo** | Mobile-first per i giocatori, desktop-first per il Master |
+
+### Hosting e Deploy — Tutto Gratuito 🆓
+- **Frontend**: [Vercel](https://vercel.com) — free tier (perfetto per Next.js, deploy automatico da GitHub)
+- **Backend/DB**: [Supabase](https://supabase.com) — free tier (500MB DB, 1GB storage, 50k MAU)
+- **Costo totale**: €0 — entrambi i servizi offrono tier gratuiti più che sufficienti per un progetto non commerciale
+
+---
+
 ## 🔲 Da Discutere / Decidere
 
 ### Tecnico
 - [ ] **Struttura completa dei file .prism** — analizzare tutti i file quando disponibili per mappare le categorie (classi, razze, sottoclassi, ecc.)
 - [ ] **Schema database** — definire le tabelle Supabase per personaggi, campagne, sessioni, NPC
 - [ ] **Struttura JSON standard per NPC** — definire il formato esatto per il generatore AI
-- [ ] **Hosting e deploy** — dove ospitare l'app (Vercel, altro?)
-
-### Funzionale
-- [ ] **Edizione D&D** — 5e classica o 5e 2024 revised? (impatta la struttura delle classi)
-- [ ] **Gestione multi-campagna** — un Master può avere più campagne attive?
-- [ ] **Tracker iniziativa** — serve un tracker di combattimento condiviso in tempo reale?
-- [ ] **Mappe** — integrazione mappe/luoghi navigabili o solo note testuali?
-- [ ] **Chi vede cosa** — definire le regole di visibilità (es. il giocatore può vedere le schede degli altri PG?)
-- [ ] **Accesso offline** — necessario o è sufficiente la connessione internet?
-- [ ] **Mobile-first o desktop-first?** — priorità di design per l'interfaccia
 
 ### Priorità / Fasi
 - [ ] **Definire l'MVP** — quali feature nella prima versione?

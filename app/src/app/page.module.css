@@ -1,0 +1,67 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+}
+
+.hero {
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.logo {
+    font-size: 4rem;
+    margin-bottom: var(--space-md);
+    filter: drop-shadow(0 0 20px rgba(0, 229, 160, 0.3));
+}
+
+.title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+    background: linear-gradient(135deg, var(--accent-teal), var(--accent-amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: var(--space-xl);
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-2xl);
+}
+
+.features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.featureCard {
+    text-align: left;
+    padding: var(--space-md);
+}
+
+.featureCard h3 {
+    font-size: 1rem;
+    margin-bottom: var(--space-xs);
+}
+
+.featureCard p {
+    font-size: 0.85rem;
+}
+
+.featureIcon {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-sm);
+}
