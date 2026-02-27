@@ -1,28 +1,91 @@
+/* ============================================
+   Login Page — Glassmorphism Card
+   ============================================ */
+
 .container {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: var(--space-lg);
+    position: relative;
+    overflow: hidden;
 }
 
+/* Ambient orbs for login too */
+.container::before,
+.container::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.container::before {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 229, 160, 0.1) 0%, transparent 70%);
+    top: -100px;
+    right: -50px;
+    animation: orbDrift 12s ease-in-out infinite;
+}
+
+.container::after {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(240, 168, 48, 0.07) 0%, transparent 70%);
+    bottom: -80px;
+    left: -50px;
+    animation: orbDrift 15s ease-in-out infinite reverse;
+}
+
+@keyframes orbDrift {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(30px, -20px);
+    }
+}
+
+/* ---------- Form Wrapper — Glass Card ---------- */
 .formWrapper {
+    position: relative;
+    z-index: 1;
     max-width: 420px;
     width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl) var(--space-lg);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .backLink {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
     font-size: 0.85rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     margin-bottom: var(--space-xl);
     transition: color var(--transition-fast);
+    text-decoration: none;
 }
 
 .backLink:hover {
     color: var(--accent-teal);
 }
 
+/* ---------- Header ---------- */
 .header {
     text-align: center;
     margin-bottom: var(--space-xl);
@@ -36,8 +99,15 @@
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
 }
 
 .title {
@@ -50,6 +120,7 @@
     background-clip: text;
 }
 
+/* ---------- Form ---------- */
 .form {
     display: flex;
     flex-direction: column;
@@ -61,26 +132,28 @@
     flex-direction: column;
 }
 
-/* Alerts */
+/* ---------- Alerts ---------- */
 .alert {
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-md);
     font-size: 0.9rem;
     margin-bottom: var(--space-md);
+    backdrop-filter: blur(8px);
 }
 
 .alertError {
     background: rgba(255, 68, 68, 0.1);
-    border: 1px solid rgba(255, 68, 68, 0.3);
+    border: 1px solid rgba(255, 68, 68, 0.25);
     color: var(--danger);
 }
 
 .alertSuccess {
     background: rgba(0, 229, 160, 0.1);
-    border: 1px solid rgba(0, 229, 160, 0.3);
+    border: 1px solid rgba(0, 229, 160, 0.25);
     color: var(--success);
 }
 
+/* ---------- Switch Mode ---------- */
 .switchText {
     text-align: center;
     font-size: 0.9rem;
@@ -96,9 +169,29 @@
     font-family: inherit;
     font-size: inherit;
     font-weight: 600;
-    transition: color var(--transition-fast);
+    transition: all var(--transition-fast);
+    text-decoration: none;
 }
 
 .switchButton:hover {
     color: var(--accent-amber);
+    text-shadow: 0 0 12px rgba(240, 168, 48, 0.4);
+}
+
+/* ---------- Divider ---------- */
+.divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
 }

@@ -1,5 +1,8 @@
-/* Dashboard Page Styles */
+/* ============================================
+   Dashboard — Dark Fantasy Premium Layout
+   ============================================ */
 
+/* ---------- Loading ---------- */
 .loadingContainer {
     min-height: 100vh;
     display: flex;
@@ -10,9 +13,9 @@
 }
 
 .spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid var(--border-card);
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.08);
     border-top-color: var(--accent-teal);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -24,7 +27,7 @@
     }
 }
 
-/* Header */
+/* ---------- Header ---------- */
 .header {
     display: flex;
     align-items: flex-start;
@@ -32,14 +35,26 @@
     margin-bottom: var(--space-xl);
 }
 
-/* Quick Actions */
+.greeting {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.greetingName {
+    background: linear-gradient(135deg, var(--accent-teal), var(--accent-amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ---------- Quick Actions ---------- */
 .quickActions {
     display: flex;
     gap: var(--space-sm);
     margin-bottom: var(--space-xl);
 }
 
-/* Campaign List */
+/* ---------- Campaign List ---------- */
 .campaignList {
     display: flex;
     flex-direction: column;
@@ -48,10 +63,26 @@
 
 .campaignCard {
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.campaignCard::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(0, 229, 160, 0.03));
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.campaignCard:hover::before {
+    opacity: 1;
 }
 
 .campaignCard:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card), 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .campaignHeader {
@@ -61,55 +92,80 @@
     margin-bottom: var(--space-sm);
 }
 
+.campaignHeader h3 {
+    font-size: 1.1rem;
+}
+
+/* ---------- Role Badges ---------- */
 .roleBadge {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 2px 10px;
+    letter-spacing: 0.12em;
+    padding: 3px 12px;
     border-radius: var(--radius-full);
 }
 
 .roleMaster {
-    background: var(--accent-amber-dim);
+    background: rgba(240, 168, 48, 0.12);
     color: var(--accent-amber);
-    border: 1px solid rgba(240, 168, 48, 0.3);
+    border: 1px solid rgba(240, 168, 48, 0.25);
+    box-shadow: 0 0 12px rgba(240, 168, 48, 0.1);
 }
 
 .rolePlayer {
-    background: var(--accent-teal-dim);
+    background: rgba(0, 229, 160, 0.12);
     color: var(--accent-teal);
-    border: 1px solid rgba(0, 229, 160, 0.3);
+    border: 1px solid rgba(0, 229, 160, 0.25);
 }
 
 .campaignFooter {
     margin-top: var(--space-md);
     padding-top: var(--space-sm);
-    border-top: 1px solid var(--border-card);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-/* Empty State */
+.inviteCode {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+}
+
+/* ---------- Empty State ---------- */
 .emptyState {
     text-align: center;
     padding: var(--space-2xl) var(--space-lg);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-xl);
 }
 
 .emptyIcon {
     font-size: 4rem;
     margin-bottom: var(--space-md);
-    opacity: 0.6;
+    opacity: 0.5;
+    filter: grayscale(0.5);
 }
 
 .emptyState h2 {
     margin-bottom: var(--space-sm);
+    color: var(--text-secondary);
 }
 
-/* Modal */
+/* ---------- Modal ---------- */
 .modalOverlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -129,13 +185,17 @@
 }
 
 .modal {
-    background: var(--bg-primary);
-    border: 1px solid var(--border-card);
-    border-radius: var(--radius-lg);
+    background: rgba(13, 20, 35, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-xl);
     padding: var(--space-xl);
     max-width: 460px;
     width: 100%;
-    box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
+    box-shadow:
+        0 16px 64px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
     animation: slideUp 0.25s ease;
 }
 
@@ -153,6 +213,7 @@
 
 .modal h2 {
     margin-bottom: var(--space-md);
+    font-size: 1.3rem;
 }
 
 .modalFields {
