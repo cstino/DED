@@ -21,13 +21,13 @@ interface Spell {
 
 const SCHOOLS = [
     "abjuration", "conjuration", "divination", "enchantment",
-    "evocation", "illusion", "necromancy", "transmutation",
+    "evocation", "illusion", "necromancy", "transmutation", "transformation",
 ];
 
 const SCHOOL_IT: Record<string, string> = {
     abjuration: "Abiurazione", conjuration: "Convocazione", divination: "Divinazione",
     enchantment: "Incantamento", evocation: "Evocazione", illusion: "Illusione",
-    necromancy: "Necromanzia", transmutation: "Trasmutazione",
+    necromancy: "Necromanzia", transmutation: "Trasmutazione", transformation: "Trasformazione",
 };
 
 const CASTER_CLASSES = ["bard", "cleric", "druid", "paladin", "ranger", "sorcerer", "warlock", "wizard"];
@@ -71,7 +71,7 @@ export default function SpellBrowser({ knownSpells, onAddSpell, onRemoveSpell, o
         return allSpells.filter((s) => {
             if (search && !s.name.toLowerCase().includes(search.toLowerCase())) return false;
             if (levelFilter !== null && s.level !== levelFilter) return false;
-            if (schoolFilter && s.school !== schoolFilter) return false;
+            if (schoolFilter && s.school.toLowerCase() !== schoolFilter.toLowerCase()) return false;
             if (classFilter && !s.casters?.[classFilter]) return false;
             if (concFilter !== null && s.is_concentration !== concFilter) return false;
             if (ritualFilter !== null && s.is_ritual !== ritualFilter) return false;

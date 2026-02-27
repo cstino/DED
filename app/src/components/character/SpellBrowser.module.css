@@ -9,7 +9,8 @@
     z-index: 100;
     display: flex;
     justify-content: center;
-    padding: var(--space-md);
+    align-items: flex-start;
+    padding: var(--space-lg) var(--space-md);
     overflow-y: auto;
 }
 
@@ -167,7 +168,8 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
+    min-height: 0;
 }
 
 .spellCard {
@@ -186,9 +188,10 @@
     display: flex;
     align-items: center;
     gap: var(--space-sm);
-    padding: 8px var(--space-sm);
+    padding: 10px var(--space-md);
     cursor: pointer;
     transition: background var(--transition-fast);
+    min-height: 44px;
 }
 
 .spellRow:hover {
@@ -217,12 +220,13 @@
 }
 
 .spellName {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     font-weight: 600;
+    color: var(--text-primary);
 }
 
 .spellMeta {
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
 }
 
@@ -255,8 +259,11 @@
 
 /* Spell Details (expanded) */
 .spellDetails {
-    padding: 0 var(--space-sm) var(--space-sm);
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    padding: var(--space-sm) var(--space-md) var(--space-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    max-height: 300px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .detailRow {
