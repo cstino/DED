@@ -1,4 +1,7 @@
+"use client";
+
 import styles from "./page.module.css";
+import D20Dice from "@/components/ui/D20Dice";
 
 export default function Home() {
   return (
@@ -12,8 +15,7 @@ export default function Home() {
         {/* Hero Section */}
         <div className={styles.hero}>
           <div className={styles.logoContainer}>
-            <div className={styles.logoGlow} />
-            <div className={styles.logo}>🎲</div>
+            <D20Dice size={120} autoRollInterval={6000} />
           </div>
 
           <h1 className={styles.title}>

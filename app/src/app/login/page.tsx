@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import D20Dice from "@/components/ui/D20Dice";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
@@ -99,7 +100,7 @@ function LoginForm() {
                 </a>
 
                 <div className={styles.header}>
-                    <div className={styles.logo}>🎲</div>
+                    <D20Dice size={80} autoRollInterval={8000} />
                     <h1 className={styles.title}>
                         {isRegister ? "Crea Account" : "Accedi"}
                     </h1>
