@@ -101,6 +101,7 @@ export default function CharacterSheetPage() {
     const [showSpellBrowser, setShowSpellBrowser] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [showSettingsMenu, setShowSettingsMenu] = useState(false);
 
     const isOwner = char?.user_id === user?.id;
 
@@ -243,10 +244,24 @@ export default function CharacterSheetPage() {
                                 </button>
                             </>
                         ) : (
-                            <>
-                                <button className={styles.deleteBtn} onClick={() => setShowDeleteConfirm(true)}>🗑️ Elimina</button>
-                                <button className="btn btn-secondary" onClick={() => setEditing(true)}>✏️ Modifica</button>
-                            </>
+                            <div className={styles.settingsDropdown}>
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => setShowSettingsMenu(!showSettingsMenu)}
+                                >
+                                    ⚙️ Opzioni
+                                </button>
+                                {showSettingsMenu && (
+                                    <div className={styles.settingsMenu}>
+                                        <button className={styles.menuItem} onClick={() => { setShowSettingsMenu(false); setEditing(true); }}>
+                                            ✏️ Modifica
+                                        </button>
+                                        <button className={`${styles.menuItem} ${styles.menuItemDanger}`} onClick={() => { setShowSettingsMenu(false); setShowDeleteConfirm(true); }}>
+                                            🗑️ Elimina Personaggio
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         )}
                     </div>
                 )}

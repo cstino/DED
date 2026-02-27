@@ -25,6 +25,7 @@ interface Character {
     hp_max: number;
     ac: number;
     user_id: string;
+    portrait_url: string | null;
 }
 
 interface Member {
@@ -174,7 +175,14 @@ export default function CampaignPage() {
                                     onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
                                 >
                                     <div className={styles.charHeader}>
-                                        <h3>{char.name}</h3>
+                                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                            {char.portrait_url ? (
+                                                <img src={char.portrait_url} alt={char.name} className={styles.cardPortrait} />
+                                            ) : (
+                                                <div className={styles.cardPortraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
+                                            )}
+                                            <h3>{char.name}</h3>
+                                        </div>
                                         <span className={styles.levelBadge}>Lv. {char.level}</span>
                                     </div>
                                     <p className={styles.charInfo}>
@@ -225,7 +233,14 @@ export default function CampaignPage() {
                                     onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
                                 >
                                     <div className={styles.charHeader}>
-                                        <h3>{char.name}</h3>
+                                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                            {char.portrait_url ? (
+                                                <img src={char.portrait_url} alt={char.name} className={styles.cardPortrait} />
+                                            ) : (
+                                                <div className={styles.cardPortraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
+                                            )}
+                                            <h3>{char.name}</h3>
+                                        </div>
                                         <span className={styles.levelBadge}>Lv. {char.level}</span>
                                     </div>
                                     <p className={styles.charInfo}>

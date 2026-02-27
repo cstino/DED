@@ -54,6 +54,52 @@
     gap: var(--space-sm);
 }
 
+.settingsDropdown {
+    position: relative;
+}
+
+.settingsMenu {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    right: 0;
+    min-width: 180px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-xs);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 100;
+}
+
+.menuItem {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.menuItem:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.menuItemDanger {
+    color: var(--danger, #ff4d4d);
+}
+
+.menuItemDanger:hover {
+    background: rgba(255, 77, 77, 0.1);
+}
+
 /* Header */
 .charHeader {
     display: flex;
