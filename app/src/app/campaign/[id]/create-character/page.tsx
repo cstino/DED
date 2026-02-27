@@ -83,8 +83,8 @@ export default function CreateCharacterPage() {
     function handlePortraitChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (!file) return;
-        if (file.size > 2 * 1024 * 1024) {
-            setError("L'immagine deve essere più piccola di 2MB");
+        if (file.size > 10 * 1024 * 1024) {
+            setError("L'immagine deve essere più piccola di 10MB");
             return;
         }
         setPortraitFile(file);
