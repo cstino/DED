@@ -1,0 +1,497 @@
+/* ============================================
+   Character Sheet — Full View / Edit
+   ============================================ */
+
+.loadingContainer {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+}
+
+.spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255, 255, 255, 0.08);
+    border-top-color: var(--accent-teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Top Bar */
+.topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+}
+
+.backBtn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0;
+    transition: color var(--transition-fast);
+}
+
+.backBtn:hover {
+    color: var(--accent-teal);
+}
+
+.topActions {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+/* ---------- Character Header ---------- */
+.charHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-xl);
+}
+
+.portraitWrap {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(0, 229, 160, 0.3);
+    box-shadow: 0 0 20px rgba(0, 229, 160, 0.1);
+}
+
+.portrait {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+}
+
+.portraitFallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 229, 160, 0.1);
+    color: var(--accent-teal);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.charInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.charName {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.nameInput {
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 4px 8px;
+}
+
+.charMeta {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-sm);
+}
+
+.charTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.levelTag,
+.alignTag,
+.bgTag {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 10px;
+    border-radius: var(--radius-full);
+}
+
+.levelTag {
+    background: rgba(0, 229, 160, 0.1);
+    color: var(--accent-teal);
+    border: 1px solid rgba(0, 229, 160, 0.2);
+}
+
+.alignTag {
+    background: rgba(240, 168, 48, 0.1);
+    color: var(--accent-amber);
+    border: 1px solid rgba(240, 168, 48, 0.2);
+}
+
+.bgTag {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-card);
+}
+
+/* ---------- Combat Bar ---------- */
+.combatBar {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+    align-items: center;
+}
+
+.hpBox {
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+}
+
+.hpHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.hpValue {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.hpEditRow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.statBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    min-width: 60px;
+}
+
+.statLabel {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+}
+
+.statValue {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.smallInput {
+    width: 48px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 4px;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.smallInput::-webkit-inner-spin-button,
+.smallInput::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.smallInput:focus {
+    outline: none;
+    border-color: var(--accent-teal);
+}
+
+/* ---------- Tabs ---------- */
+.tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: var(--space-lg);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    padding: 3px;
+}
+
+.tab {
+    flex: 1;
+    padding: 8px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.tab:hover {
+    color: var(--text-primary);
+}
+
+.tabActive {
+    background: rgba(0, 229, 160, 0.1);
+    color: var(--accent-teal);
+}
+
+.tabContent {
+    min-height: 200px;
+}
+
+/* ---------- Abilities Grid ---------- */
+.abilitiesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+}
+
+.abilityCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-md) var(--space-sm);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    gap: 4px;
+}
+
+.abilityLabel {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent-teal);
+}
+
+.abilityScore {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.abilityInput {
+    width: 48px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1.3rem;
+    font-weight: 700;
+    padding: 4px;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.abilityInput::-webkit-inner-spin-button,
+.abilityInput::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.abilityInput:focus {
+    outline: none;
+    border-color: var(--accent-teal);
+}
+
+.abilityMod {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.abilityName {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* ---------- Skills ---------- */
+.skillsList {
+    display: flex;
+    flex-direction: column;
+}
+
+.skillRow {
+    display: flex;
+    align-items: center;
+    padding: 8px var(--space-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.skillRow:last-child {
+    border-bottom: none;
+}
+
+.skillName {
+    flex: 1;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.skillAbility {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    width: 40px;
+    text-align: center;
+}
+
+.skillMod {
+    font-size: 0.9rem;
+    font-weight: 700;
+    width: 35px;
+    text-align: right;
+    color: var(--text-primary);
+}
+
+/* ---------- Equipment / Features ---------- */
+.combatSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.listSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.listTitle {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.listTextarea {
+    min-height: 80px;
+    resize: vertical;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.itemList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item {
+    padding: 6px 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    padding-left: var(--space-sm);
+    position: relative;
+}
+
+.item::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent-teal);
+}
+
+.itemEmpty {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    padding: var(--space-sm) 0;
+}
+
+/* ---------- Notes ---------- */
+.notesSection {
+    min-height: 200px;
+}
+
+.notesTextarea {
+    min-height: 300px;
+    resize: vertical;
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.notesContent {
+    padding: var(--space-sm) 0;
+}
+
+.notesContent p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-xs);
+}
+
+.notesEmpty {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 480px) {
+    .charHeader {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .charTags {
+        justify-content: center;
+    }
+
+    .combatBar {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .hpBox {
+        grid-column: 1 / -1;
+    }
+
+    .abilitiesGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

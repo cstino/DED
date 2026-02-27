@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState, useRef, FormEvent } from "react";
+import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
@@ -72,9 +73,23 @@ export default function CreateCharacterPage() {
     });
     const [hpMax, setHpMax] = useState(10);
     const [ac, setAc] = useState(10);
+    const [portraitFile, setPortraitFile] = useState<File | null>(null);
+    const [portraitPreview, setPortraitPreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+
+    function handlePortraitChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+            setError("L'immagine deve essere più piccola di 2MB");
+            return;
+        }
+        setPortraitFile(file);
+        setPortraitPreview(URL.createObjectURL(file));
+    }
 
     // Fetch races, classes, subclasses from DB
     useEffect(() => {
@@ -132,6 +147,25 @@ export default function CreateCharacterPage() {
         setSaving(true);
         setError("");
 
+        // Upload portrait if provided
+        let portraitUrl: string | null = null;
+        if (portraitFile) {
+            const ext = portraitFile.name.split(".").pop();
+            const path = `portraits/${user.id}/${Date.now()}.${ext}`;
+            const { error: uploadError } = await supabase.storage
+                .from("character-portraits")
+                .upload(path, portraitFile);
+            if (uploadError) {
+                // Storage might not be set up, continue without portrait
+                console.warn("Portrait upload failed:", uploadError.message);
+            } else {
+                const { data: urlData } = supabase.storage
+                    .from("character-portraits")
+                    .getPublicUrl(path);
+                portraitUrl = urlData.publicUrl;
+            }
+        }
+
         const { error: insertError } = await supabase.from("characters").insert({
             user_id: user.id,
             campaign_id: campaignId,
@@ -147,6 +181,7 @@ export default function CreateCharacterPage() {
             initiative_bonus: Math.floor((abilities.dex - 10) / 2),
             background: background || null,
             alignment: alignment || null,
+            portrait_url: portraitUrl,
         });
 
         if (insertError) {
@@ -179,6 +214,45 @@ export default function CreateCharacterPage() {
                 {error && <div className={styles.error}>{error}</div>}
 
                 <form onSubmit={handleSubmit} className={styles.form}>
+                    {/* Portrait Upload */}
+                    <div className={styles.portraitSection}>
+                        <div
+                            className={styles.portraitUpload}
+                            onClick={() => fileInputRef.current?.click()}
+                        >
+                            {portraitPreview ? (
+                                <Image
+                                    src={portraitPreview}
+                                    alt="Anteprima ritratto"
+                                    width={120}
+                                    height={120}
+                                    className={styles.portraitImage}
+                                />
+                            ) : (
+                                <div className={styles.portraitPlaceholder}>
+                                    <span className={styles.portraitIcon}>🖼️</span>
+                                    <span className={styles.portraitText}>Aggiungi ritratto</span>
+                                </div>
+                            )}
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                onChange={handlePortraitChange}
+                                className={styles.portraitInput}
+                            />
+                        </div>
+                        {portraitFile && (
+                            <button
+                                type="button"
+                                className={styles.clearBtn}
+                                onClick={() => { setPortraitFile(null); setPortraitPreview(null); }}
+                            >
+                                ✕ Rimuovi immagine
+                            </button>
+                        )}
+                    </div>
+
                     {/* Name */}
                     <div className={styles.field}>
                         <label className="label" htmlFor="char-name">Nome Personaggio *</label>
