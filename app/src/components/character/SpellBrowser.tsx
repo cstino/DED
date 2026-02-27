@@ -25,9 +25,9 @@ const SCHOOLS = [
 ];
 
 const SCHOOL_IT: Record<string, string> = {
-    abjuration: "Abiurazione", conjuration: "Convocazione", divination: "Divinazione",
-    enchantment: "Incantamento", evocation: "Evocazione", illusion: "Illusione",
-    necromancy: "Necromanzia", transmutation: "Trasmutazione", transformation: "Trasformazione",
+    abjuration: "Abiurazione", conjuration: "Evocazione", divination: "Divinazione",
+    enchantment: "Ammaliamento", evocation: "Invocazione", illusion: "Illusione",
+    necromancy: "Necromanzia", transmutation: "Trasmutazione", transformation: "Trasmutazione",
 };
 
 const CASTER_CLASSES = ["bard", "cleric", "druid", "paladin", "ranger", "sorcerer", "warlock", "wizard"];
