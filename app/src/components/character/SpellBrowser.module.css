@@ -296,6 +296,27 @@
     padding: var(--space-md);
 }
 
+/* Footer */
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-card);
+    flex-shrink: 0;
+}
+
+.footerCount {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.confirmBtn {
+    padding: 8px 24px;
+    font-size: 0.85rem;
+}
+
 /* Mobile */
 @media (max-width: 480px) {
     .overlay {

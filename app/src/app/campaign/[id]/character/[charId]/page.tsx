@@ -167,6 +167,14 @@ export default function CharacterSheetPage() {
         setSaving(false);
     }
 
+    // Quick save a single field without entering edit mode
+    async function quickSave(field: string, value: unknown) {
+        if (!char || !isOwner) return;
+        await supabase.from("characters").update({ [field]: value }).eq("id", char.id);
+        setChar((prev) => prev ? { ...prev, [field]: value } as Character : null);
+        setEditData((prev) => ({ ...prev, [field]: value }));
+    }
+
     function upd<K extends keyof Character>(key: K, value: Character[K]) {
         setEditData((p) => ({ ...p, [key]: value }));
     }
@@ -261,6 +269,11 @@ export default function CharacterSheetPage() {
                                 <span>/</span>
                                 <input type="number" className={styles.smallInput} value={editData.hp_max ?? 1} onChange={(e) => upd("hp_max", Math.max(1, parseInt(e.target.value) || 1))} />
                             </div>
+                        ) : isOwner ? (
+                            <div className={styles.hpEditRow}>
+                                <input type="number" className={styles.smallInput} value={char.hp_current} onChange={(e) => setChar((p) => p ? { ...p, hp_current: Math.max(0, parseInt(e.target.value) || 0) } as Character : null)} onBlur={(e) => quickSave("hp_current", Math.max(0, parseInt(e.target.value) || 0))} />
+                                <span>/ {char.hp_max}</span>
+                            </div>
                         ) : (
                             <span className={styles.hpValue}>{char.hp_current}/{char.hp_max}</span>
                         )}
@@ -268,11 +281,11 @@ export default function CharacterSheetPage() {
                     <div className="hp-bar-container" style={{ height: 8 }}>
                         <div className="hp-bar" style={{ width: `${hpPercent}%`, background: hpPercent > 50 ? "var(--hp-green)" : hpPercent > 25 ? "var(--hp-yellow)" : "var(--hp-red)" }} />
                     </div>
-                    {(char.hp_temp > 0 || editing) && (
+                    {(char.hp_temp > 0 || isOwner) && (
                         <div className={styles.hpTemp}>
                             <span>HP Temp:</span>
-                            {editing ? (
-                                <input type="number" className={styles.tinyInput} value={editData.hp_temp ?? 0} onChange={(e) => upd("hp_temp", Math.max(0, parseInt(e.target.value) || 0))} />
+                            {(editing || isOwner) ? (
+                                <input type="number" className={styles.tinyInput} value={editing ? (editData.hp_temp ?? 0) : char.hp_temp} onChange={(e) => { const v = Math.max(0, parseInt(e.target.value) || 0); if (editing) upd("hp_temp", v); else setChar((p) => p ? { ...p, hp_temp: v } as Character : null); }} onBlur={(e) => { if (!editing) quickSave("hp_temp", Math.max(0, parseInt(e.target.value) || 0)); }} />
                             ) : (
                                 <span className={styles.tempValue}>{char.hp_temp}</span>
                             )}
@@ -422,8 +435,10 @@ export default function CharacterSheetPage() {
                                                     type="button"
                                                     className={`${styles.deathDot} ${i < ds.successes ? styles.deathSuccess : ""}`}
                                                     onClick={() => {
-                                                        if (!editing) return;
-                                                        upd("death_saves", { ...ds, successes: i < ds.successes ? i : i + 1 });
+                                                        if (!isOwner) return;
+                                                        const newDs = { ...ds, successes: i < ds.successes ? i : i + 1 };
+                                                        if (editing) upd("death_saves", newDs);
+                                                        else quickSave("death_saves", newDs);
                                                     }}
                                                 />
                                             );
@@ -441,8 +456,10 @@ export default function CharacterSheetPage() {
                                                     type="button"
                                                     className={`${styles.deathDot} ${i < ds.failures ? styles.deathFail : ""}`}
                                                     onClick={() => {
-                                                        if (!editing) return;
-                                                        upd("death_saves", { ...ds, failures: i < ds.failures ? i : i + 1 });
+                                                        if (!isOwner) return;
+                                                        const newDs = { ...ds, failures: i < ds.failures ? i : i + 1 };
+                                                        if (editing) upd("death_saves", newDs);
+                                                        else quickSave("death_saves", newDs);
                                                     }}
                                                 />
                                             );
@@ -529,22 +546,22 @@ export default function CharacterSheetPage() {
                     <div className={styles.spellsSection}>
                         <div className={styles.spellsInfo}>
                             <p className={styles.spellHint}>
-                                Incantesimi conosciuti: <strong>{((editing ? editData.known_spells : char.known_spells) ?? []).length}</strong>
+                                Incantesimi conosciuti: <strong>{char.known_spells?.length ?? 0}</strong>
                             </p>
-                            {editing && (
+                            {isOwner && (
                                 <button className="btn btn-primary" onClick={() => setShowSpellBrowser(true)}>
                                     📖 Sfoglia Incantesimi
                                 </button>
                             )}
                         </div>
 
-                        {/* Spell Slots */}
+                        {/* Spell Slots — always clickable for owner */}
                         {Object.keys(char.spell_slots ?? {}).length > 0 && (
                             <div className={styles.spellSlots}>
                                 <h3 className={styles.sectionTitle}>Slot Incantesimi</h3>
                                 <div className={styles.slotsGrid}>
                                     {Object.entries(char.spell_slots).map(([lvl, total]) => {
-                                        const used = (editing ? editData.spell_slots_used : char.spell_slots_used)?.[lvl] ?? 0;
+                                        const used = char.spell_slots_used?.[lvl] ?? 0;
                                         const remaining = (total as number) - used;
                                         return (
                                             <div key={lvl} className={styles.slotItem}>
@@ -556,10 +573,10 @@ export default function CharacterSheetPage() {
                                                             type="button"
                                                             className={`${styles.slotDot} ${i < remaining ? styles.slotAvailable : styles.slotUsed}`}
                                                             onClick={() => {
-                                                                if (!editing) return;
-                                                                const slotsUsed = { ...(editData.spell_slots_used ?? {}) };
+                                                                if (!isOwner) return;
+                                                                const slotsUsed = { ...char.spell_slots_used };
                                                                 slotsUsed[lvl] = i < remaining ? used + 1 : Math.max(0, used - 1);
-                                                                upd("spell_slots_used", slotsUsed);
+                                                                quickSave("spell_slots_used", slotsUsed);
                                                             }}
                                                         />
                                                     ))}
@@ -579,11 +596,11 @@ export default function CharacterSheetPage() {
                                     {char.known_spells.map((spell, i) => (
                                         <div key={i} className={styles.spellItem}>
                                             <span>{spell}</span>
-                                            {editing && (
+                                            {isOwner && (
                                                 <button
                                                     type="button"
                                                     className={styles.removeSpellBtn}
-                                                    onClick={() => upd("known_spells", char.known_spells.filter((_, j) => j !== i))}
+                                                    onClick={() => quickSave("known_spells", char.known_spells.filter((_, j) => j !== i))}
                                                 >✕</button>
                                             )}
                                         </div>
@@ -592,16 +609,15 @@ export default function CharacterSheetPage() {
                             </div>
                         )}
 
-                        {((editing ? editData.known_spells : char.known_spells)?.length ?? 0) === 0 && (
-                            <p className={styles.emptyNote}>Nessun incantesimo conosciuto. {editing ? 'Clicca "Sfoglia Incantesimi" per aggiungerne.' : 'Attiva la modifica per aggiungerne.'}</p>
+                        {(char.known_spells?.length ?? 0) === 0 && (
+                            <p className={styles.emptyNote}>Nessun incantesimo conosciuto. {isOwner ? 'Clicca "Sfoglia Incantesimi" per aggiungerne.' : ''}</p>
                         )}
 
                         {/* Spell Browser Overlay */}
                         {showSpellBrowser && (
                             <SpellBrowser
-                                knownSpells={(editData.known_spells as string[]) ?? []}
-                                onAddSpell={(name) => upd("known_spells", [...((editData.known_spells as string[]) ?? []), name])}
-                                onRemoveSpell={(name) => upd("known_spells", ((editData.known_spells as string[]) ?? []).filter((s) => s !== name))}
+                                knownSpells={char.known_spells ?? []}
+                                onConfirm={(spells) => quickSave("known_spells", spells)}
                                 onClose={() => setShowSpellBrowser(false)}
                             />
                         )}

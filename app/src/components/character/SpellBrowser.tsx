@@ -34,14 +34,14 @@ const CASTER_CLASSES = ["bard", "cleric", "druid", "paladin", "ranger", "sorcere
 
 interface Props {
     knownSpells: string[];
-    onAddSpell: (name: string) => void;
-    onRemoveSpell: (name: string) => void;
+    onConfirm: (spells: string[]) => void;
     onClose: () => void;
 }
 
-export default function SpellBrowser({ knownSpells, onAddSpell, onRemoveSpell, onClose }: Props) {
+export default function SpellBrowser({ knownSpells, onConfirm, onClose }: Props) {
     const [allSpells, setAllSpells] = useState<Spell[]>([]);
     const [loading, setLoading] = useState(true);
+    const [selected, setSelected] = useState<string[]>(knownSpells);
 
     // Filters
     const [search, setSearch] = useState("");
@@ -84,6 +84,17 @@ export default function SpellBrowser({ knownSpells, onAddSpell, onRemoveSpell, o
     function clearFilters() {
         setSearch(""); setLevelFilter(null); setSchoolFilter(""); setClassFilter("");
         setConcFilter(null); setRitualFilter(null);
+    }
+
+    function handleConfirm() {
+        onConfirm(selected);
+        onClose();
+    }
+
+    function toggleSpell(name: string) {
+        setSelected((prev) =>
+            prev.includes(name) ? prev.filter((s) => s !== name) : [...prev, name]
+        );
     }
 
     return (
@@ -168,7 +179,7 @@ export default function SpellBrowser({ knownSpells, onAddSpell, onRemoveSpell, o
                 {/* Spell List */}
                 <div className={styles.spellList}>
                     {filtered.slice(0, 100).map((spell) => {
-                        const isKnown = knownSpells.includes(spell.name);
+                        const isKnown = selected.includes(spell.name);
                         const isExpanded = expandedId === spell.id;
                         return (
                             <div key={spell.id} className={`${styles.spellCard} ${isKnown ? styles.spellKnown : ""}`}>
@@ -188,8 +199,7 @@ export default function SpellBrowser({ knownSpells, onAddSpell, onRemoveSpell, o
                                         className={`${styles.addBtn} ${isKnown ? styles.addBtnKnown : ""}`}
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            if (isKnown) onRemoveSpell(spell.name);
-                                            else onAddSpell(spell.name);
+                                            toggleSpell(spell.name);
                                         }}
                                     >
                                         {isKnown ? "✓" : "+"}
@@ -225,6 +235,16 @@ export default function SpellBrowser({ knownSpells, onAddSpell, onRemoveSpell, o
                             Mostrati 100 di {filtered.length} risultati. Usa i filtri per restringere la ricerca.
                         </p>
                     )}
+                </div>
+
+                {/* Footer */}
+                <div className={styles.footer}>
+                    <span className={styles.footerCount}>
+                        {selected.length} incantesimi selezionati
+                    </span>
+                    <button className={`btn btn-primary ${styles.confirmBtn}`} onClick={handleConfirm}>
+                        ✓ Conferma
+                    </button>
                 </div>
             </div>
         </div>
