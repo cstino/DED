@@ -840,3 +840,74 @@
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
+/* Delete Modal & Actions */
+.deleteBtn {
+    background: none;
+    border: none;
+    color: var(--danger, #ff4d4d);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    transition: background var(--transition-fast);
+}
+
+.deleteBtn:hover {
+    background: rgba(255, 77, 77, 0.1);
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--space-md);
+}
+
+.modalContent {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.modalContent h3 {
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+    font-size: 1.3rem;
+}
+
+.modalContent p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: var(--space-xl);
+}
+
+.modalContent strong {
+    color: var(--accent-teal);
+}
+
+.modalActions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+}
+
+.modalActions button {
+    flex: 1;
+}

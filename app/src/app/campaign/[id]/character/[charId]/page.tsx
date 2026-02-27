@@ -99,6 +99,8 @@ export default function CharacterSheetPage() {
     const [saving, setSaving] = useState(false);
     const [activeTab, setActiveTab] = useState<"stats" | "combat" | "equipment" | "spells" | "notes">("stats");
     const [showSpellBrowser, setShowSpellBrowser] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     const isOwner = char?.user_id === user?.id;
 
@@ -175,6 +177,19 @@ export default function CharacterSheetPage() {
         setEditData((prev) => ({ ...prev, [field]: value }));
     }
 
+    async function deleteCharacter() {
+        if (!char || !isOwner) return;
+        setDeleting(true);
+        const { error } = await supabase.from("characters").delete().eq("id", char.id);
+        if (!error) {
+            router.push(`/campaign/${campaignId}`);
+        } else {
+            console.error("Error deleting character", error);
+            setDeleting(false);
+            setShowDeleteConfirm(false);
+        }
+    }
+
     function upd<K extends keyof Character>(key: K, value: Character[K]) {
         setEditData((p) => ({ ...p, [key]: value }));
     }
@@ -228,7 +243,10 @@ export default function CharacterSheetPage() {
                                 </button>
                             </>
                         ) : (
-                            <button className="btn btn-secondary" onClick={() => setEditing(true)}>✏️ Modifica</button>
+                            <>
+                                <button className={styles.deleteBtn} onClick={() => setShowDeleteConfirm(true)}>🗑️ Elimina</button>
+                                <button className="btn btn-secondary" onClick={() => setEditing(true)}>✏️ Modifica</button>
+                            </>
                         )}
                     </div>
                 )}
@@ -639,6 +657,24 @@ export default function CharacterSheetPage() {
                     </div>
                 )}
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <h3>Elimina Personaggio</h3>
+                        <p>Sei sicuro di voler eliminare <strong>{char.name}</strong>? Questa azione è irreversibile.</p>
+                        <div className={styles.modalActions}>
+                            <button className="btn btn-secondary" onClick={() => setShowDeleteConfirm(false)} disabled={deleting}>
+                                Annulla
+                            </button>
+                            <button className="btn btn-danger" onClick={deleteCharacter} disabled={deleting}>
+                                {deleting ? "Eliminazione..." : "Si, Elimina Definitivamente"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
