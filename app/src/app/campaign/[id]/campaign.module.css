@@ -1,0 +1,281 @@
+/* ============================================
+   Campaign Detail Page
+   ============================================ */
+
+.loadingContainer {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+}
+
+.spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255, 255, 255, 0.08);
+    border-top-color: var(--accent-teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Header */
+.header {
+    margin-bottom: var(--space-xl);
+}
+
+.backBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: var(--space-md);
+    transition: color var(--transition-fast);
+}
+
+.backBtn:hover {
+    color: var(--accent-teal);
+}
+
+.headerInfo {
+    margin-bottom: var(--space-md);
+}
+
+.headerActions {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.inviteBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.inviteBtn:hover {
+    border-color: var(--accent-teal);
+    color: var(--accent-teal);
+}
+
+.inviteCopied {
+    border-color: var(--success);
+    color: var(--success);
+    background: rgba(0, 229, 160, 0.08);
+}
+
+/* Sections */
+.section {
+    margin-bottom: var(--space-2xl);
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-md);
+}
+
+.sectionHeader h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Character Cards */
+.characterGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+.characterCard {
+    cursor: pointer;
+    position: relative;
+}
+
+.characterCard:hover {
+    transform: translateY(-2px);
+}
+
+.charHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-xs);
+}
+
+.charHeader h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.levelBadge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 2px 10px;
+    border-radius: var(--radius-full);
+    background: rgba(0, 229, 160, 0.1);
+    color: var(--accent-teal);
+    border: 1px solid rgba(0, 229, 160, 0.2);
+}
+
+.charInfo {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+}
+
+.charStats {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.hpSection {
+    flex: 1;
+}
+
+.hpLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    display: block;
+}
+
+.acBadge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    justify-content: center;
+}
+
+.acLabel {
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+}
+
+.acValue {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.charOwner {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--space-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Empty State */
+.emptyCard {
+    text-align: center;
+    padding: var(--space-xl);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    color: var(--text-secondary);
+}
+
+/* Members */
+.memberList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.memberItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+}
+
+.memberAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background: rgba(0, 229, 160, 0.12);
+    color: var(--accent-teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.memberName {
+    flex: 1;
+    font-weight: 500;
+}
+
+.memberRole {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 2px 10px;
+    border-radius: var(--radius-full);
+}
+
+.roleMaster {
+    background: rgba(240, 168, 48, 0.12);
+    color: var(--accent-amber);
+    border: 1px solid rgba(240, 168, 48, 0.2);
+}
+
+.rolePlayer {
+    background: rgba(0, 229, 160, 0.08);
+    color: var(--accent-teal);
+    border: 1px solid rgba(0, 229, 160, 0.15);
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    .characterGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .characterGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
