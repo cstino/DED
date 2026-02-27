@@ -327,6 +327,76 @@
     font-size: 1.05rem;
 }
 
+/* Selected info row */
+.selectedInfo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-xs);
+}
+
+.autoTag {
+    font-size: 0.75rem;
+    padding: 2px 10px;
+    border-radius: var(--radius-full);
+    background: rgba(0, 229, 160, 0.08);
+    color: var(--accent-teal);
+    border: 1px solid rgba(0, 229, 160, 0.15);
+    font-weight: 500;
+}
+
+/* Skill Proficiencies */
+.skillsSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.skillHint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.skillsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.skillCheck {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 6px var(--space-sm);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.skillCheck:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.skillCheck input[type="checkbox"] {
+    accent-color: var(--accent-teal);
+    width: 16px;
+    height: 16px;
+}
+
+.skillCheckLabel {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.skillCheckAbility {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
     .abilitiesGrid {

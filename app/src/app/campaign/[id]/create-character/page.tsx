@@ -9,11 +9,14 @@ import styles from "./create.module.css";
 
 interface RaceOption {
     name: string;
+    movement: { speed?: number } | null;
+    ability_bonuses: Record<string, number> | null;
 }
 
 interface ClassOption {
     name: string;
     hit_dice: number | null;
+    saving_throws: Record<string, boolean> | null;
 }
 
 interface SubclassOption {
@@ -31,15 +34,30 @@ const ABILITIES = [
 ] as const;
 
 const ALIGNMENTS = [
-    "Legale Buono",
-    "Neutrale Buono",
-    "Caotico Buono",
-    "Legale Neutrale",
-    "Neutrale Puro",
-    "Caotico Neutrale",
-    "Legale Malvagio",
-    "Neutrale Malvagio",
-    "Caotico Malvagio",
+    "Legale Buono", "Neutrale Buono", "Caotico Buono",
+    "Legale Neutrale", "Neutrale Puro", "Caotico Neutrale",
+    "Legale Malvagio", "Neutrale Malvagio", "Caotico Malvagio",
+];
+
+const ALL_SKILLS = [
+    { name: "acrobatics", ability: "dex", label: "Acrobazia" },
+    { name: "animal_handling", ability: "wis", label: "Addestrare Animali" },
+    { name: "arcana", ability: "int", label: "Arcano" },
+    { name: "athletics", ability: "str", label: "Atletica" },
+    { name: "deception", ability: "cha", label: "Inganno" },
+    { name: "history", ability: "int", label: "Storia" },
+    { name: "insight", ability: "wis", label: "Intuizione" },
+    { name: "intimidation", ability: "cha", label: "Intimidire" },
+    { name: "investigation", ability: "int", label: "Investigare" },
+    { name: "medicine", ability: "wis", label: "Medicina" },
+    { name: "nature", ability: "int", label: "Natura" },
+    { name: "perception", ability: "wis", label: "Percezione" },
+    { name: "performance", ability: "cha", label: "Intrattenere" },
+    { name: "persuasion", ability: "cha", label: "Persuasione" },
+    { name: "religion", ability: "int", label: "Religione" },
+    { name: "sleight_of_hand", ability: "dex", label: "Rapidità di Mano" },
+    { name: "stealth", ability: "dex", label: "Furtività" },
+    { name: "survival", ability: "wis", label: "Sopravvivenza" },
 ];
 
 function getModifier(score: number): string {
@@ -73,12 +91,22 @@ export default function CreateCharacterPage() {
     });
     const [hpMax, setHpMax] = useState(10);
     const [ac, setAc] = useState(10);
+    const [speed, setSpeed] = useState(30);
+    const [skillProfs, setSkillProfs] = useState<string[]>([]);
     const [portraitFile, setPortraitFile] = useState<File | null>(null);
     const [portraitPreview, setPortraitPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+
+    // Derived: auto saving throws from selected class
+    const selectedClassData = classes.find((c) => c.name === selectedClass);
+    const autoSaveProfs: string[] = selectedClassData?.saving_throws
+        ? Object.entries(selectedClassData.saving_throws)
+            .filter(([, v]) => v)
+            .map(([k]) => k)
+        : [];
 
     function handlePortraitChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
@@ -95,8 +123,8 @@ export default function CreateCharacterPage() {
     useEffect(() => {
         async function loadOptions() {
             const [racesRes, classesRes, subclassesRes] = await Promise.all([
-                supabase.from("races").select("name").order("name"),
-                supabase.from("classes").select("name, hit_dice").order("name"),
+                supabase.from("races").select("name, movement, ability_bonuses").order("name"),
+                supabase.from("classes").select("name, hit_dice, saving_throws").order("name"),
                 supabase.from("subclasses").select("name, class_name").order("name"),
             ]);
             if (racesRes.data) setRaces(racesRes.data);
@@ -110,6 +138,14 @@ export default function CreateCharacterPage() {
         if (!authLoading && !user) router.push("/login");
     }, [authLoading, user, router]);
 
+    // Auto-set speed from race
+    useEffect(() => {
+        const raceData = races.find((r) => r.name === race);
+        if (raceData?.movement?.speed) {
+            setSpeed(raceData.movement.speed);
+        }
+    }, [race, races]);
+
     // Filter subclasses when class changes
     const filteredSubclasses = subclasses.filter(
         (sc) => sc.class_name.toLowerCase() === selectedClass.toLowerCase()
@@ -117,19 +153,26 @@ export default function CreateCharacterPage() {
 
     // Calculate HP based on class hit dice + CON modifier
     useEffect(() => {
-        const cls = classes.find((c) => c.name === selectedClass);
-        if (cls?.hit_dice) {
+        if (selectedClassData?.hit_dice) {
             const conMod = Math.floor((abilities.con - 10) / 2);
-            const baseHp = cls.hit_dice + conMod;
+            const baseHp = selectedClassData.hit_dice + conMod;
             setHpMax(Math.max(1, baseHp * level));
         }
-    }, [selectedClass, abilities.con, level, classes]);
+    }, [selectedClass, abilities.con, level, selectedClassData]);
 
     function setAbility(key: string, value: number) {
         setAbilities((prev) => ({
             ...prev,
             [key]: Math.max(1, Math.min(30, value)),
         }));
+    }
+
+    function toggleSkillProf(skillName: string) {
+        setSkillProfs((prev) =>
+            prev.includes(skillName)
+                ? prev.filter((s) => s !== skillName)
+                : [...prev, skillName]
+        );
     }
 
     // Filter races and classes by search
@@ -156,7 +199,6 @@ export default function CreateCharacterPage() {
                 .from("character-portraits")
                 .upload(path, portraitFile);
             if (uploadError) {
-                // Storage might not be set up, continue without portrait
                 console.warn("Portrait upload failed:", uploadError.message);
             } else {
                 const { data: urlData } = supabase.storage
@@ -165,6 +207,8 @@ export default function CreateCharacterPage() {
                 portraitUrl = urlData.publicUrl;
             }
         }
+
+        const hitDice = selectedClassData?.hit_dice || 8;
 
         const { error: insertError } = await supabase.from("characters").insert({
             user_id: user.id,
@@ -177,11 +221,21 @@ export default function CreateCharacterPage() {
             ability_scores: abilities,
             hp_current: hpMax,
             hp_max: hpMax,
+            hp_temp: 0,
             ac,
+            speed,
             initiative_bonus: Math.floor((abilities.dex - 10) / 2),
+            hit_dice_total: level,
+            hit_dice_current: level,
+            saving_throw_prof: autoSaveProfs,
+            skill_proficiencies: skillProfs,
             background: background || null,
             alignment: alignment || null,
             portrait_url: portraitUrl,
+            death_saves: { successes: 0, failures: 0 },
+            money: { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 },
+            personality: { traits: "", ideals: "", bonds: "", flaws: "" },
+            spell_slots: buildSpellSlots(hitDice, level),
         });
 
         if (insertError) {
@@ -292,7 +346,10 @@ export default function CreateCharacterPage() {
                                             setRaceSearch(r.name);
                                         }}
                                     >
-                                        {r.name}
+                                        <span>{r.name}</span>
+                                        {r.movement?.speed && (
+                                            <span className={styles.hitDice}>{r.movement.speed} ft</span>
+                                        )}
                                     </button>
                                 ))}
                                 {filteredRaces.length === 0 && (
@@ -301,13 +358,18 @@ export default function CreateCharacterPage() {
                             </div>
                         )}
                         {race && (
-                            <button
-                                type="button"
-                                className={styles.clearBtn}
-                                onClick={() => { setRace(""); setRaceSearch(""); }}
-                            >
-                                ✕ Cambia razza
-                            </button>
+                            <div className={styles.selectedInfo}>
+                                <button
+                                    type="button"
+                                    className={styles.clearBtn}
+                                    onClick={() => { setRace(""); setRaceSearch(""); setSpeed(30); }}
+                                >
+                                    ✕ Cambia razza
+                                </button>
+                                {speed !== 30 && (
+                                    <span className={styles.autoTag}>⚡ Velocità: {speed} ft (auto)</span>
+                                )}
+                            </div>
                         )}
                     </div>
 
@@ -337,7 +399,7 @@ export default function CreateCharacterPage() {
                                             setSubclass("");
                                         }}
                                     >
-                                        {c.name}
+                                        <span>{c.name}</span>
                                         {c.hit_dice && <span className={styles.hitDice}>d{c.hit_dice}</span>}
                                     </button>
                                 ))}
@@ -347,13 +409,20 @@ export default function CreateCharacterPage() {
                             </div>
                         )}
                         {selectedClass && (
-                            <button
-                                type="button"
-                                className={styles.clearBtn}
-                                onClick={() => { setSelectedClass(""); setClassSearch(""); setSubclass(""); }}
-                            >
-                                ✕ Cambia classe
-                            </button>
+                            <div className={styles.selectedInfo}>
+                                <button
+                                    type="button"
+                                    className={styles.clearBtn}
+                                    onClick={() => { setSelectedClass(""); setClassSearch(""); setSubclass(""); }}
+                                >
+                                    ✕ Cambia classe
+                                </button>
+                                {autoSaveProfs.length > 0 && (
+                                    <span className={styles.autoTag}>
+                                        🛡️ Tiri Salvezza: {autoSaveProfs.map((s) => s.toUpperCase()).join(", ")} (auto)
+                                    </span>
+                                )}
+                            </div>
                         )}
                     </div>
 
@@ -454,7 +523,28 @@ export default function CreateCharacterPage() {
                         </div>
                     </div>
 
-                    {/* HP + AC Row */}
+                    {/* Skill Proficiencies */}
+                    <div className={styles.skillsSection}>
+                        <label className="label">Competenze nelle Abilità</label>
+                        <p className={styles.skillHint}>Seleziona le abilità in cui il personaggio è competente</p>
+                        <div className={styles.skillsGrid}>
+                            {ALL_SKILLS.map((skill) => (
+                                <label key={skill.name} className={styles.skillCheck}>
+                                    <input
+                                        type="checkbox"
+                                        checked={skillProfs.includes(skill.name)}
+                                        onChange={() => toggleSkillProf(skill.name)}
+                                    />
+                                    <span className={styles.skillCheckLabel}>
+                                        {skill.label}
+                                        <span className={styles.skillCheckAbility}>({skill.ability.toUpperCase()})</span>
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* HP + AC + Speed Row */}
                     <div className={styles.row}>
                         <div className={styles.field} style={{ flex: 1 }}>
                             <label className="label">HP Massimi</label>
@@ -467,13 +557,23 @@ export default function CreateCharacterPage() {
                             />
                         </div>
                         <div className={styles.field} style={{ flex: 1 }}>
-                            <label className="label">Classe Armatura (AC)</label>
+                            <label className="label">AC</label>
                             <input
                                 type="number"
                                 className="input"
                                 min={1}
                                 value={ac}
                                 onChange={(e) => setAc(Math.max(1, parseInt(e.target.value) || 10))}
+                            />
+                        </div>
+                        <div className={styles.field} style={{ flex: 1 }}>
+                            <label className="label">Velocità (ft)</label>
+                            <input
+                                type="number"
+                                className="input"
+                                min={0}
+                                value={speed}
+                                onChange={(e) => setSpeed(Math.max(0, parseInt(e.target.value) || 30))}
                             />
                         </div>
                     </div>
@@ -490,4 +590,22 @@ export default function CreateCharacterPage() {
             </div>
         </div>
     );
+}
+
+// Build initial spell slots based on class (basic heuristic)
+function buildSpellSlots(hitDice: number, level: number): Record<string, number> {
+    // Full casters (d6/d8 hit dice): Wizard, Sorcerer, Bard, Cleric, Druid
+    // Half casters (d10): Ranger, Paladin
+    // No casting: Barbarian (d12), Fighter (d10), Monk (d8 but no casting), Rogue (d8 but no casting)
+    // This is a simple heuristic; exact slots come from the spell_table in the class data
+    const slots: Record<string, number> = {};
+    if (hitDice <= 8) {
+        // Potential full caster
+        if (level >= 1) slots["1"] = level >= 1 ? Math.min(4, level + 1) : 0;
+        if (level >= 3) slots["2"] = level >= 3 ? Math.min(3, Math.floor((level - 1) / 2)) : 0;
+        if (level >= 5) slots["3"] = level >= 5 ? Math.min(3, Math.floor((level - 3) / 2)) : 0;
+        if (level >= 7) slots["4"] = level >= 7 ? Math.min(3, Math.ceil((level - 5) / 2)) : 0;
+        if (level >= 9) slots["5"] = level >= 9 ? Math.min(3, Math.ceil((level - 7) / 2)) : 0;
+    }
+    return slots;
 }

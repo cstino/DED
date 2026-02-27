@@ -1,0 +1,305 @@
+/* ============================================
+   Spell Browser — Overlay Component
+   ============================================ */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: var(--space-md);
+    overflow-y: auto;
+}
+
+.browser {
+    width: 100%;
+    max-width: 640px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.closeBtn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.searchInput {
+    font-size: 0.9rem;
+}
+
+/* Filters */
+.filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.levelBtns {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+}
+
+.levelBtn {
+    padding: 4px 8px;
+    min-width: 30px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.levelBtn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+.levelActive {
+    background: rgba(0, 229, 160, 0.15);
+    color: var(--accent-teal);
+    border-color: rgba(0, 229, 160, 0.3);
+}
+
+.filterRow {
+    display: flex;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+}
+
+.filterSelect {
+    flex: 1;
+    min-width: 120px;
+    font-size: 0.8rem;
+    padding: 6px 8px;
+}
+
+.toggleBtn {
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.toggleBtn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.toggleActive {
+    background: rgba(0, 229, 160, 0.1);
+    color: var(--accent-teal);
+    border-color: rgba(0, 229, 160, 0.3);
+}
+
+.clearFilters {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+    transition: color var(--transition-fast);
+}
+
+.clearFilters:hover {
+    color: var(--accent-teal);
+}
+
+.resultsInfo {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Spell List */
+.spellList {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.spellCard {
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: border-color var(--transition-fast);
+}
+
+.spellKnown {
+    border-color: rgba(0, 229, 160, 0.25);
+    background: rgba(0, 229, 160, 0.03);
+}
+
+.spellRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 8px var(--space-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.spellRow:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.spellLevel {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba(0, 229, 160, 0.1);
+    color: var(--accent-teal);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+.spellInfo {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.spellName {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.spellMeta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.addBtn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 229, 160, 0.08);
+    border: 1px solid rgba(0, 229, 160, 0.2);
+    border-radius: 50%;
+    color: var(--accent-teal);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+}
+
+.addBtn:hover {
+    background: rgba(0, 229, 160, 0.15);
+}
+
+.addBtnKnown {
+    background: var(--accent-teal);
+    color: var(--bg-primary);
+    border-color: var(--accent-teal);
+}
+
+/* Spell Details (expanded) */
+.spellDetails {
+    padding: 0 var(--space-sm) var(--space-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.detailRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.detailRow span:first-child {
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.spellDesc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-top: var(--space-sm);
+    white-space: pre-wrap;
+}
+
+.moreNote {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: var(--space-md);
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .overlay {
+        padding: 0;
+    }
+
+    .browser {
+        border-radius: 0;
+        max-height: 100vh;
+    }
+
+    .filterRow {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,236 @@
+/* ============================================
+   Equipment Manager Component
+   ============================================ */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.empty {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    padding: var(--space-md) 0;
+}
+
+/* Item Card */
+.itemCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    transition: opacity var(--transition-fast);
+}
+
+.itemUnequipped {
+    opacity: 0.45;
+}
+
+.itemHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.itemIcon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.itemInfo {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.itemName {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.itemDesc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.itemActions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.equipBtn,
+.editBtn,
+.deleteBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+}
+
+.equipBtn:hover,
+.editBtn:hover,
+.deleteBtn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Effects badges */
+.effectsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding-left: 28px;
+}
+
+.effectBadge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: var(--radius-full);
+}
+
+.effectPositive {
+    background: rgba(0, 229, 160, 0.1);
+    color: var(--accent-teal);
+    border: 1px solid rgba(0, 229, 160, 0.2);
+}
+
+.effectNegative {
+    background: rgba(255, 68, 68, 0.1);
+    color: var(--danger);
+    border: 1px solid rgba(255, 68, 68, 0.2);
+}
+
+/* Add / Edit Form */
+.addForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+}
+
+.addForm h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.formRow {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+/* Effects editor */
+.effectsEditor {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.effectsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.effectsTitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.addEffectBtn {
+    background: none;
+    border: none;
+    color: var(--accent-teal);
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+}
+
+.addEffectBtn:hover {
+    background: rgba(0, 229, 160, 0.08);
+}
+
+.effectRow {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.effectRow .input {
+    font-size: 0.8rem;
+    padding: 6px 8px;
+}
+
+.removeEffectBtn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 4px 6px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    transition: color var(--transition-fast);
+}
+
+.removeEffectBtn:hover {
+    color: var(--danger);
+}
+
+.formActions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+}
+
+/* Add button */
+.addItemBtn {
+    width: 100%;
+    padding: var(--space-sm);
+    background: none;
+    border: 1px dashed rgba(0, 229, 160, 0.25);
+    border-radius: var(--radius-md);
+    color: var(--accent-teal);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.addItemBtn:hover {
+    background: rgba(0, 229, 160, 0.05);
+    border-color: var(--accent-teal);
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .formRow {
+        flex-direction: column;
+    }
+
+    .effectRow {
+        flex-wrap: wrap;
+    }
+}
