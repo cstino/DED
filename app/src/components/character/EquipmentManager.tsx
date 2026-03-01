@@ -79,9 +79,10 @@ interface Props {
     equipment: EquipmentItem[];
     onChange: (equipment: EquipmentItem[]) => void;
     editing: boolean;
+    isOwner?: boolean;
 }
 
-export default function EquipmentManager({ equipment, onChange, editing }: Props) {
+export default function EquipmentManager({ equipment, onChange, editing, isOwner = false }: Props) {
     const [showAddForm, setShowAddForm] = useState(false);
     const [editingIdx, setEditingIdx] = useState<number | null>(null);
 
@@ -162,7 +163,7 @@ export default function EquipmentManager({ equipment, onChange, editing }: Props
         <div className={styles.container}>
             {/* Equipment List */}
             {equipment.length === 0 && !showAddForm && (
-                <p className={styles.empty}>Nessun equipaggiamento. {editing ? "Aggiungi il primo oggetto!" : ""}</p>
+                <p className={styles.empty}>Nessun equipaggiamento. {(editing || isOwner) ? "Aggiungi il primo oggetto!" : ""}</p>
             )}
 
             {equipment.map((item, idx) => (
@@ -178,7 +179,7 @@ export default function EquipmentManager({ equipment, onChange, editing }: Props
                                 <span className={styles.itemDesc}>{item.description}</span>
                             )}
                         </div>
-                        {editing && (
+                        {(editing || isOwner) && (
                             <div className={styles.itemActions}>
                                 <button
                                     type="button"
@@ -188,16 +189,20 @@ export default function EquipmentManager({ equipment, onChange, editing }: Props
                                 >
                                     {item.equipped ? "✅" : "⬜"}
                                 </button>
-                                <button
-                                    type="button"
-                                    className={styles.editBtn}
-                                    onClick={() => startEdit(idx)}
-                                >✏️</button>
-                                <button
-                                    type="button"
-                                    className={styles.deleteBtn}
-                                    onClick={() => removeItem(idx)}
-                                >🗑️</button>
+                                {editing && (
+                                    <>
+                                        <button
+                                            type="button"
+                                            className={styles.editBtn}
+                                            onClick={() => startEdit(idx)}
+                                        >✏️</button>
+                                        <button
+                                            type="button"
+                                            className={styles.deleteBtn}
+                                            onClick={() => removeItem(idx)}
+                                        >🗑️</button>
+                                    </>
+                                )}
                             </div>
                         )}
                     </div>
@@ -220,7 +225,7 @@ export default function EquipmentManager({ equipment, onChange, editing }: Props
             ))}
 
             {/* Add / Edit Form */}
-            {editing && (
+            {(editing || isOwner) && (
                 <>
                     {showAddForm ? (
                         <div className={styles.addForm}>

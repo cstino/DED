@@ -266,6 +266,93 @@
     font-weight: 700;
 }
 
+/* Portrait edit mode */
+.portraitEditLabel {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+}
+
+.portraitEditOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    font-size: 1.5rem;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    border-radius: 50%;
+}
+
+.portraitEditLabel:hover .portraitEditOverlay,
+.portraitEditLabel:active .portraitEditOverlay {
+    opacity: 1;
+}
+
+.portraitFileInput {
+    display: none;
+}
+
+/* Fullscreen portrait */
+.portraitFullOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.portraitFullClose {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition-fast);
+    z-index: 1;
+}
+
+.portraitFullClose:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.portraitFullImage {
+    max-width: 90vw !important;
+    max-height: 85vh !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+    border-radius: var(--radius-lg);
+}
+
 .charInfo {
     flex: 1;
     min-width: 0;
@@ -496,6 +583,76 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Languages Section */
+.languagesVerticalList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.languageRowEdit {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.languageInput {
+    flex: 1;
+    font-size: 0.95rem;
+    padding: 10px 12px;
+}
+
+.languageRowView {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.languageRowView:last-child {
+    border-bottom: none;
+}
+
+.languageDot {
+    color: var(--accent-teal);
+    font-size: 1.2rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    opacity: 0.8;
+}
+
+.languageText {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.removeLangSqBtn {
+    background: rgba(255, 59, 48, 0.1);
+    border: 1px solid rgba(255, 59, 48, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--danger);
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.removeLangSqBtn:hover {
+    background: rgba(255, 59, 48, 0.2);
+}
+
+/* Add margin top to separate from previous sections */
+.statsGroup {
+    margin-top: var(--space-xl);
+}
+
 .sectionTitle:first-child {
     margin-top: 0;
 }
@@ -673,6 +830,215 @@
     gap: var(--space-sm);
 }
 
+/* Class Abilities */
+.abilitiesList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.abilityEditCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+}
+
+.abilityEditHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.abilityNameInput {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 8px 12px;
+}
+
+.removeAbilityBtn {
+    background: rgba(255, 59, 48, 0.1);
+    border: 1px solid rgba(255, 59, 48, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--danger);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.removeAbilityBtn:hover {
+    background: rgba(255, 59, 48, 0.2);
+}
+
+.abilityDescInput {
+    font-size: 0.85rem;
+    resize: vertical;
+    min-height: 80px;
+    padding: 10px 12px;
+    line-height: 1.4;
+}
+
+.abilityUsesRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    align-items: center;
+}
+
+.abilityUsesLabel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.abilityUsesLabel input,
+.abilityUsesLabel select {
+    width: 100%;
+    padding: 8px 10px;
+}
+
+.addAbilityBtn {
+    width: 100%;
+    padding: var(--space-sm);
+    background: none;
+    border: 1px dashed rgba(0, 229, 160, 0.25);
+    border-radius: var(--radius-md);
+    color: var(--accent-teal);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.addAbilityBtn:hover {
+    background: rgba(0, 229, 160, 0.05);
+    border-color: var(--accent-teal);
+}
+
+.abilityCard {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.abilityHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px var(--space-md);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.abilityHeader:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.abilityInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* FORCE left flex align */
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+    padding-right: var(--space-md);
+    text-align: left !important;
+    /* Force override inherited center */
+}
+
+.abilityName {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: normal;
+    line-height: 1.2;
+    text-align: left !important;
+    width: 100%;
+}
+
+.abilityMeta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    width: 100%;
+}
+
+.abilityActions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    flex-shrink: 0;
+}
+
+.abilityDotsWrapper {
+    display: flex;
+    gap: 8px;
+    /* More space between larger dots */
+    flex-wrap: wrap;
+    max-width: 140px;
+    justify-content: flex-end;
+}
+
+.abilityDot {
+    width: 18px;
+    /* Larger dots */
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    /* Thicker border */
+    background: transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: 0;
+}
+
+.abilityDot:disabled {
+    cursor: default;
+}
+
+.abilityDotActive {
+    background: var(--accent-teal);
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 8px rgba(0, 229, 160, 0.5);
+    /* Stronger glow for larger dots */
+}
+
+.abilityDetail {
+    padding: var(--space-sm) var(--space-md) var(--space-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    animation: slideDown 0.2s ease;
+}
+
+.abilityDesc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
 /* Hit Dice */
 .hitDiceRow {
     display: flex;
@@ -686,6 +1052,33 @@
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-primary);
+}
+
+.hitDiceBtn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+}
+
+.hitDiceBtn:hover {
+    background: rgba(0, 229, 160, 0.15);
+    border-color: rgba(0, 229, 160, 0.3);
+    color: var(--accent-teal);
+}
+
+.hitDiceBtn:active {
+    transform: scale(0.95);
 }
 
 /* Death Saves */
@@ -890,12 +1283,13 @@
 
 .slotDots {
     display: flex;
-    gap: 6px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .slotDot {
-    width: 16px;
-    height: 16px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.15);
     background: none;
@@ -916,25 +1310,99 @@
 .knownSpells {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: var(--space-md);
 }
 
-.spellList {
+/* Level group */
+.spellLevelGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.spellLevelHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding-bottom: var(--space-xs);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+}
+
+.spellLevelLabel {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.spellLevelCount {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+.spellLevelList {
     display: flex;
     flex-direction: column;
 }
 
-.spellItem {
+/* Spell card */
+.knownSpellCard {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.knownSpellCard:last-child {
+    border-bottom: none;
+}
+
+.knownSpellRow {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px var(--space-sm);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    font-size: 0.85rem;
+    padding: 10px var(--space-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    border-radius: var(--radius-sm);
 }
 
-.spellItem:last-child {
-    border-bottom: none;
+.knownSpellRow:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.knownSpellRow:active {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.knownSpellInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.knownSpellName {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.knownSpellMeta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.knownSpellActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+
+.expandArrow {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    transition: transform var(--transition-fast);
 }
 
 .removeSpellBtn {
@@ -951,6 +1419,57 @@
     color: var(--danger);
 }
 
+/* Spell detail card (expanded) */
+.spellDetailCard {
+    padding: var(--space-sm) var(--space-md) var(--space-md);
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.spellDetailGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xs) var(--space-md);
+    margin-bottom: var(--space-sm);
+}
+
+.spellDetailItem {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.spellDetailLabel {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-teal);
+    opacity: 0.8;
+}
+
+.spellDetailDesc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+    padding-top: var(--space-xs);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
 .emptyNote {
     color: var(--text-muted);
     font-size: 0.85rem;
@@ -959,30 +1478,87 @@
 
 /* Notes */
 .notesSection {
-    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
 }
 
-.notesTextarea {
-    min-height: 300px;
+.addNoteBtn {
+    width: 100%;
+    padding: var(--space-sm);
+    background: none;
+    border: 1px dashed rgba(0, 229, 160, 0.25);
+    border-radius: var(--radius-md);
+    color: var(--accent-teal);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.addNoteBtn:hover {
+    background: rgba(0, 229, 160, 0.05);
+    border-color: var(--accent-teal);
+}
+
+.noteCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+}
+
+.noteHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.noteDate {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.noteDeleteBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 2px 4px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+    opacity: 0.5;
+}
+
+.noteDeleteBtn:hover {
+    opacity: 1;
+    background: rgba(255, 68, 68, 0.1);
+}
+
+.noteTextarea {
+    min-height: 60px;
     resize: vertical;
-    font-size: 0.9rem;
-    line-height: 1.7;
+    font-size: 0.85rem;
+    line-height: 1.6;
 }
 
-.notesContent {
-    padding: var(--space-sm) 0;
-}
-
-.notesContent p {
-    font-size: 0.9rem;
+.noteText {
+    font-size: 0.85rem;
     color: var(--text-secondary);
-    line-height: 1.7;
-    margin-bottom: var(--space-xs);
+    line-height: 1.6;
+    margin: 0;
+    white-space: pre-wrap;
 }
 
 .notesEmpty {
     color: var(--text-muted);
     font-style: italic;
+    font-size: 0.85rem;
 }
 
 /* Mobile */

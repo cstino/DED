@@ -56,12 +56,21 @@ export default function SpellBrowser({ knownSpells, onConfirm, onClose }: Props)
 
     useEffect(() => {
         async function load() {
-            const { data } = await supabase
-                .from("spells")
-                .select("*")
-                .order("level")
-                .order("name");
-            if (data) setAllSpells(data);
+            try {
+                const { data, error } = await supabase
+                    .from("spells")
+                    .select("*")
+                    .order("level")
+                    .order("name")
+                    .limit(2000);
+                if (error) {
+                    console.error("Error fetching spells:", error.message);
+                } else if (data) {
+                    setAllSpells(data);
+                }
+            } catch (err) {
+                console.error("Network error fetching spells:", err);
+            }
             setLoading(false);
         }
         load();

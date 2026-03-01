@@ -17,6 +17,14 @@ interface AbilityScores {
     str: number; dex: number; con: number; int: number; wis: number; cha: number;
 }
 
+interface ClassAbility {
+    name: string;
+    description: string;
+    max_uses: number | null; // null = unlimited
+    uses_remaining: number;
+    recharge: string; // "Riposo Lungo", "Riposo Breve", or ""
+}
+
 interface Character {
     id: string;
     user_id: string;
@@ -50,6 +58,8 @@ interface Character {
     alignment: string | null;
     notes: string | null;
     portrait_url: string | null;
+    languages: string[];
+    class_abilities: ClassAbility[];
 }
 
 const ABILITIES = [
@@ -86,6 +96,111 @@ function getMod(score: number): number { return Math.floor((score - 10) / 2); }
 function fmtMod(mod: number): string { return mod >= 0 ? `+${mod}` : `${mod}`; }
 function profBonus(level: number): number { return Math.ceil(level / 4) + 1; }
 
+const SCHOOL_IT: Record<string, string> = {
+    abjuration: "Abiurazione", conjuration: "Evocazione", divination: "Divinazione",
+    enchantment: "Ammaliamento", evocation: "Invocazione", illusion: "Illusione",
+    necromancy: "Necromanzia", transmutation: "Trasmutazione", transformation: "Trasmutazione",
+};
+
+function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpandedSpell, isOwner, onRemove }: {
+    knownSpells: string[];
+    spellDetails: Record<string, any>;
+    expandedSpell: string | null;
+    setExpandedSpell: (s: string | null) => void;
+    isOwner: boolean;
+    onRemove: (name: string) => void;
+}) {
+    // Group spells by level
+    const grouped: Record<number, { name: string; detail?: any }[]> = {};
+    for (const name of knownSpells) {
+        const detail = spellDetails[name];
+        const level = detail?.level ?? -1;
+        if (!grouped[level]) grouped[level] = [];
+        grouped[level].push({ name, detail });
+    }
+    // Sort levels: -1 (unknown) at end, then 0 (cantrips), 1, 2, ...
+    const sortedLevels = Object.keys(grouped).map(Number).sort((a, b) => {
+        if (a === -1) return 1;
+        if (b === -1) return -1;
+        return a - b;
+    });
+
+    const levelLabel = (lvl: number) => {
+        if (lvl === -1) return "Altro";
+        if (lvl === 0) return "Trucchetti";
+        return `Livello ${lvl}`;
+    };
+
+    const levelColor: Record<number, string> = {
+        [-1]: "#8a8a9a",
+        0: "#00e5a0",
+        1: "#4da6ff",
+        2: "#a78bfa",
+        3: "#f59e0b",
+        4: "#ef4444",
+        5: "#ec4899",
+        6: "#06b6d4",
+        7: "#f97316",
+        8: "#8b5cf6",
+        9: "#fbbf24",
+    };
+
+    return (
+        <div className={styles.knownSpells}>
+            <h3 className={styles.sectionTitle}>Incantesimi Conosciuti</h3>
+            {sortedLevels.map((lvl) => {
+                const color = levelColor[lvl] || "#8a8a9a";
+                return (
+                    <div key={lvl} className={styles.spellLevelGroup}>
+                        <div className={styles.spellLevelHeader} style={{ borderBottomColor: `${color}30` }}>
+                            <span className={styles.spellLevelLabel} style={{ color }}>{levelLabel(lvl)}</span>
+                            <span className={styles.spellLevelCount}>{grouped[lvl].length}</span>
+                        </div>
+                        <div className={styles.spellLevelList}>
+                            {grouped[lvl].sort((a, b) => a.name.localeCompare(b.name)).map(({ name, detail }) => {
+                                const isExpanded = expandedSpell === name;
+                                return (
+                                    <div key={name} className={styles.knownSpellCard}>
+                                        <div className={styles.knownSpellRow} onClick={() => setExpandedSpell(isExpanded ? null : name)}>
+                                            <div className={styles.knownSpellInfo}>
+                                                <span className={styles.knownSpellName} style={{ color }}>{name}</span>
+                                                {detail && (
+                                                    <span className={styles.knownSpellMeta}>
+                                                        {SCHOOL_IT[detail.school] || detail.school}
+                                                        {detail.is_concentration && " • 🎯"}
+                                                        {detail.is_ritual && " • 📿"}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className={styles.knownSpellActions}>
+                                                <span className={styles.expandArrow}>{isExpanded ? "▾" : "▸"}</span>
+                                                {isOwner && (
+                                                    <button type="button" className={styles.removeSpellBtn} onClick={(e) => { e.stopPropagation(); onRemove(name); }}>✕</button>
+                                                )}
+                                            </div>
+                                        </div>
+                                        {isExpanded && detail && (
+                                            <div className={styles.spellDetailCard}>
+                                                <div className={styles.spellDetailGrid}>
+                                                    <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Lancio</span><span>{detail.casting_time}</span></div>
+                                                    <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Gittata</span><span>{detail.range}</span></div>
+                                                    <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Componenti</span><span>{detail.components}</span></div>
+                                                    <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Durata</span><span>{detail.duration}</span></div>
+                                                </div>
+                                                {detail.description && <p className={styles.spellDetailDesc}>{detail.description}</p>}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
 export default function CharacterSheetPage() {
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
@@ -103,6 +218,13 @@ export default function CharacterSheetPage() {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+    const [spellDetails, setSpellDetails] = useState<Record<string, any>>({});
+    const [expandedSpell, setExpandedSpell] = useState<string | null>(null);
+    const [expandedAbility, setExpandedAbility] = useState<number | null>(null);
+    const [noteToDelete, setNoteToDelete] = useState<number | null>(null);
+    const [portraitFile, setPortraitFile] = useState<File | null>(null);
+    const [portraitPreview, setPortraitPreview] = useState<string | null>(null);
+    const [showPortraitFull, setShowPortraitFull] = useState(false);
 
     const isOwner = char?.user_id === user?.id;
 
@@ -126,6 +248,8 @@ export default function CharacterSheetPage() {
                 equipment: Array.isArray(data.equipment) ? data.equipment : [],
                 features: Array.isArray(data.features) ? data.features : [],
                 proficiencies: Array.isArray(data.proficiencies) ? data.proficiencies : [],
+                languages: Array.isArray(data.languages) ? data.languages : [],
+                class_abilities: Array.isArray(data.class_abilities) ? data.class_abilities : [],
             } as Character;
             setChar(c);
             setEditData(c);
@@ -136,10 +260,46 @@ export default function CharacterSheetPage() {
     useEffect(() => { if (!authLoading && !user) router.push("/login"); }, [authLoading, user, router]);
     useEffect(() => { if (user && charId) fetchChar(); }, [user, charId, fetchChar]);
 
+    // Fetch spell details for known spells
+    useEffect(() => {
+        if (!char?.known_spells?.length) return;
+        async function fetchSpellDetails() {
+            const names = char!.known_spells;
+            const { data } = await supabase
+                .from("spells")
+                .select("*")
+                .in("name", names)
+                .limit(500);
+            if (data) {
+                const map: Record<string, any> = {};
+                data.forEach((s: any) => { map[s.name] = s; });
+                setSpellDetails(map);
+            }
+        }
+        fetchSpellDetails();
+    }, [char?.known_spells]);
+
     async function saveChanges() {
         if (!char || !isOwner) return;
         setSaving(true);
         const d = editData;
+
+        // Upload portrait if changed
+        let newPortraitUrl = char.portrait_url;
+        if (portraitFile) {
+            const ext = portraitFile.name.split(".").pop();
+            const path = `portraits/${user!.id}/${Date.now()}.${ext}`;
+            const { error: uploadError } = await supabase.storage
+                .from("character-portraits")
+                .upload(path, portraitFile);
+            if (!uploadError) {
+                const { data: urlData } = supabase.storage
+                    .from("character-portraits")
+                    .getPublicUrl(path);
+                newPortraitUrl = urlData.publicUrl;
+            }
+        }
+
         await supabase.from("characters").update({
             name: d.name,
             level: d.level,
@@ -165,7 +325,12 @@ export default function CharacterSheetPage() {
             personality: d.personality,
             known_spells: d.known_spells,
             spell_slots_used: d.spell_slots_used,
+            languages: d.languages,
+            class_abilities: d.class_abilities,
+            portrait_url: newPortraitUrl,
         }).eq("id", char.id);
+        setPortraitFile(null);
+        setPortraitPreview(null);
         await fetchChar();
         setEditing(false);
         setSaving(false);
@@ -283,8 +448,28 @@ export default function CharacterSheetPage() {
             {/* Character Header */}
             <div className={styles.charHeader}>
                 <div className={styles.portraitWrap}>
-                    {char.portrait_url ? (
-                        <Image src={char.portrait_url} alt={char.name} width={100} height={100} className={styles.portrait} />
+                    {editing ? (
+                        <label className={styles.portraitEditLabel}>
+                            {portraitPreview ? (
+                                <Image src={portraitPreview} alt="Preview" width={100} height={100} className={styles.portrait} />
+                            ) : char.portrait_url ? (
+                                <Image src={char.portrait_url} alt={char.name} width={100} height={100} className={styles.portrait} />
+                            ) : (
+                                <div className={styles.portraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
+                            )}
+                            <div className={styles.portraitEditOverlay}>📷</div>
+                            <input type="file" accept="image/*" className={styles.portraitFileInput} onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                    setPortraitFile(file);
+                                    setPortraitPreview(URL.createObjectURL(file));
+                                }
+                            }} />
+                        </label>
+                    ) : char.portrait_url ? (
+                        <div onClick={() => setShowPortraitFull(true)} style={{ cursor: 'pointer' }}>
+                            <Image src={char.portrait_url} alt={char.name} width={100} height={100} className={styles.portrait} />
+                        </div>
                     ) : (
                         <div className={styles.portraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
                     )}
@@ -445,12 +630,198 @@ export default function CharacterSheetPage() {
                                 );
                             })}
                         </div>
+
+                        {/* Languages Section */}
+                        <div className={styles.statsGroup}>
+                            <h3 className={styles.sectionTitle}>Linguaggi</h3>
+                            <div className={styles.languagesVerticalList}>
+                                {editing ? (
+                                    <>
+                                        {(editData.languages || []).map((lang, i) => (
+                                            <div key={i} className={styles.languageRowEdit}>
+                                                <input
+                                                    type="text"
+                                                    className={`input ${styles.languageInput}`}
+                                                    value={lang}
+                                                    onChange={(e) => {
+                                                        const arr = [...(editData.languages || [])];
+                                                        arr[i] = e.target.value;
+                                                        upd("languages", arr);
+                                                    }}
+                                                    placeholder="Inserisci lingua..."
+                                                />
+                                                <button type="button" className={styles.removeLangSqBtn} onClick={() => {
+                                                    const arr = (editData.languages || []).filter((_, j) => i !== j);
+                                                    upd("languages", arr);
+                                                }}>✕</button>
+                                            </div>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            className={styles.addAbilityBtn}
+                                            style={{ marginTop: '8px' }}
+                                            onClick={() => {
+                                                upd("languages", [...(editData.languages || []), ""]);
+                                            }}
+                                        >
+                                            + Aggiungi Linguaggio
+                                        </button>
+                                    </>
+                                ) : (
+                                    char.languages?.length > 0 ? (
+                                        char.languages.map((lang, i) => (
+                                            <div key={i} className={styles.languageRowView}>
+                                                <span className={styles.languageDot}>•</span>
+                                                <span className={styles.languageText}>{lang || <span className="text-muted">...</span>}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className={styles.notesEmpty}>Nessun linguaggio specificato.</p>
+                                    )
+                                )}
+                            </div>
+                        </div>
                     </>
                 )}
 
                 {/* ====== COMBAT TAB ====== */}
                 {activeTab === "combat" && (
                     <div className={styles.combatSection}>
+                        {/* Class Abilities */}
+                        <div className={styles.combatGroup}>
+                            <h3 className={styles.sectionTitle}>Abilità di Classe</h3>
+                            <div className={styles.abilitiesList}>
+                                {editing ? (
+                                    <>
+                                        {(editData.class_abilities || []).map((ability, i) => (
+                                            <div key={i} className={styles.abilityEditCard}>
+                                                <div className={styles.abilityEditHeader}>
+                                                    <input
+                                                        type="text"
+                                                        className={`input ${styles.abilityNameInput}`}
+                                                        value={ability.name}
+                                                        onChange={(e) => {
+                                                            const arr = [...(editData.class_abilities || [])];
+                                                            arr[i] = { ...arr[i], name: e.target.value };
+                                                            upd("class_abilities", arr);
+                                                        }}
+                                                        placeholder="Nome Abilità"
+                                                    />
+                                                    <button type="button" className={styles.removeAbilityBtn} onClick={() => {
+                                                        const arr = (editData.class_abilities || []).filter((_, j) => i !== j);
+                                                        upd("class_abilities", arr);
+                                                    }}>✕</button>
+                                                </div>
+                                                <textarea
+                                                    className={`input ${styles.abilityDescInput}`}
+                                                    value={ability.description}
+                                                    onChange={(e) => {
+                                                        const arr = [...(editData.class_abilities || [])];
+                                                        arr[i] = { ...arr[i], description: e.target.value };
+                                                        upd("class_abilities", arr);
+                                                    }}
+                                                    placeholder="Descrizione..."
+                                                    rows={2}
+                                                />
+                                                <div className={styles.abilityUsesRow}>
+                                                    <label className={styles.abilityUsesLabel}>
+                                                        Usi max:
+                                                        <input
+                                                            type="number"
+                                                            className={`input ${styles.tinyInput}`}
+                                                            value={ability.max_uses ?? ""}
+                                                            placeholder="∞"
+                                                            onChange={(e) => {
+                                                                const val = e.target.value ? parseInt(e.target.value) : null;
+                                                                const arr = [...(editData.class_abilities || [])];
+                                                                arr[i] = { ...arr[i], max_uses: val, uses_remaining: val ?? 0 };
+                                                                upd("class_abilities", arr);
+                                                            }}
+                                                        />
+                                                    </label>
+                                                    <label className={styles.abilityUsesLabel}>
+                                                        Ricarica:
+                                                        <select
+                                                            className={`input ${styles.smallInput}`}
+                                                            value={ability.recharge}
+                                                            onChange={(e) => {
+                                                                const arr = [...(editData.class_abilities || [])];
+                                                                arr[i] = { ...arr[i], recharge: e.target.value };
+                                                                upd("class_abilities", arr);
+                                                            }}
+                                                        >
+                                                            <option value="">Nessuna</option>
+                                                            <option value="Riposo Breve">Rip. Breve</option>
+                                                            <option value="Riposo Lungo">Rip. Lungo</option>
+                                                        </select>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            className={styles.addAbilityBtn}
+                                            onClick={() => {
+                                                const newAb: ClassAbility = { name: "", description: "", max_uses: null, uses_remaining: 0, recharge: "" };
+                                                upd("class_abilities", [...(editData.class_abilities || []), newAb]);
+                                            }}
+                                        >
+                                            + Aggiungi Abilità
+                                        </button>
+                                    </>
+                                ) : (
+                                    (char.class_abilities || []).length > 0 ? (
+                                        (char.class_abilities || []).map((ability, i) => {
+                                            const isExpanded = expandedAbility === i;
+                                            return (
+                                                <div key={i} className={styles.abilityCard}>
+                                                    <div className={styles.abilityHeader} onClick={() => setExpandedAbility(isExpanded ? null : i)}>
+                                                        <div className={styles.abilityInfo}>
+                                                            <span className={styles.abilityName}>{ability.name}</span>
+                                                            {ability.recharge && <span className={styles.abilityMeta}>↻ {ability.recharge}</span>}
+                                                        </div>
+                                                        <div className={styles.abilityActions}>
+                                                            {ability.max_uses !== null && ability.max_uses > 0 && (
+                                                                <div className={styles.abilityDotsWrapper} onClick={(e) => e.stopPropagation()}>
+                                                                    {Array.from({ length: ability.max_uses }).map((_, dotIdx) => (
+                                                                        <button
+                                                                            key={dotIdx}
+                                                                            type="button"
+                                                                            className={`${styles.abilityDot} ${dotIdx < ability.uses_remaining ? styles.abilityDotActive : ""}`}
+                                                                            disabled={!isOwner}
+                                                                            onClick={() => {
+                                                                                if (!isOwner) return;
+                                                                                const newUses = dotIdx < ability.uses_remaining && dotIdx === ability.uses_remaining - 1
+                                                                                    ? dotIdx // Toggle off last active
+                                                                                    : dotIdx + 1; // Toggle on up to here
+
+                                                                                const arr = [...char.class_abilities];
+                                                                                arr[i] = { ...arr[i], uses_remaining: newUses };
+                                                                                setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
+                                                                                quickSave("class_abilities", arr);
+                                                                            }}
+                                                                        />
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                            <span className={styles.expandArrow}>{isExpanded ? "▾" : "▸"}</span>
+                                                        </div>
+                                                    </div>
+                                                    {isExpanded && (
+                                                        <div className={styles.abilityDetail}>
+                                                            <p className={styles.abilityDesc}>{ability.description || <span className="text-muted">Nessuna descrizione.</span>}</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <p className={styles.notesEmpty}>Nessuna abilità specificata.</p>
+                                    )
+                                )}
+                            </div>
+                        </div>
+
                         {/* Hit Dice */}
                         <div className={styles.combatGroup}>
                             <h3 className={styles.sectionTitle}>Dadi Vita</h3>
@@ -461,7 +832,23 @@ export default function CharacterSheetPage() {
                                         <span>/ {char.hit_dice_total}</span>
                                     </>
                                 ) : (
-                                    <span className={styles.hitDiceValue}>{char.hit_dice_current} / {char.hit_dice_total}</span>
+                                    <>
+                                        {isOwner && (
+                                            <button type="button" className={styles.hitDiceBtn} onClick={() => {
+                                                const next = Math.max(0, char.hit_dice_current - 1);
+                                                setChar((p) => p ? { ...p, hit_dice_current: next } as Character : null);
+                                                quickSave("hit_dice_current", next);
+                                            }}>−</button>
+                                        )}
+                                        <span className={styles.hitDiceValue}>{char.hit_dice_current} / {char.hit_dice_total}</span>
+                                        {isOwner && (
+                                            <button type="button" className={styles.hitDiceBtn} onClick={() => {
+                                                const next = Math.min(char.hit_dice_total, char.hit_dice_current + 1);
+                                                setChar((p) => p ? { ...p, hit_dice_current: next } as Character : null);
+                                                quickSave("hit_dice_current", next);
+                                            }}>+</button>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </div>
@@ -484,7 +871,10 @@ export default function CharacterSheetPage() {
                                                         if (!isOwner) return;
                                                         const newDs = { ...ds, successes: i < ds.successes ? i : i + 1 };
                                                         if (editing) upd("death_saves", newDs);
-                                                        else quickSave("death_saves", newDs);
+                                                        else {
+                                                            setChar((p) => p ? { ...p, death_saves: newDs } as Character : null);
+                                                            quickSave("death_saves", newDs);
+                                                        }
                                                     }}
                                                 />
                                             );
@@ -505,7 +895,10 @@ export default function CharacterSheetPage() {
                                                         if (!isOwner) return;
                                                         const newDs = { ...ds, failures: i < ds.failures ? i : i + 1 };
                                                         if (editing) upd("death_saves", newDs);
-                                                        else quickSave("death_saves", newDs);
+                                                        else {
+                                                            setChar((p) => p ? { ...p, death_saves: newDs } as Character : null);
+                                                            quickSave("death_saves", newDs);
+                                                        }
                                                     }}
                                                 />
                                             );
@@ -532,6 +925,8 @@ export default function CharacterSheetPage() {
                                             <span className={styles.moneyLabel}>{label}</span>
                                             {editing ? (
                                                 <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => upd("money", { ...money, [key]: Math.max(0, parseInt(e.target.value) || 0) })} />
+                                            ) : isOwner ? (
+                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => { const newMoney = { ...money, [key]: Math.max(0, parseInt(e.target.value) || 0) }; setChar((p) => p ? { ...p, money: newMoney } as Character : null); }} onBlur={() => { const currentMoney = char.money ?? { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 }; quickSave("money", currentMoney); }} />
                                             ) : (
                                                 <span className={styles.moneyValue}>{money[key as keyof typeof money]}</span>
                                             )}
@@ -582,8 +977,16 @@ export default function CharacterSheetPage() {
                 {activeTab === "equipment" && (
                     <EquipmentManager
                         equipment={equip}
-                        onChange={(newEquip) => upd("equipment", newEquip)}
+                        onChange={(newEquip) => {
+                            if (editing) {
+                                upd("equipment", newEquip);
+                            } else {
+                                setChar((p) => p ? { ...p, equipment: newEquip } as Character : null);
+                                quickSave("equipment", newEquip);
+                            }
+                        }}
                         editing={editing}
+                        isOwner={isOwner}
                     />
                 )}
 
@@ -622,6 +1025,7 @@ export default function CharacterSheetPage() {
                                                                 if (!isOwner) return;
                                                                 const slotsUsed = { ...char.spell_slots_used };
                                                                 slotsUsed[lvl] = i < remaining ? used + 1 : Math.max(0, used - 1);
+                                                                setChar((p) => p ? { ...p, spell_slots_used: slotsUsed } as Character : null);
                                                                 quickSave("spell_slots_used", slotsUsed);
                                                             }}
                                                         />
@@ -634,25 +1038,20 @@ export default function CharacterSheetPage() {
                             </div>
                         )}
 
-                        {/* Known Spells List */}
+                        {/* Known Spells List — grouped by level */}
                         {(char.known_spells?.length ?? 0) > 0 && (
-                            <div className={styles.knownSpells}>
-                                <h3 className={styles.sectionTitle}>Incantesimi Conosciuti</h3>
-                                <div className={styles.spellList}>
-                                    {char.known_spells.map((spell, i) => (
-                                        <div key={i} className={styles.spellItem}>
-                                            <span>{spell}</span>
-                                            {isOwner && (
-                                                <button
-                                                    type="button"
-                                                    className={styles.removeSpellBtn}
-                                                    onClick={() => quickSave("known_spells", char.known_spells.filter((_, j) => j !== i))}
-                                                >✕</button>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                            <KnownSpellsList
+                                knownSpells={char.known_spells}
+                                spellDetails={spellDetails}
+                                expandedSpell={expandedSpell}
+                                setExpandedSpell={setExpandedSpell}
+                                isOwner={isOwner}
+                                onRemove={(spellName) => {
+                                    const updated = char.known_spells.filter((s) => s !== spellName);
+                                    setChar((p) => p ? { ...p, known_spells: updated } as Character : null);
+                                    quickSave("known_spells", updated);
+                                }}
+                            />
                         )}
 
                         {(char.known_spells?.length ?? 0) === 0 && (
@@ -663,7 +1062,10 @@ export default function CharacterSheetPage() {
                         {showSpellBrowser && (
                             <SpellBrowser
                                 knownSpells={char.known_spells ?? []}
-                                onConfirm={(spells) => quickSave("known_spells", spells)}
+                                onConfirm={(spells) => {
+                                    setChar((p) => p ? { ...p, known_spells: spells } as Character : null);
+                                    quickSave("known_spells", spells);
+                                }}
                                 onClose={() => setShowSpellBrowser(false)}
                             />
                         )}
@@ -671,19 +1073,76 @@ export default function CharacterSheetPage() {
                 )}
 
                 {/* ====== NOTES TAB ====== */}
-                {activeTab === "notes" && (
-                    <div className={styles.notesSection}>
-                        {editing ? (
-                            <textarea className={`input ${styles.notesTextarea}`} value={editData.notes ?? ""} onChange={(e) => upd("notes", e.target.value)} placeholder="Scrivi note sul tuo personaggio..." rows={12} />
-                        ) : (
-                            <div className={styles.notesContent}>
-                                {char.notes ? char.notes.split("\n").map((line, i) => <p key={i}>{line || <br />}</p>) : (
-                                    <p className={styles.notesEmpty}>Nessuna nota.</p>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                )}
+                {activeTab === "notes" && (() => {
+                    // Parse notes: support both legacy string and new JSON array format
+                    type NoteEntry = { text: string; date: string };
+                    let notesList: NoteEntry[] = [];
+                    try {
+                        if (char.notes && char.notes.startsWith("[")) {
+                            notesList = JSON.parse(char.notes);
+                        } else if (char.notes) {
+                            notesList = [{ text: char.notes, date: "" }];
+                        }
+                    } catch { notesList = char.notes ? [{ text: char.notes, date: "" }] : []; }
+
+                    const saveNotes = (updated: NoteEntry[]) => {
+                        const json = JSON.stringify(updated);
+                        setChar((p) => p ? { ...p, notes: json } as Character : null);
+                        quickSave("notes", json);
+                    };
+
+                    return (
+                        <div className={styles.notesSection}>
+                            {isOwner && (
+                                <button
+                                    type="button"
+                                    className={styles.addNoteBtn}
+                                    onClick={() => {
+                                        const newNote: NoteEntry = {
+                                            text: "",
+                                            date: new Date().toLocaleDateString("it-IT", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }),
+                                        };
+                                        saveNotes([newNote, ...notesList]);
+                                    }}
+                                >
+                                    + Nuova Nota
+                                </button>
+                            )}
+
+                            {notesList.length === 0 && (
+                                <p className={styles.notesEmpty}>Nessuna nota. {isOwner ? "Aggiungi la prima!" : ""}</p>
+                            )}
+
+                            {notesList.map((note, i) => (
+                                <div key={i} className={styles.noteCard}>
+                                    <div className={styles.noteHeader}>
+                                        {note.date && <span className={styles.noteDate}>{note.date}</span>}
+                                        {isOwner && (
+                                            <button type="button" className={styles.noteDeleteBtn} onClick={() => setNoteToDelete(i)}>🗑️</button>
+                                        )}
+                                    </div>
+                                    {isOwner ? (
+                                        <textarea
+                                            className={`input ${styles.noteTextarea}`}
+                                            value={note.text}
+                                            onChange={(e) => {
+                                                const updated = [...notesList];
+                                                updated[i] = { ...note, text: e.target.value };
+                                                const json = JSON.stringify(updated);
+                                                setChar((p) => p ? { ...p, notes: json } as Character : null);
+                                            }}
+                                            onBlur={() => saveNotes(notesList)}
+                                            placeholder="Scrivi la tua nota..."
+                                            rows={3}
+                                        />
+                                    ) : (
+                                        <p className={styles.noteText}>{note.text || <span className="text-muted">—</span>}</p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    );
+                })()}
             </div>
 
             {/* Delete Confirmation Modal */}
@@ -701,6 +1160,41 @@ export default function CharacterSheetPage() {
                             </button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Note Delete Confirmation */}
+            {noteToDelete !== null && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <h3>Elimina Nota</h3>
+                        <p>Sei sicuro di voler eliminare questa nota?</p>
+                        <div className={styles.modalActions}>
+                            <button className="btn btn-secondary" onClick={() => setNoteToDelete(null)}>Annulla</button>
+                            <button className="btn btn-danger" onClick={() => {
+                                // Parse notes and delete
+                                type NoteEntry = { text: string; date: string };
+                                let notesList: NoteEntry[] = [];
+                                try {
+                                    if (char.notes?.startsWith("[")) notesList = JSON.parse(char.notes);
+                                    else if (char.notes) notesList = [{ text: char.notes, date: "" }];
+                                } catch { notesList = char.notes ? [{ text: char.notes, date: "" }] : []; }
+                                const updated = notesList.filter((_, j) => j !== noteToDelete);
+                                const json = JSON.stringify(updated);
+                                setChar((p) => p ? { ...p, notes: json } as Character : null);
+                                quickSave("notes", json);
+                                setNoteToDelete(null);
+                            }}>Elimina</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Fullscreen Portrait */}
+            {showPortraitFull && char.portrait_url && (
+                <div className={styles.portraitFullOverlay} onClick={() => setShowPortraitFull(false)}>
+                    <button className={styles.portraitFullClose} onClick={() => setShowPortraitFull(false)}>✕</button>
+                    <Image src={char.portrait_url} alt={char.name} width={600} height={600} className={styles.portraitFullImage} />
                 </div>
             )}
         </div>
