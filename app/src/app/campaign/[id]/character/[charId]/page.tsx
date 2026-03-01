@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
@@ -244,28 +245,40 @@ export default function CharacterSheetPage() {
                                 </button>
                             </>
                         ) : (
-                            <div className={styles.settingsDropdown}>
-                                <button
-                                    className="btn btn-secondary"
-                                    onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-                                >
-                                    ⚙️ Opzioni
-                                </button>
-                                {showSettingsMenu && (
-                                    <div className={styles.settingsMenu}>
-                                        <button className={styles.menuItem} onClick={() => { setShowSettingsMenu(false); setEditing(true); }}>
-                                            ✏️ Modifica
-                                        </button>
-                                        <button className={`${styles.menuItem} ${styles.menuItemDanger}`} onClick={() => { setShowSettingsMenu(false); setShowDeleteConfirm(true); }}>
-                                            🗑️ Elimina Personaggio
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
+                            <button
+                                className={styles.settingsBtn}
+                                onClick={() => setShowSettingsMenu(true)}
+                            >
+                                <span className={styles.settingsIcon}>⚙</span>
+                            </button>
                         )}
                     </div>
                 )}
             </div>
+
+            {/* Side Panel (via Portal) */}
+            {showSettingsMenu && typeof window !== 'undefined' && createPortal(
+                <div className={styles.sidePanel}>
+                    <div className={styles.sidePanelBackdrop} onClick={() => setShowSettingsMenu(false)} />
+                    <div className={styles.sidePanelContent}>
+                        <div className={styles.sidePanelHeader}>
+                            <span className={styles.sidePanelTitle}>Opzioni</span>
+                            <button className={styles.sidePanelClose} onClick={() => setShowSettingsMenu(false)}>✕</button>
+                        </div>
+                        <nav className={styles.sidePanelNav}>
+                            <button className={styles.sidePanelItem} style={{ animationDelay: '0.05s' }} onClick={() => { setShowSettingsMenu(false); setEditing(true); }}>
+                                <span className={styles.sidePanelItemIcon}>✏️</span>
+                                <span>Modifica Personaggio</span>
+                            </button>
+                            <button className={`${styles.sidePanelItem} ${styles.sidePanelItemDanger}`} style={{ animationDelay: '0.12s' }} onClick={() => { setShowSettingsMenu(false); setShowDeleteConfirm(true); }}>
+                                <span className={styles.sidePanelItemIcon}>🗑️</span>
+                                <span>Elimina Personaggio</span>
+                            </button>
+                        </nav>
+                    </div>
+                </div>,
+                document.body
+            )}
 
             {/* Character Header */}
             <div className={styles.charHeader}>

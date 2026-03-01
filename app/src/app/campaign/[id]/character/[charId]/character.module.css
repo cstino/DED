@@ -54,50 +54,176 @@
     gap: var(--space-sm);
 }
 
-.settingsDropdown {
-    position: relative;
+/* Gear Button */
+.settingsBtn {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.settingsMenu {
+.settingsBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+}
+
+.settingsIcon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* ===== Side Panel (Portal) ===== */
+.sidePanel {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    pointer-events: auto;
+}
+
+.sidePanelBackdrop {
     position: absolute;
-    top: calc(100% + var(--space-xs));
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.sidePanelContent {
+    position: absolute;
+    top: 0;
     right: 0;
-    min-width: 180px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-card);
-    border-radius: var(--radius-md);
-    padding: var(--space-xs);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    width: 280px;
+    max-width: 80vw;
+    height: 100%;
+    background: #12141c;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    z-index: 100;
+    animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.menuItem {
-    width: 100%;
-    text-align: left;
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+.sidePanelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sidePanelTitle {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+}
+
+.sidePanelClose {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.sidePanelClose:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.sidePanelNav {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    gap: 4px;
+}
+
+.sidePanelItem {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
     background: none;
     border: none;
-    padding: 8px 12px;
-    font-size: 0.85rem;
-    font-weight: 500;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
-    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: inherit;
     cursor: pointer;
-    transition: background var(--transition-fast);
+    transition: background 0.15s;
+    text-align: left;
+    width: 100%;
+    /* Staggered entrance */
+    opacity: 0;
+    transform: translateX(20px);
+    animation: staggerIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.menuItem:hover {
-    background: rgba(255, 255, 255, 0.05);
+@keyframes staggerIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
-.menuItemDanger {
+.sidePanelItem:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.sidePanelItem:active {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.sidePanelItemIcon {
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.sidePanelItemDanger {
     color: var(--danger, #ff4d4d);
 }
 
-.menuItemDanger:hover {
-    background: rgba(255, 77, 77, 0.1);
+.sidePanelItemDanger:hover {
+    background: rgba(255, 77, 77, 0.08);
 }
 
 /* Header */
