@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS public.characters (
     spell_slots JSONB DEFAULT '{}',
     spell_slots_used JSONB DEFAULT '{}',
     known_spells JSONB DEFAULT '[]',
+    prepared_spells JSONB DEFAULT NULL,
     proficiencies JSONB DEFAULT '[]',
     equipment JSONB DEFAULT '[]',
     features JSONB DEFAULT '[]',
