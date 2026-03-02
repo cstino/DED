@@ -50,6 +50,7 @@ interface Character {
     spell_slots: Record<string, number>;
     spell_slots_used: Record<string, number>;
     known_spells: string[];
+    prepared_spells?: string[];
     proficiencies: string[];
     equipment: EquipmentItem[];
     features: string[];
@@ -97,18 +98,26 @@ function fmtMod(mod: number): string { return mod >= 0 ? `+${mod}` : `${mod}`; }
 function profBonus(level: number): number { return Math.ceil(level / 4) + 1; }
 
 const SCHOOL_IT: Record<string, string> = {
+    // lowercase English keys
     abjuration: "Abiurazione", conjuration: "Evocazione", divination: "Divinazione",
     enchantment: "Ammaliamento", evocation: "Invocazione", illusion: "Illusione",
     necromancy: "Necromanzia", transmutation: "Trasmutazione", transformation: "Trasmutazione",
+    // Capitalized English keys (just in case)
+    Abjuration: "Abiurazione", Conjuration: "Evocazione", Divination: "Divinazione",
+    Enchantment: "Ammaliamento", Evocation: "Invocazione", Illusion: "Illusione",
+    Necromancy: "Necromanzia", Transmutation: "Trasmutazione", Transformation: "Trasmutazione",
 };
 
-function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpandedSpell, isOwner, onRemove }: {
+function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpandedSpell, isOwner, onRemove, preparedSpells, onTogglePrepare, canPrepareSpells }: {
     knownSpells: string[];
     spellDetails: Record<string, any>;
     expandedSpell: string | null;
     setExpandedSpell: (s: string | null) => void;
     isOwner: boolean;
     onRemove: (name: string) => void;
+    preparedSpells?: string[];
+    onTogglePrepare?: (name: string) => void;
+    canPrepareSpells?: boolean;
 }) {
     // Group spells by level
     const grouped: Record<number, { name: string; detail?: any }[]> = {};
@@ -163,20 +172,36 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
                                     <div key={name} className={styles.knownSpellCard}>
                                         <div className={styles.knownSpellRow} onClick={() => setExpandedSpell(isExpanded ? null : name)}>
                                             <div className={styles.knownSpellInfo}>
-                                                <span className={styles.knownSpellName} style={{ color }}>{name}</span>
-                                                {detail && (
-                                                    <span className={styles.knownSpellMeta}>
-                                                        {SCHOOL_IT[detail.school] || detail.school}
-                                                        {detail.is_concentration && " • 🎯"}
-                                                        {detail.is_ritual && " • 📿"}
-                                                    </span>
-                                                )}
+                                                <div className={styles.spellNameRow}>
+                                                    {canPrepareSpells && lvl > 0 && (
+                                                        <button
+                                                            type="button"
+                                                            className={`${styles.prepareToggle} ${preparedSpells?.includes(name) ? styles.prepareToggleActive : ""}`}
+                                                            disabled={!isOwner}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (isOwner && onTogglePrepare) onTogglePrepare(name);
+                                                            }}
+                                                            title={preparedSpells?.includes(name) ? "Incantesimo preparato" : "Prepara incantesimo"}
+                                                        />
+                                                    )}
+                                                    <span className={styles.knownSpellName}>{detail?.name || name}</span>
+                                                </div>
+                                                <div className={styles.knownSpellMeta}>
+                                                    {SCHOOL_IT[detail?.school] || (detail?.school ? detail.school : "Sconosciuta")}
+                                                    {detail?.duration && ` • ${detail.duration}`}
+                                                    {detail?.concentration && <span className={styles.concentrationBadge}>Conc</span>}
+                                                    {detail?.ritual && <span className={styles.ritualBadge}>Rito</span>}
+                                                </div>
                                             </div>
                                             <div className={styles.knownSpellActions}>
-                                                <span className={styles.expandArrow}>{isExpanded ? "▾" : "▸"}</span>
                                                 {isOwner && (
-                                                    <button type="button" className={styles.removeSpellBtn} onClick={(e) => { e.stopPropagation(); onRemove(name); }}>✕</button>
+                                                    <button type="button" className={styles.removeSpellBtn} onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onRemove(name);
+                                                    }}>✕</button>
                                                 )}
+                                                <span className={styles.expandArrow}>{isExpanded ? "▾" : "▸"}</span>
                                             </div>
                                         </div>
                                         {isExpanded && detail && (
@@ -200,6 +225,8 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
         </div>
     );
 }
+
+const PREPARING_CLASSES = ["cleric", "druid", "wizard", "paladin", "artificer", "chierico", "druido", "mago", "paladino", "artefice"];
 
 export default function CharacterSheetPage() {
     const { user, loading: authLoading } = useAuth();
@@ -324,6 +351,7 @@ export default function CharacterSheetPage() {
             features: d.features,
             personality: d.personality,
             known_spells: d.known_spells,
+            spell_slots: d.spell_slots,
             spell_slots_used: d.spell_slots_used,
             languages: d.languages,
             class_abilities: d.class_abilities,
@@ -694,11 +722,11 @@ export default function CharacterSheetPage() {
                                 {editing ? (
                                     <>
                                         {(editData.class_abilities || []).map((ability, i) => (
-                                            <div key={i} className={styles.abilityEditCard}>
-                                                <div className={styles.abilityEditHeader}>
+                                            <div key={i} className={styles.classAbilityEditCard}>
+                                                <div className={styles.classAbilityEditHeader}>
                                                     <input
                                                         type="text"
-                                                        className={`input ${styles.abilityNameInput}`}
+                                                        className={`input ${styles.classAbilityNameInput}`}
                                                         value={ability.name}
                                                         onChange={(e) => {
                                                             const arr = [...(editData.class_abilities || [])];
@@ -707,13 +735,13 @@ export default function CharacterSheetPage() {
                                                         }}
                                                         placeholder="Nome Abilità"
                                                     />
-                                                    <button type="button" className={styles.removeAbilityBtn} onClick={() => {
+                                                    <button type="button" className={styles.removeClassAbilityBtn} onClick={() => {
                                                         const arr = (editData.class_abilities || []).filter((_, j) => i !== j);
                                                         upd("class_abilities", arr);
                                                     }}>✕</button>
                                                 </div>
                                                 <textarea
-                                                    className={`input ${styles.abilityDescInput}`}
+                                                    className={`input ${styles.classAbilityDescInput}`}
                                                     value={ability.description}
                                                     onChange={(e) => {
                                                         const arr = [...(editData.class_abilities || [])];
@@ -723,8 +751,8 @@ export default function CharacterSheetPage() {
                                                     placeholder="Descrizione..."
                                                     rows={2}
                                                 />
-                                                <div className={styles.abilityUsesRow}>
-                                                    <label className={styles.abilityUsesLabel}>
+                                                <div className={styles.classAbilityUsesRow}>
+                                                    <label className={styles.classAbilityUsesLabel}>
                                                         Usi max:
                                                         <input
                                                             type="number"
@@ -739,7 +767,7 @@ export default function CharacterSheetPage() {
                                                             }}
                                                         />
                                                     </label>
-                                                    <label className={styles.abilityUsesLabel}>
+                                                    <label className={styles.classAbilityUsesLabel}>
                                                         Ricarica:
                                                         <select
                                                             className={`input ${styles.smallInput}`}
@@ -760,7 +788,7 @@ export default function CharacterSheetPage() {
                                         ))}
                                         <button
                                             type="button"
-                                            className={styles.addAbilityBtn}
+                                            className={styles.addClassAbilityBtn}
                                             onClick={() => {
                                                 const newAb: ClassAbility = { name: "", description: "", max_uses: null, uses_remaining: 0, recharge: "" };
                                                 upd("class_abilities", [...(editData.class_abilities || []), newAb]);
@@ -774,20 +802,20 @@ export default function CharacterSheetPage() {
                                         (char.class_abilities || []).map((ability, i) => {
                                             const isExpanded = expandedAbility === i;
                                             return (
-                                                <div key={i} className={styles.abilityCard}>
-                                                    <div className={styles.abilityHeader} onClick={() => setExpandedAbility(isExpanded ? null : i)}>
-                                                        <div className={styles.abilityInfo}>
-                                                            <span className={styles.abilityName}>{ability.name}</span>
-                                                            {ability.recharge && <span className={styles.abilityMeta}>↻ {ability.recharge}</span>}
+                                                <div key={i} className={styles.classAbilityCard}>
+                                                    <div className={styles.classAbilityRow} onClick={() => setExpandedAbility(isExpanded ? null : i)}>
+                                                        <div className={styles.classAbilityInfo}>
+                                                            <span className={styles.classAbilityName}>{ability.name}</span>
+                                                            {ability.recharge && <span className={styles.classAbilityMeta}>↻ {ability.recharge}</span>}
                                                         </div>
-                                                        <div className={styles.abilityActions}>
+                                                        <div className={styles.classAbilityActions}>
                                                             {ability.max_uses !== null && ability.max_uses > 0 && (
-                                                                <div className={styles.abilityDotsWrapper} onClick={(e) => e.stopPropagation()}>
+                                                                <div className={styles.classAbilityDotsWrapper} onClick={(e) => e.stopPropagation()}>
                                                                     {Array.from({ length: ability.max_uses }).map((_, dotIdx) => (
                                                                         <button
                                                                             key={dotIdx}
                                                                             type="button"
-                                                                            className={`${styles.abilityDot} ${dotIdx < ability.uses_remaining ? styles.abilityDotActive : ""}`}
+                                                                            className={`${styles.classAbilityDot} ${dotIdx < ability.uses_remaining ? styles.classAbilityDotActive : ""}`}
                                                                             disabled={!isOwner}
                                                                             onClick={() => {
                                                                                 if (!isOwner) return;
@@ -808,8 +836,8 @@ export default function CharacterSheetPage() {
                                                         </div>
                                                     </div>
                                                     {isExpanded && (
-                                                        <div className={styles.abilityDetail}>
-                                                            <p className={styles.abilityDesc}>{ability.description || <span className="text-muted">Nessuna descrizione.</span>}</p>
+                                                        <div className={styles.classAbilityDetail}>
+                                                            <p className={styles.classAbilityDesc}>{ability.description || <span className="text-muted">Nessuna descrizione.</span>}</p>
                                                         </div>
                                                     )}
                                                 </div>
@@ -1004,36 +1032,95 @@ export default function CharacterSheetPage() {
                             )}
                         </div>
 
-                        {/* Spell Slots — always clickable for owner */}
-                        {Object.keys(char.spell_slots ?? {}).length > 0 && (
+                        {/* Spell Slots */}
+                        {(Object.keys(char.spell_slots ?? {}).length > 0 || editing) && (
                             <div className={styles.spellSlots}>
                                 <h3 className={styles.sectionTitle}>Slot Incantesimi</h3>
                                 <div className={styles.slotsGrid}>
-                                    {Object.entries(char.spell_slots).map(([lvl, total]) => {
+                                    {Object.entries(editing ? (editData.spell_slots ?? {}) : (char.spell_slots ?? {})).map(([lvl, total]) => {
                                         const used = char.spell_slots_used?.[lvl] ?? 0;
                                         const remaining = (total as number) - used;
                                         return (
                                             <div key={lvl} className={styles.slotItem}>
                                                 <span className={styles.slotLevel}>Lv. {lvl}</span>
-                                                <div className={styles.slotDots}>
-                                                    {Array.from({ length: total as number }, (_, i) => (
-                                                        <button
-                                                            key={i}
-                                                            type="button"
-                                                            className={`${styles.slotDot} ${i < remaining ? styles.slotAvailable : styles.slotUsed}`}
-                                                            onClick={() => {
-                                                                if (!isOwner) return;
-                                                                const slotsUsed = { ...char.spell_slots_used };
-                                                                slotsUsed[lvl] = i < remaining ? used + 1 : Math.max(0, used - 1);
-                                                                setChar((p) => p ? { ...p, spell_slots_used: slotsUsed } as Character : null);
-                                                                quickSave("spell_slots_used", slotsUsed);
-                                                            }}
-                                                        />
-                                                    ))}
+                                                <div className={styles.slotDotsRow}>
+                                                    {editing && (
+                                                        <div className={styles.slotEditGroup}>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.slotEditBtn}
+                                                                onClick={() => {
+                                                                    const currentTotal = (editData.spell_slots?.[lvl] as number) ?? 0;
+                                                                    const slots = { ...(editData.spell_slots ?? {}) };
+                                                                    slots[lvl] = currentTotal + 1;
+                                                                    upd("spell_slots", slots);
+                                                                }}
+                                                            >+</button>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.slotEditBtn}
+                                                                onClick={() => {
+                                                                    const currentTotal = (editData.spell_slots?.[lvl] as number) ?? 0;
+                                                                    if (currentTotal > 0) {
+                                                                        const slots = { ...(editData.spell_slots ?? {}) };
+                                                                        slots[lvl] = currentTotal - 1;
+                                                                        upd("spell_slots", slots);
+                                                                    }
+                                                                }}
+                                                            >-</button>
+                                                        </div>
+                                                    )}
+                                                    <div className={styles.slotDots}>
+                                                        {Array.from({ length: total as number }, (_, i) => (
+                                                            <button
+                                                                key={i}
+                                                                type="button"
+                                                                className={`${styles.slotDot} ${i < remaining ? styles.slotAvailable : styles.slotUsed}`}
+                                                                disabled={editing || !isOwner}
+                                                                onClick={() => {
+                                                                    if (editing || !isOwner) return;
+                                                                    const slotsUsed = { ...char.spell_slots_used };
+                                                                    slotsUsed[lvl] = i < remaining ? used + 1 : Math.max(0, used - 1);
+                                                                    setChar((p) => p ? { ...p, spell_slots_used: slotsUsed } as Character : null);
+                                                                    quickSave("spell_slots_used", slotsUsed);
+                                                                }}
+                                                            />
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </div>
                                         );
                                     })}
+
+                                    {/* Add/Remove Last Level Buttons */}
+                                    {editing && (
+                                        <div className={styles.slotLevelsEditActions}>
+                                            <button
+                                                type="button"
+                                                className={styles.slotLevelActionBtn}
+                                                onClick={() => {
+                                                    const slots = { ...(editData.spell_slots ?? {}) };
+                                                    const keys = Object.keys(slots);
+                                                    if (keys.length > 0) {
+                                                        const lastLevel = keys[keys.length - 1];
+                                                        delete slots[lastLevel];
+                                                        upd("spell_slots", slots);
+                                                    }
+                                                }}
+                                            >- Rimuovi Livello</button>
+                                            <button
+                                                type="button"
+                                                className={styles.slotLevelActionBtn}
+                                                onClick={() => {
+                                                    const slots = { ...(editData.spell_slots ?? {}) };
+                                                    const keys = Object.keys(slots).map(Number);
+                                                    const maxLevel = keys.length > 0 ? Math.max(...keys) : 0;
+                                                    slots[String(maxLevel + 1)] = 1;
+                                                    upd("spell_slots", slots);
+                                                }}
+                                            >+ Aggiungi Livello</button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -1051,6 +1138,16 @@ export default function CharacterSheetPage() {
                                     setChar((p) => p ? { ...p, known_spells: updated } as Character : null);
                                     quickSave("known_spells", updated);
                                 }}
+                                preparedSpells={char.prepared_spells ?? []}
+                                onTogglePrepare={(spellName) => {
+                                    const current = char.prepared_spells ?? [];
+                                    const updated = current.includes(spellName)
+                                        ? current.filter(s => s !== spellName)
+                                        : [...current, spellName];
+                                    setChar(p => p ? { ...p, prepared_spells: updated } as Character : null);
+                                    quickSave("prepared_spells", updated);
+                                }}
+                                canPrepareSpells={PREPARING_CLASSES.includes(char.class.toLowerCase())}
                             />
                         )}
 

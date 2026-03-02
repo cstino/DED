@@ -838,7 +838,7 @@
     margin-bottom: var(--space-md);
 }
 
-.abilityEditCard {
+.classAbilityEditCard {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
@@ -848,20 +848,20 @@
     border-radius: var(--radius-md);
 }
 
-.abilityEditHeader {
+.classAbilityEditHeader {
     display: flex;
     align-items: center;
     gap: var(--space-sm);
 }
 
-.abilityNameInput {
+.classAbilityNameInput {
     flex: 1;
     font-size: 0.95rem;
     font-weight: 600;
     padding: 8px 12px;
 }
 
-.removeAbilityBtn {
+.removeClassAbilityBtn {
     background: rgba(255, 59, 48, 0.1);
     border: 1px solid rgba(255, 59, 48, 0.2);
     border-radius: var(--radius-sm);
@@ -876,11 +876,11 @@
     transition: all var(--transition-fast);
 }
 
-.removeAbilityBtn:hover {
+.removeClassAbilityBtn:hover {
     background: rgba(255, 59, 48, 0.2);
 }
 
-.abilityDescInput {
+.classAbilityDescInput {
     font-size: 0.85rem;
     resize: vertical;
     min-height: 80px;
@@ -888,14 +888,14 @@
     line-height: 1.4;
 }
 
-.abilityUsesRow {
+.classAbilityUsesRow {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-md);
     align-items: center;
 }
 
-.abilityUsesLabel {
+.classAbilityUsesLabel {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -904,13 +904,13 @@
     font-weight: 500;
 }
 
-.abilityUsesLabel input,
-.abilityUsesLabel select {
+.classAbilityUsesLabel input,
+.classAbilityUsesLabel select {
     width: 100%;
     padding: 8px 10px;
 }
 
-.addAbilityBtn {
+.addClassAbilityBtn {
     width: 100%;
     padding: var(--space-sm);
     background: none;
@@ -924,114 +924,97 @@
     transition: all var(--transition-fast);
 }
 
-.addAbilityBtn:hover {
+.addClassAbilityBtn:hover {
     background: rgba(0, 229, 160, 0.05);
     border-color: var(--accent-teal);
 }
 
-.abilityCard {
-    display: flex;
-    flex-direction: column;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
-    overflow: hidden;
+.classAbilityCard {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.abilityHeader {
+.classAbilityCard:last-child {
+    border-bottom: none;
+}
+
+.classAbilityRow {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 12px var(--space-md);
+    justify-content: space-between;
+    padding: 10px var(--space-sm);
     cursor: pointer;
     transition: background var(--transition-fast);
+    border-radius: var(--radius-sm);
 }
 
-.abilityHeader:hover {
-    background: rgba(255, 255, 255, 0.04);
+.classAbilityRow:hover {
+    background: rgba(255, 255, 255, 0.03);
 }
 
-.abilityInfo {
+.classAbilityRow:active {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.classAbilityInfo {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    /* FORCE left flex align */
-    gap: 4px;
-    flex: 1;
+    gap: 2px;
     min-width: 0;
-    padding-right: var(--space-md);
-    text-align: left !important;
-    /* Force override inherited center */
+    text-align: left;
 }
 
-.abilityName {
-    font-size: 1rem;
+.classAbilityName {
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-primary);
-    white-space: normal;
-    line-height: 1.2;
-    text-align: left !important;
-    width: 100%;
 }
 
-.abilityMeta {
-    font-size: 0.8rem;
+.classAbilityMeta {
+    font-size: 0.7rem;
     color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 4px;
-    width: 100%;
 }
 
-.abilityActions {
+.classAbilityActions {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: var(--space-md);
+    gap: var(--space-sm);
     flex-shrink: 0;
 }
 
-.abilityDotsWrapper {
+.classAbilityDotsWrapper {
     display: flex;
     gap: 8px;
-    /* More space between larger dots */
     flex-wrap: wrap;
-    max-width: 140px;
     justify-content: flex-end;
 }
 
-.abilityDot {
-    width: 18px;
-    /* Larger dots */
-    height: 18px;
+.classAbilityDot {
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.25);
-    /* Thicker border */
     background: transparent;
     cursor: pointer;
     transition: all var(--transition-fast);
     padding: 0;
 }
 
-.abilityDot:disabled {
+.classAbilityDot:disabled {
     cursor: default;
 }
 
-.abilityDotActive {
+.classAbilityDotActive {
     background: var(--accent-teal);
     border-color: var(--accent-teal);
     box-shadow: 0 0 8px rgba(0, 229, 160, 0.5);
-    /* Stronger glow for larger dots */
 }
 
-.abilityDetail {
-    padding: var(--space-sm) var(--space-md) var(--space-md);
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
+.classAbilityDetail {
+    padding: var(--space-sm) var(--space-sm) var(--space-md);
     animation: slideDown 0.2s ease;
 }
 
-.abilityDesc {
+.classAbilityDesc {
     font-size: 0.85rem;
     color: var(--text-secondary);
     line-height: 1.5;
@@ -1287,15 +1270,85 @@
     flex-wrap: wrap;
 }
 
+.slotDotsRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.slotEditGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.05);
+    /* Slight pill background to join them visually */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+}
+
+.slotEditBtn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: color var(--transition-fast);
+    padding: 0;
+    line-height: 1;
+}
+
+.slotEditBtn:hover {
+    color: var(--text-primary);
+}
+
+.slotLevelsEditActions {
+    display: flex;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+    width: 100%;
+}
+
+.slotLevelActionBtn {
+    flex: 1;
+    padding: var(--space-sm);
+    background: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.slotLevelActionBtn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: var(--text-primary);
+}
+
 .slotDot {
     width: 28px;
     height: 28px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.15);
-    background: none;
+    background: transparent;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: border-color var(--transition-fast), background var(--transition-fast);
     padding: 0;
+}
+
+.slotDot:disabled {
+    cursor: default;
 }
 
 .slotAvailable {
@@ -1379,6 +1432,35 @@
     flex-direction: column;
     gap: 2px;
     min-width: 0;
+}
+
+.spellNameRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+/* Prepare Spell Toggle */
+.prepareToggle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    background: transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.prepareToggle:disabled {
+    cursor: default;
+}
+
+.prepareToggleActive {
+    background: var(--accent-teal);
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 8px rgba(0, 229, 160, 0.5);
 }
 
 .knownSpellName {
