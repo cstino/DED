@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
+import { SessionTimeline } from "@/components/campaign/SessionTimeline";
+import { LoreBrowser } from "@/components/campaign/LoreBrowser";
+import AiAssistantChat from "@/components/dm/AiAssistantChat";
+import NpcGenerator from "@/components/dm/NpcGenerator";
+import NpcList from "@/components/dm/NpcList";
 import styles from "./campaign.module.css";
 
 interface Campaign {
@@ -45,6 +50,8 @@ export default function CampaignPage() {
     const [members, setMembers] = useState<Member[]>([]);
     const [loading, setLoading] = useState(true);
     const [copied, setCopied] = useState(false);
+    const [activeTab, setActiveTab] = useState<"party" | "sessions" | "lore" | "npcs">("party");
+    const [npcRefreshTrigger, setNpcRefreshTrigger] = useState(0);
 
     const isMaster = campaign?.master_id === user?.id;
 
@@ -120,7 +127,6 @@ export default function CampaignPage() {
 
     return (
         <div className="page">
-            {/* Header */}
             <div className={styles.header}>
                 <button className={styles.backBtn} onClick={() => router.push("/dashboard")}>
                     ← Dashboard
@@ -141,166 +147,228 @@ export default function CampaignPage() {
                 </div>
             </div>
 
-            {/* My Characters Section */}
-            <section className={styles.section}>
-                <div className={styles.sectionHeader}>
-                    <h2>{isMaster ? "I tuoi PG (Master)" : "I tuoi Personaggi"}</h2>
+            {/* Tabs */}
+            <div className={styles.tabsContainer}>
+                <button
+                    className={`${styles.tabBtn} ${activeTab === 'party' ? styles.tabBtnActive : ''}`}
+                    onClick={() => setActiveTab('party')}
+                >
+                    Party
+                </button>
+                <button
+                    className={`${styles.tabBtn} ${activeTab === 'sessions' ? styles.tabBtnActive : ''}`}
+                    onClick={() => setActiveTab('sessions')}
+                >
+                    Sessioni
+                </button>
+                <button
+                    className={`${styles.tabBtn} ${activeTab === 'lore' ? styles.tabBtnActive : ''}`}
+                    onClick={() => setActiveTab('lore')}
+                >
+                    Materiale
+                </button>
+                {isMaster && (
                     <button
-                        className="btn btn-primary"
-                        onClick={() => router.push(`/campaign/${campaignId}/create-character`)}
+                        className={`${styles.tabBtn} ${activeTab === 'npcs' ? styles.tabBtnActive : ''}`}
+                        onClick={() => setActiveTab('npcs')}
                     >
-                        + Nuovo PG
+                        NPCs
                     </button>
-                </div>
+                )}
+            </div>
 
-                {myCharacters.length === 0 ? (
-                    <div className={styles.emptyCard}>
-                        <p>Nessun personaggio in questa campagna</p>
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => router.push(`/campaign/${campaignId}/create-character`)}
-                            style={{ marginTop: "var(--space-md)" }}
-                        >
-                            Crea il tuo primo personaggio
-                        </button>
-                    </div>
-                ) : (
-                    <div className={styles.characterGrid}>
-                        {myCharacters.map((char) => {
-                            const hpPercent = getHpPercent(char.hp_current, char.hp_max);
-                            return (
-                                <div
-                                    key={char.id}
-                                    className={`card card-glow-teal ${styles.characterCard}`}
-                                    onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
+            {activeTab === "party" && (
+                <>
+                    {/* My Characters Section */}
+                    <section className={styles.section}>
+                        <div className={styles.sectionHeader}>
+                            <h2>{isMaster ? "I tuoi PG (Master)" : "I tuoi Personaggi"}</h2>
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => router.push(`/campaign/${campaignId}/create-character`)}
+                            >
+                                + Nuovo PG
+                            </button>
+                        </div>
+
+                        {myCharacters.length === 0 ? (
+                            <div className={styles.emptyCard}>
+                                <p>Nessun personaggio in questa campagna</p>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => router.push(`/campaign/${campaignId}/create-character`)}
+                                    style={{ marginTop: "var(--space-md)" }}
                                 >
-                                    <div className={styles.charHeader}>
-                                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                            {char.portrait_url ? (
-                                                <img src={char.portrait_url} alt={char.name} className={styles.cardPortrait} />
-                                            ) : (
-                                                <div className={styles.cardPortraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
-                                            )}
-                                            <h3>{char.name}</h3>
-                                        </div>
-                                        <span className={styles.levelBadge}>Lv. {char.level}</span>
-                                    </div>
-                                    <p className={styles.charInfo}>
-                                        {char.race} • {char.class}
-                                        {char.subclass ? ` (${char.subclass})` : ""}
-                                    </p>
-                                    <div className={styles.charStats}>
-                                        <div className={styles.hpSection}>
-                                            <span className={styles.hpLabel}>
-                                                HP {char.hp_current}/{char.hp_max}
-                                            </span>
-                                            <div className="hp-bar-container">
-                                                <div
-                                                    className="hp-bar"
-                                                    style={{
-                                                        width: `${hpPercent}%`,
-                                                        background: getHpColor(hpPercent),
-                                                    }}
-                                                />
+                                    Crea il tuo primo personaggio
+                                </button>
+                            </div>
+                        ) : (
+                            <div className={styles.characterGrid}>
+                                {myCharacters.map((char) => {
+                                    const hpPercent = getHpPercent(char.hp_current, char.hp_max);
+                                    return (
+                                        <div
+                                            key={char.id}
+                                            className={`card card-glow-teal ${styles.characterCard}`}
+                                            onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
+                                        >
+                                            <div className={styles.charHeader}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                                    {char.portrait_url ? (
+                                                        <img src={char.portrait_url} alt={char.name} className={styles.cardPortrait} />
+                                                    ) : (
+                                                        <div className={styles.cardPortraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
+                                                    )}
+                                                    <h3>{char.name}</h3>
+                                                </div>
+                                                <span className={styles.levelBadge}>Lv. {char.level}</span>
+                                            </div>
+                                            <p className={styles.charInfo}>
+                                                {char.race} • {char.class}
+                                                {char.subclass ? ` (${char.subclass})` : ""}
+                                            </p>
+                                            <div className={styles.charStats}>
+                                                <div className={styles.hpSection}>
+                                                    <span className={styles.hpLabel}>
+                                                        HP {char.hp_current}/{char.hp_max}
+                                                    </span>
+                                                    <div className="hp-bar-container">
+                                                        <div
+                                                            className="hp-bar"
+                                                            style={{
+                                                                width: `${hpPercent}%`,
+                                                                background: getHpColor(hpPercent),
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className={styles.acBadge}>
+                                                    <span className={styles.acLabel}>AC</span>
+                                                    <span className={styles.acValue}>{char.ac}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className={styles.acBadge}>
-                                            <span className={styles.acLabel}>AC</span>
-                                            <span className={styles.acValue}>{char.ac}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
-            </section>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </section>
 
-            {/* Party Section */}
-            {otherCharacters.length > 0 && (
+                    {/* Party Section */}
+                    {otherCharacters.length > 0 && (
+                        <section className={styles.section}>
+                            <div className={styles.sectionHeader}>
+                                <h2>Il Party</h2>
+                            </div>
+                            <div className={styles.characterGrid}>
+                                {otherCharacters.map((char) => {
+                                    const hpPercent = getHpPercent(char.hp_current, char.hp_max);
+                                    const owner = members.find((m) => m.user_id === char.user_id);
+                                    return (
+                                        <div
+                                            key={char.id}
+                                            className={`card ${styles.characterCard}`}
+                                            onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
+                                        >
+                                            <div className={styles.charHeader}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                                    {char.portrait_url ? (
+                                                        <img src={char.portrait_url} alt={char.name} className={styles.cardPortrait} />
+                                                    ) : (
+                                                        <div className={styles.cardPortraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
+                                                    )}
+                                                    <h3>{char.name}</h3>
+                                                </div>
+                                                <span className={styles.levelBadge}>Lv. {char.level}</span>
+                                            </div>
+                                            <p className={styles.charInfo}>
+                                                {char.race} • {char.class}
+                                                {char.subclass ? ` (${char.subclass})` : ""}
+                                            </p>
+                                            <div className={styles.charStats}>
+                                                <div className={styles.hpSection}>
+                                                    <span className={styles.hpLabel}>
+                                                        HP {char.hp_current}/{char.hp_max}
+                                                    </span>
+                                                    <div className="hp-bar-container">
+                                                        <div
+                                                            className="hp-bar"
+                                                            style={{
+                                                                width: `${hpPercent}%`,
+                                                                background: getHpColor(hpPercent),
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className={styles.acBadge}>
+                                                    <span className={styles.acLabel}>AC</span>
+                                                    <span className={styles.acValue}>{char.ac}</span>
+                                                </div>
+                                            </div>
+                                            {owner && (
+                                                <p className={styles.charOwner}>
+                                                    Giocatore: {owner.profiles.username}
+                                                </p>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Members Section */}
+                    <section className={styles.section}>
+                        <div className={styles.sectionHeader}>
+                            <h2>Membri ({members.length})</h2>
+                        </div>
+                        <div className={styles.memberList}>
+                            {members.map((m) => (
+                                <div key={m.user_id} className={styles.memberItem}>
+                                    <div className={styles.memberAvatar}>
+                                        {m.profiles.username.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className={styles.memberName}>{m.profiles.username}</span>
+                                    <span
+                                        className={`${styles.memberRole} ${m.role === "master" ? styles.roleMaster : styles.rolePlayer
+                                            }`}
+                                    >
+                                        {m.role === "master" ? "DM" : "Giocatore"}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                </>
+            )}
+
+            {activeTab === "sessions" && (
+                <SessionTimeline campaignId={campaignId} isMaster={isMaster} />
+            )}
+
+            {activeTab === "lore" && (
+                <LoreBrowser />
+            )}
+
+            {activeTab === "npcs" && isMaster && (
                 <section className={styles.section}>
                     <div className={styles.sectionHeader}>
-                        <h2>Il Party</h2>
+                        <h2>Generatore e Compendio PNG</h2>
                     </div>
-                    <div className={styles.characterGrid}>
-                        {otherCharacters.map((char) => {
-                            const hpPercent = getHpPercent(char.hp_current, char.hp_max);
-                            const owner = members.find((m) => m.user_id === char.user_id);
-                            return (
-                                <div
-                                    key={char.id}
-                                    className={`card ${styles.characterCard}`}
-                                    onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
-                                >
-                                    <div className={styles.charHeader}>
-                                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                            {char.portrait_url ? (
-                                                <img src={char.portrait_url} alt={char.name} className={styles.cardPortrait} />
-                                            ) : (
-                                                <div className={styles.cardPortraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
-                                            )}
-                                            <h3>{char.name}</h3>
-                                        </div>
-                                        <span className={styles.levelBadge}>Lv. {char.level}</span>
-                                    </div>
-                                    <p className={styles.charInfo}>
-                                        {char.race} • {char.class}
-                                        {char.subclass ? ` (${char.subclass})` : ""}
-                                    </p>
-                                    <div className={styles.charStats}>
-                                        <div className={styles.hpSection}>
-                                            <span className={styles.hpLabel}>
-                                                HP {char.hp_current}/{char.hp_max}
-                                            </span>
-                                            <div className="hp-bar-container">
-                                                <div
-                                                    className="hp-bar"
-                                                    style={{
-                                                        width: `${hpPercent}%`,
-                                                        background: getHpColor(hpPercent),
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className={styles.acBadge}>
-                                            <span className={styles.acLabel}>AC</span>
-                                            <span className={styles.acValue}>{char.ac}</span>
-                                        </div>
-                                    </div>
-                                    {owner && (
-                                        <p className={styles.charOwner}>
-                                            Giocatore: {owner.profiles.username}
-                                        </p>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
+                    <NpcGenerator
+                        campaignId={campaignId}
+                        onSaved={() => setNpcRefreshTrigger(prev => prev + 1)}
+                    />
+
+                    <h3 style={{ marginTop: "32px", borderBottom: "1px solid var(--border-color)", paddingBottom: "8px" }}>
+                        Archivio PNG
+                    </h3>
+                    <NpcList campaignId={campaignId} refreshTrigger={npcRefreshTrigger} />
                 </section>
             )}
 
-            {/* Members Section */}
-            <section className={styles.section}>
-                <div className={styles.sectionHeader}>
-                    <h2>Membri ({members.length})</h2>
-                </div>
-                <div className={styles.memberList}>
-                    {members.map((m) => (
-                        <div key={m.user_id} className={styles.memberItem}>
-                            <div className={styles.memberAvatar}>
-                                {m.profiles.username.charAt(0).toUpperCase()}
-                            </div>
-                            <span className={styles.memberName}>{m.profiles.username}</span>
-                            <span
-                                className={`${styles.memberRole} ${m.role === "master" ? styles.roleMaster : styles.rolePlayer
-                                    }`}
-                            >
-                                {m.role === "master" ? "DM" : "Giocatore"}
-                            </span>
-                        </div>
-                    ))}
-                </div>
-            </section>
+            {/* AI Assistant Floating Widget */}
+            <AiAssistantChat />
         </div>
     );
 }

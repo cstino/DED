@@ -8,6 +8,7 @@ interface Profile {
     id: string;
     username: string;
     avatar_url: string | null;
+    is_pro: boolean;
     created_at: string;
 }
 

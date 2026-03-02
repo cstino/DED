@@ -1,0 +1,157 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.loadingState {
+    padding: var(--space-2xl);
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.emptyState {
+    text-align: center;
+    padding: var(--space-2xl);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    color: var(--text-secondary);
+}
+
+/* Create Form */
+.createForm {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--accent-teal);
+    box-shadow: 0 0 20px rgba(0, 229, 160, 0.05);
+}
+
+.createForm h3 {
+    margin-bottom: var(--space-md);
+    color: var(--accent-teal);
+    font-size: 1.1rem;
+}
+
+.formRow {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    .formRow {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+}
+
+.formActions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-md);
+}
+
+/* Timeline */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.sessionItem {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.sessionSidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 48px;
+    flex-shrink: 0;
+}
+
+.sessionNumber {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 229, 160, 0.1);
+    color: var(--accent-teal);
+    border: 2px solid var(--accent-teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    z-index: 2;
+}
+
+.sessionLine {
+    flex: 1;
+    width: 2px;
+    background: rgba(0, 229, 160, 0.15);
+    margin-top: 8px;
+    margin-bottom: -16px;
+    /* Extend to overlap next gap */
+}
+
+/* Hide line for last item */
+.sessionItem:last-child .sessionLine {
+    display: none;
+}
+
+.sessionContent {
+    flex: 1;
+}
+
+.sessionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sessionHeader h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.sessionDate {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.sessionNotes {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.sessionNotes p {
+    margin-bottom: var(--space-sm);
+}
+
+.sessionNotes p:last-child {
+    margin-bottom: 0;
+}
+
+.noNotes {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-style: italic;
+}

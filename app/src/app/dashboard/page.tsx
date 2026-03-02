@@ -106,10 +106,17 @@ export default function DashboardPage() {
             <div className={styles.quickActions}>
                 <button
                     className="btn btn-primary"
-                    onClick={() => setShowCreateModal(true)}
-                    style={{ flex: 1 }}
+                    onClick={() => {
+                        if (profile?.is_pro) {
+                            setShowCreateModal(true);
+                        } else {
+                            alert("Solo gli abbonati PRO possono creare nuove campagne. Puoi comunque unirti a campagne esistenti!");
+                        }
+                    }}
+                    style={{ flex: 1, opacity: profile?.is_pro ? 1 : 0.6 }}
+                    title={profile?.is_pro ? "Crea una nuova campagna" : "Solo per utenti PRO"}
                 >
-                    ✨ Crea Campagna
+                    ✨ Crea Campagna {profile?.is_pro ? "" : " (PRO)"}
                 </button>
                 <button
                     className="btn btn-secondary"
@@ -147,8 +154,8 @@ export default function DashboardPage() {
                                 <h3>{campaign.name}</h3>
                                 <span
                                     className={`${styles.roleBadge} ${campaign.master_id === user.id
-                                            ? styles.roleMaster
-                                            : styles.rolePlayer
+                                        ? styles.roleMaster
+                                        : styles.rolePlayer
                                         }`}
                                 >
                                     {campaign.master_id === user.id ? "DM" : "Giocatore"}

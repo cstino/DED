@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     username TEXT NOT NULL,
     avatar_url TEXT,
+    is_pro BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -77,8 +78,61 @@ CREATE TABLE IF NOT EXISTS public.sessions (
     played_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS public.npcs (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    campaign_id UUID REFERENCES public.campaigns(id) ON DELETE CASCADE NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    race TEXT,
+    role TEXT,
+    alignment TEXT,
+    is_alive BOOLEAN DEFAULT TRUE,
+    stats JSONB DEFAULT '{"str": 10, "dex": 10, "con": 10, "int": 10, "wis": 10, "cha": 10}',
+    traits JSONB DEFAULT '[]',
+    notes TEXT,
+    portrait_url TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
 
--- 3. D&D Read-Only Tables (Populated from Prism)
+
+-- 3. AI & Knowledge Base Tables
+CREATE EXTENSION IF NOT EXISTS vector;
+
+CREATE TABLE IF NOT EXISTS public.document_chunks (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    document_name TEXT NOT NULL,
+    chunk_content TEXT NOT NULL,
+    embedding VECTOR(1536),
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE OR REPLACE FUNCTION public.match_documents (
+  query_embedding vector(1536),
+  match_threshold float,
+  match_count int
+)
+RETURNS TABLE (
+  id uuid,
+  document_name text,
+  chunk_content text,
+  similarity float
+)
+LANGUAGE sql STABLE
+AS $$
+  select
+    document_chunks.id,
+    document_chunks.document_name,
+    document_chunks.chunk_content,
+    1 - (document_chunks.embedding <=> query_embedding) as similarity
+  from document_chunks
+  where 1 - (document_chunks.embedding <=> query_embedding) > match_threshold
+  order by document_chunks.embedding <=> query_embedding
+  limit match_count;
+$$;
+
+
+-- 4. D&D Read-Only Tables (Populated from Prism)
 CREATE TABLE IF NOT EXISTS public.spells (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
@@ -164,7 +218,7 @@ CREATE TABLE IF NOT EXISTS public.backgrounds (
 );
 
 
--- 4. Enable Row Level Security (RLS)
+-- 5. Enable Row Level Security (RLS)
 -- We will keep the D&D tables completely open for reading to all users.
 -- To allow testing/importing from the anon/public key without a server role, 
 -- we will also allow INSERT/UPDATE on D&D tables temporarily.

@@ -1,0 +1,182 @@
+.generatorContainer {
+    background-color: var(--surface-100);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+}
+
+.controlGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.controlGroup label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.select {
+    padding: var(--space-sm);
+    background-color: var(--surface-200);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.select:focus {
+    border-color: var(--primary-color);
+}
+
+.generateBtn {
+    grid-column: 1 / -1;
+    margin-top: var(--space-sm);
+    padding: var(--space-md);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+}
+
+.resultCard {
+    background-color: var(--surface-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.resultHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.resultTitle h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.resultSubtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.combatStats {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.statBadge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--surface-300);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    min-width: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.statBadge.hp {
+    border-color: rgba(233, 30, 99, 0.3);
+}
+
+.statBadge.ac {
+    border-color: rgba(0, 188, 212, 0.3);
+}
+
+.statLabel {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.statValue {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.abilityScores {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-xs);
+    margin-bottom: var(--space-lg);
+}
+
+.scoreItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--surface-100);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: var(--space-xs);
+}
+
+.scoreLabel {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.scoreVal {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.scoreMod {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.traitsSection h4 {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--space-sm);
+}
+
+.traitItem {
+    margin-bottom: var(--space-sm);
+    font-size: 0.95rem;
+}
+
+.traitItem strong {
+    color: var(--primary-light);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.saveBtn {
+    background-color: var(--secondary-color);
+    color: white;
+}

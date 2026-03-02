@@ -59,21 +59,28 @@ App gestionale per campagne D&D in presenza. Pensata principalmente per il **Dun
 
 ## 💡 Idee da Sviluppare
 
-### Generatore NPC via AI
+### Generatore NPC Procedurale
 
-**Problema**: Come Master, creare una scheda NPC completa al volo durante la sessione richiede troppo tempo.
+**Problema**: Come Master, creare una scheda NPC completa al volo durante la sessione richiede troppo tempo. L'Intelligenza Artificiale generativa "pura" è soggetta ad allucinazioni matematiche e rallenta l'esperienza.
 
 **Soluzione proposta**:
-1. Preparare un **template JSON standard** che definisca la struttura esatta di un NPC (statistiche, abilità, equipaggiamento, personalità, ecc.)
-2. Questo template funziona come un **prompt strutturato** da dare a un LLM (ChatGPT, Claude, ecc.)
-3. Il Master fornisce solo alcuni dettagli chiave (es. "guardia goblin di livello 3, abile con l'arco, codarda")
-4. L'AI restituisce un **file JSON completo** con la scheda NPC pronfill
-5. Il file JSON viene **importato nell'app** e il personaggio viene generato automaticamente
-6. Il formato JSON di output è **sempre identico** — garantendo compatibilità con l'app
-7. **Ripetibile** per qualsiasi tipo di NPC durante tutta la campagna
+Un generatore **algoritmico/procedurale** integrato nell'app. 
+- Il Master seleziona parametri base (Razza, Livello di Sfida, Ruolo).
+- L'app applica template matematicamente corretti per statistiche, Punti Ferita e Classe Armatura.
+- Tratti caratteriali, nomi e difetti vengono estratti casualmente da tabelle o file `.prism`.
+- Risultato istantaneo, a costo zero e perfetto per il bilanciamento di D&D 5e.
 
-Questo sistema permette al Master di generare NPC credibili e meccanicamente corretti in pochi secondi.
+### AI DM Assistant (Stile NotebookLM / RAG)
 
+**Problema**: Durante la sessione, il Master ha bisogno di recuperare regole dal Player's Handbook, lore di Eberron o dettagli dalla propria campagna scritta in PDF/Markdown. Cercare a mano spezza il ritmo.
+
+**Soluzione proposta**:
+Integrare un assistente basato su **RAG (Retrieval-Augmented Generation)** all'interno della Dashboard.
+1. **Indicizzazione**: Carichiamo i PDF dei manuali e i markdown della campagna. Il testo viene diviso in frammenti e convertito in *vettori* (Embeddings).
+2. **Database Vettoriale**: Usiamo l'estensione `pgvector` di Supabase (disponibile gratuitamente) per salvare questi vettori.
+3. **Chat Assistant**: Il Master fa una domanda (es. *"Qual è la regola sulla lotta?"* o *"Chi gestisce la gilda dei ladri a Sharn?"*).
+4. **Recupero e Risposta**: L'app cerca nel database vettoriale i paragrafi rilevanti dai manuali/appunti e li passa a un LLM (come OpenAI GPT-4o-mini). L'LLM formula una risposta precisa **citando la fonte esatta**.
+- *Nota sui costi*: Richiede una chiave API di OpenAI (o simili) fornita dal Master nel file `.env.local`. I costi per uso personale sono irrisori (centesimi al mese).
 ---
 
 ## ✅ Decisioni Funzionali

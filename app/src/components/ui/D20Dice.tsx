@@ -61,6 +61,7 @@ function D20Mesh() {
 
 interface D20DiceProps {
     size?: number;
+    autoRollInterval?: number;
 }
 
 export default function D20Dice({ size = 120 }: D20DiceProps) {
