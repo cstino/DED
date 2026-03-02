@@ -271,6 +271,7 @@ export default function CharacterSheetPage() {
                 skill_proficiencies: data.skill_proficiencies ?? [],
                 spell_slots_used: data.spell_slots_used ?? {},
                 known_spells: data.known_spells ?? [],
+                prepared_spells: Array.isArray(data.prepared_spells) ? data.prepared_spells : [],
                 personality: data.personality ?? { traits: "", ideals: "", bonds: "", flaws: "" },
                 equipment: Array.isArray(data.equipment) ? data.equipment : [],
                 features: Array.isArray(data.features) ? data.features : [],
