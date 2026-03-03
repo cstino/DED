@@ -67,22 +67,26 @@ export default function CampaignPage() {
         if (!user || !campaignId) return;
 
         async function fetchAll() {
-            setLoading(true);
+            try {
+                setLoading(true);
 
-            const [campaignRes, charsRes, membersRes] = await Promise.all([
-                supabase.from("campaigns").select("*").eq("id", campaignId).single(),
-                supabase.from("characters").select("*").eq("campaign_id", campaignId),
-                supabase
-                    .from("campaign_members")
-                    .select("user_id, role, profiles(username, avatar_url)")
-                    .eq("campaign_id", campaignId),
-            ]);
+                const [campaignRes, charsRes, membersRes] = await Promise.all([
+                    supabase.from("campaigns").select("*").eq("id", campaignId).single(),
+                    supabase.from("characters").select("*").eq("campaign_id", campaignId),
+                    supabase
+                        .from("campaign_members")
+                        .select("user_id, role, profiles(username, avatar_url)")
+                        .eq("campaign_id", campaignId),
+                ]);
 
-            if (campaignRes.data) setCampaign(campaignRes.data);
-            if (charsRes.data) setCharacters(charsRes.data);
-            if (membersRes.data) setMembers(membersRes.data as unknown as Member[]);
-
-            setLoading(false);
+                if (campaignRes.data) setCampaign(campaignRes.data);
+                if (charsRes.data) setCharacters(charsRes.data);
+                if (membersRes.data) setMembers(membersRes.data as unknown as Member[]);
+            } catch (error) {
+                console.error("Error fetching campaign data:", error);
+            } finally {
+                setLoading(false);
+            }
         }
 
         fetchAll();
@@ -169,7 +173,11 @@ export default function CampaignPage() {
 
     // Group characters by user
     const myCharacters = characters.filter((c) => c.user_id === user.id);
-    const otherCharacters = characters.filter((c) => c.user_id !== user.id);
+    // Players only see other players' characters (not Master's characters in the party section)
+    const otherCharacters = characters.filter((c) =>
+        c.user_id !== user.id &&
+        c.user_id !== campaign.master_id
+    );
 
     return (
         <div className="page">
@@ -201,31 +209,33 @@ export default function CampaignPage() {
                 >
                     Party
                 </button>
-                <button
-                    className={`${styles.tabBtn} ${activeTab === 'sessions' ? styles.tabBtnActive : ''}`}
-                    onClick={() => setActiveTab('sessions')}
-                >
-                    Sessioni
-                </button>
-                <button
-                    className={`${styles.tabBtn} ${activeTab === 'lore' ? styles.tabBtnActive : ''}`}
-                    onClick={() => setActiveTab('lore')}
-                >
-                    Materiale
-                </button>
-                <button
-                    className={`${styles.tabBtn} ${activeTab === 'spells' ? styles.tabBtnActive : ''}`}
-                    onClick={() => setActiveTab('spells')}
-                >
-                    Incantesimi
-                </button>
                 {isMaster && (
-                    <button
-                        className={`${styles.tabBtn} ${activeTab === 'npcs' ? styles.tabBtnActive : ''}`}
-                        onClick={() => setActiveTab('npcs')}
-                    >
-                        NPCs
-                    </button>
+                    <>
+                        <button
+                            className={`${styles.tabBtn} ${activeTab === 'sessions' ? styles.tabBtnActive : ''}`}
+                            onClick={() => setActiveTab('sessions')}
+                        >
+                            Sessioni
+                        </button>
+                        <button
+                            className={`${styles.tabBtn} ${activeTab === 'lore' ? styles.tabBtnActive : ''}`}
+                            onClick={() => setActiveTab('lore')}
+                        >
+                            Materiale
+                        </button>
+                        <button
+                            className={`${styles.tabBtn} ${activeTab === 'spells' ? styles.tabBtnActive : ''}`}
+                            onClick={() => setActiveTab('spells')}
+                        >
+                            Incantesimi
+                        </button>
+                        <button
+                            className={`${styles.tabBtn} ${activeTab === 'npcs' ? styles.tabBtnActive : ''}`}
+                            onClick={() => setActiveTab('npcs')}
+                        >
+                            NPCs
+                        </button>
+                    </>
                 )}
             </div>
 

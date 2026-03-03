@@ -39,36 +39,41 @@ export default function DashboardPage() {
         if (!user) return;
 
         async function fetchCampaigns() {
-            setLoading(true);
+            try {
+                setLoading(true);
 
-            // Fetch campaigns where user is master
-            const { data: ownedCampaigns } = await supabase
-                .from("campaigns")
-                .select("*")
-                .eq("master_id", user!.id);
+                // Fetch campaigns where user is master
+                const { data: ownedCampaigns } = await supabase
+                    .from("campaigns")
+                    .select("*")
+                    .eq("master_id", user!.id);
 
-            // Fetch campaigns where user is member/player
-            const { data: memberCampaigns } = await supabase
-                .from("campaign_members")
-                .select("campaign_id, role, campaigns(*)")
-                .eq("user_id", user!.id);
+                // Fetch campaigns where user is member/player
+                const { data: memberCampaigns } = await supabase
+                    .from("campaign_members")
+                    .select("campaign_id, role, campaigns(*)")
+                    .eq("user_id", user!.id);
 
-            const allCampaigns: Campaign[] = [];
+                const allCampaigns: Campaign[] = [];
 
-            if (ownedCampaigns) {
-                allCampaigns.push(...ownedCampaigns);
-            }
+                if (ownedCampaigns) {
+                    allCampaigns.push(...ownedCampaigns);
+                }
 
-            if (memberCampaigns) {
-                for (const mc of memberCampaigns as unknown as CampaignMember[]) {
-                    if (mc.campaigns && !allCampaigns.find((c) => c.id === mc.campaigns.id)) {
-                        allCampaigns.push(mc.campaigns);
+                if (memberCampaigns) {
+                    for (const mc of memberCampaigns as unknown as CampaignMember[]) {
+                        if (mc.campaigns && !allCampaigns.find((c) => c.id === mc.campaigns.id)) {
+                            allCampaigns.push(mc.campaigns);
+                        }
                     }
                 }
-            }
 
-            setCampaigns(allCampaigns);
-            setLoading(false);
+                setCampaigns(allCampaigns);
+            } catch (error) {
+                console.error("Error fetching campaigns:", error);
+            } finally {
+                setLoading(false);
+            }
         }
 
         fetchCampaigns();
