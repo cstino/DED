@@ -31,7 +31,6 @@ La tensione esplose in un istante, ma Vaelion intervenne con parole calme e un s
 La partita proseguì, gli animi si sciolsero e infine Grug si lasciò andare a un mezzo sorriso.
 Vaelion e Mega Knight si mostrarono sinceramente interessati alla bevanda. Grug, soddisfatto, propose un incontro l’indomani per contrattarne una fornitura più ampia.
 Un accordo che, forse, li avrebbe condotti esattamente nel cuore dei misteri che Lady Saela voleva svelare.
-
 Sessione 2
 L’accordo con i due halfling era fissato: l’indomani, nelle fogne di Dura Inferiore, avrebbero ricevuto la loro fornitura di Giglio di Sogno. Un appuntamento tanto allettante quanto sospetto. Con l’impegno preso, gli avventurieri finirono il loro pranzo nella Locanda del Martello di Fuoco e decisero di riferire subito tutto a Lady Saela.
 Il ritorno ai rioni superiori
@@ -85,7 +84,6 @@ Dietro di loro, il locandiere Lou Igy fissava la rovina con gli occhi lucidi.
 — «La… la mia locanda…»
 — «Ehm…» mormorò Corwin. «Possiamo spiegare…»
 Ma niente avrebbe consolato il povero halfling dal disastro… causato non dai rapinatori, ma dagli “eroi”.
-
 Sessione 3
 Dopo lunghe trattative e una borsa di monete lasciata con riluttanza nelle mani tremanti di Lou Igy, la questione della locanda fu temporaneamente risolta. Il danno era fatto, ma almeno non avevano lasciato dietro di sé solo macerie.
 Quella sera, però, avevano altro in mente.

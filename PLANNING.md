@@ -135,3 +135,15 @@ DED/
 - La priorità è l'**utilità pratica** per il Master, non l'estetica fine a sé stessa
 - I file .prism sono una risorsa fondamentale che semplifica enormemente lo sviluppo
 - Il generatore NPC via AI è un differenziatore chiave rispetto ad app simili
+
+---
+
+## 🚀 Stato Attuale (Aggiornamento Marzo 2026)
+
+L'assistente AI è ora **completamente operativo** con le seguenti migliorie:
+
+1. **RAG Funzionante**: L'IA legge dai manuali caricati in `document_chunks` su Supabase.
+2. **Multi-Key Rotation**: Per superare i limiti della Free Tier di Google (1000 embedding/giorno), il sistema supporta chiavi multiple nel file `.env.local` (separate da virgola).
+3. **Formattazione Premium**: Le risposte usano Markdown pulito, con le fonti raggruppate in calce in piccolo e corsivo per non disturbare la lettura.
+4. **Ingestion Intelligente**: Lo script `scripts/ingest-materials.ts` è stato ottimizzato per saltare i file già indicizzati, permettendo riavvii sicuri senza sprecare quota.
+
