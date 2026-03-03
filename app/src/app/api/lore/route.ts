@@ -91,3 +91,70 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Failed to generate file tree' }, { status: 500 });
     }
 }
+
+export async function POST(request: Request) {
+    try {
+        const { name, content, path: targetPath } = await request.json();
+        const contentDir = path.join(process.cwd(), '..', 'dnd-campaign');
+
+        // Basic validation
+        if (!name || !content) {
+            return NextResponse.json({ error: 'Name and content are required' }, { status: 400 });
+        }
+
+        const fileName = name.endsWith('.md') ? name : `${name}.md`;
+        const normalizedRelPath = targetPath ? path.normalize(targetPath).replace(/^(\.\.(\/|\\|$))+/, '') : '';
+        const fullDirPath = path.join(contentDir, normalizedRelPath);
+        const fullPath = path.join(fullDirPath, fileName);
+
+        if (!fullPath.startsWith(contentDir)) {
+            return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+        }
+
+        if (!fs.existsSync(fullDirPath)) {
+            fs.mkdirSync(fullDirPath, { recursive: true });
+        }
+
+        fs.writeFileSync(fullPath, content, 'utf-8');
+        return NextResponse.json({ success: true, path: path.join(normalizedRelPath, fileName) });
+    } catch (error) {
+        console.error('Error creating file:', error);
+        return NextResponse.json({ error: 'Failed to create file' }, { status: 500 });
+    }
+}
+
+export async function DELETE(request: Request) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const filePath = searchParams.get('path');
+        const contentDir = path.join(process.cwd(), '..', 'dnd-campaign');
+
+        if (!filePath) {
+            return NextResponse.json({ error: 'Path is required' }, { status: 400 });
+        }
+
+        const normalizedPath = path.normalize(filePath).replace(/^(\.\.(\/|\\|$))+/, '');
+        const fullPath = path.join(contentDir, normalizedPath);
+
+        if (!fullPath.startsWith(contentDir)) {
+            return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+        }
+
+        if (fs.existsSync(fullPath)) {
+            const stats = fs.statSync(fullPath);
+            if (stats.isDirectory()) {
+                // For safety, only allow deleting files or handle directory deletion carefully
+                // fs.rmSync(fullPath, { recursive: true, force: true });
+                return NextResponse.json({ error: 'Deleting directories is not allowed for safety' }, { status: 400 });
+            } else {
+                fs.unlinkSync(fullPath);
+            }
+            return NextResponse.json({ success: true });
+        } else {
+            return NextResponse.json({ error: 'File not found' }, { status: 404 });
+        }
+    } catch (error) {
+        console.error('Error deleting file:', error);
+        return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 });
+    }
+}

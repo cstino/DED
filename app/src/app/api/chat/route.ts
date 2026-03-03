@@ -92,16 +92,29 @@ export async function POST(req: Request) {
             try {
                 const google = createGoogleGenerativeAI({ apiKey: key });
                 const result = await streamText({
-                    model: google('gemini-2.5-flash'),
+                    model: google('gemini-2.5-flash'), // 1.5 e 2.0 sono disabilitati/rimossi sulla free tier per queste chiavi API, ma 2.5 funziona.
                     system: systemPrompt,
                     messages,
+                    maxRetries: 0, // Disable internal retries to let our rotation take over
                 });
                 return result.toDataStreamResponse();
             } catch (err: any) {
-                if (err.status === 429 || err.message?.includes('429')) {
+                // Check status code or message for quota errors across ai-sdk wrappers
+                const errorMessage = (err.message || '').toLowerCase();
+                const lastErrorMessage = (err.lastError?.message || '').toLowerCase();
+                const statusCode = err.status || err.statusCode || err.lastError?.statusCode;
+
+                const isQuotaError =
+                    statusCode === 429 ||
+                    errorMessage.includes('429') ||
+                    errorMessage.includes('quota') ||
+                    lastErrorMessage.includes('429') ||
+                    lastErrorMessage.includes('quota');
+
+                if (isQuotaError) {
                     console.log(`🔄 Chat quota exceeded for a key, trying next...`);
                     lastChatError = err;
-                    continue;
+                    continue; // Prova con la chiave successiva
                 }
                 throw err;
             }

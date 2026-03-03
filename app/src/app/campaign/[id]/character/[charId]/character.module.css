@@ -380,6 +380,13 @@
 .charTags {
     display: flex;
     flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.levelWrapper {
+    display: flex;
+    align-items: center;
     gap: 6px;
 }
 
@@ -530,6 +537,84 @@
 
 .smallInput:focus {
     outline: none;
+    border-color: var(--accent-teal);
+}
+
+.profInput {
+    width: 32px;
+    text-align: center;
+    background: rgba(0, 229, 160, 0.1);
+    border: 1px solid rgba(0, 229, 160, 0.3);
+    border-radius: var(--radius-sm);
+    color: var(--accent-teal);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 2px;
+    appearance: textfield;
+}
+
+.levelControls {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.levelControlsHeader {
+    display: flex;
+    gap: 4px;
+}
+
+.levelBtn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.levelUp {
+    background: rgba(240, 168, 48, 0.15);
+    border-color: rgba(240, 168, 48, 0.3);
+    color: var(--accent-amber);
+}
+
+.levelUp:hover {
+    background: rgba(240, 168, 48, 0.25);
+    border-color: var(--accent-amber);
+    box-shadow: 0 0 10px rgba(240, 168, 48, 0.2);
+}
+
+.levelDown {
+    background: rgba(255, 77, 77, 0.15);
+    border-color: rgba(255, 77, 77, 0.3);
+    color: #ff4d4d;
+}
+
+.levelDown:hover {
+    background: rgba(255, 77, 77, 0.25);
+    border-color: #ff4d4d;
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.2);
+}
+
+.levelBtn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+}
+
+.profInput:focus {
+    outline: none;
+    background: rgba(0, 229, 160, 0.15);
     border-color: var(--accent-teal);
 }
 
@@ -1062,6 +1147,65 @@
 
 .hitDiceBtn:active {
     transform: scale(0.95);
+}
+
+.hitDiceEditGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hitDiceInputWrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hitDiceSeparator {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.hitDieTypeSelect {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.hitDieLabel {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tinySelect {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 2px 4px;
+    outline: none;
+}
+
+.tinySelect:focus {
+    border-color: var(--accent-teal);
+}
+
+.hitDiceDisplay {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.hitDieType {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
 /* Death Saves */

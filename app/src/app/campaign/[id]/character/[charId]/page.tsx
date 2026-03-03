@@ -61,6 +61,8 @@ interface Character {
     portrait_url: string | null;
     languages: string[];
     class_abilities: ClassAbility[];
+    hit_die: number;
+    proficiency_bonus: number;
 }
 
 const ABILITIES = [
@@ -253,7 +255,11 @@ export default function CharacterSheetPage() {
     const [portraitPreview, setPortraitPreview] = useState<string | null>(null);
     const [showPortraitFull, setShowPortraitFull] = useState(false);
 
+    const [campaignMasterId, setCampaignMasterId] = useState<string | null>(null);
+
     const isOwner = char?.user_id === user?.id;
+    const isMaster = user?.id === campaignMasterId;
+    const canEdit = isOwner || isMaster;
 
     const fetchChar = useCallback(async () => {
         const { data } = await supabase.from("characters").select("*").eq("id", charId).single();
@@ -278,9 +284,15 @@ export default function CharacterSheetPage() {
                 proficiencies: Array.isArray(data.proficiencies) ? data.proficiencies : [],
                 languages: Array.isArray(data.languages) ? data.languages : [],
                 class_abilities: Array.isArray(data.class_abilities) ? data.class_abilities : [],
+                hit_die: data.hit_die ?? 8,
+                proficiency_bonus: data.proficiency_bonus ?? Math.ceil((data.level || 1) / 4) + 1,
             } as Character;
             setChar(c);
             setEditData(c);
+
+            // Also fetch campaign to get master_id
+            const { data: campData } = await supabase.from("campaigns").select("master_id").eq("id", data.campaign_id).single();
+            if (campData) setCampaignMasterId(campData.master_id);
         }
         setLoading(false);
     }, [charId]);
@@ -308,7 +320,7 @@ export default function CharacterSheetPage() {
     }, [char?.known_spells]);
 
     async function saveChanges() {
-        if (!char || !isOwner) return;
+        if (!char || !canEdit) return;
         setSaving(true);
         const d = editData;
 
@@ -328,7 +340,7 @@ export default function CharacterSheetPage() {
             }
         }
 
-        await supabase.from("characters").update({
+        const { data: updatedChar, error } = await supabase.from("characters").update({
             name: d.name,
             level: d.level,
             hp_current: d.hp_current,
@@ -357,24 +369,65 @@ export default function CharacterSheetPage() {
             languages: d.languages,
             class_abilities: d.class_abilities,
             portrait_url: newPortraitUrl,
-        }).eq("id", char.id);
+        }).eq("id", char.id).select().single();
+
+        if (error) {
+            console.error("Error saving character:", error);
+            alert("Errore durante il salvataggio: " + error.message);
+            setSaving(false);
+            return;
+        }
+
+        if (updatedChar) {
+            const c = {
+                ...updatedChar,
+                hp_temp: updatedChar.hp_temp ?? 0,
+                speed: updatedChar.speed ?? 30,
+                hit_dice_total: updatedChar.hit_dice_total ?? updatedChar.level,
+                hit_dice_current: updatedChar.hit_dice_current ?? updatedChar.level,
+                death_saves: updatedChar.death_saves ?? { successes: 0, failures: 0 },
+                money: updatedChar.money ?? { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 },
+                saving_throw_prof: updatedChar.saving_throw_prof ?? [],
+                skill_proficiencies: updatedChar.skill_proficiencies ?? [],
+                spell_slots_used: updatedChar.spell_slots_used ?? {},
+                known_spells: updatedChar.known_spells ?? [],
+                prepared_spells: Array.isArray(updatedChar.prepared_spells) ? updatedChar.prepared_spells : [],
+                personality: updatedChar.personality ?? { traits: "", ideals: "", bonds: "", flaws: "" },
+                equipment: Array.isArray(updatedChar.equipment) ? updatedChar.equipment : [],
+                features: Array.isArray(updatedChar.features) ? updatedChar.features : [],
+                proficiencies: Array.isArray(updatedChar.proficiencies) ? updatedChar.proficiencies : [],
+                languages: Array.isArray(updatedChar.languages) ? updatedChar.languages : [],
+                class_abilities: Array.isArray(updatedChar.class_abilities) ? updatedChar.class_abilities : [],
+                hit_die: updatedChar.hit_die ?? 8,
+                proficiency_bonus: updatedChar.proficiency_bonus ?? Math.ceil((updatedChar.level || 1) / 4) + 1,
+            } as Character;
+            setChar(c);
+            setEditData(c);
+        }
+
         setPortraitFile(null);
         setPortraitPreview(null);
-        await fetchChar();
         setEditing(false);
         setSaving(false);
     }
 
     // Quick save a single field without entering edit mode
     async function quickSave(field: string, value: unknown) {
-        if (!char || !isOwner) return;
+        if (!char || !canEdit) return;
+        // Don't try to save proficiency_bonus if it's not in DB
+        if (field === "proficiency_bonus") {
+            setChar((prev) => prev ? { ...prev, [field]: value as any } as Character : null);
+            setEditData((prev) => ({ ...prev, [field]: value as any }));
+            return;
+        }
         await supabase.from("characters").update({ [field]: value }).eq("id", char.id);
-        setChar((prev) => prev ? { ...prev, [field]: value } as Character : null);
-        setEditData((prev) => ({ ...prev, [field]: value }));
+        setChar((prev) => prev ? { ...prev, [field]: value as any } as Character : null);
+        setEditData((prev) => ({ ...prev, [field]: value as any }));
     }
 
     async function deleteCharacter() {
-        if (!char || !isOwner) return;
+        if (!char || !canEdit) return;
+        if (!confirm(`Sei sicuro di voler eliminare definitivamente questo personaggio?`)) return;
         setDeleting(true);
         const { error } = await supabase.from("characters").delete().eq("id", char.id);
         if (!error) {
@@ -410,7 +463,7 @@ export default function CharacterSheetPage() {
         );
     }
 
-    const pb = profBonus(char.level);
+    const pb = editing ? (editData.proficiency_bonus ?? 2) : (char.proficiency_bonus ?? 2);
     const abs = (editing ? editData.ability_scores : char.ability_scores) as AbilityScores;
     const equip = (editing ? editData.equipment : char.equipment) as EquipmentItem[];
     const equipBonuses = calculateEquipmentBonuses(equip);
@@ -429,7 +482,7 @@ export default function CharacterSheetPage() {
                 <button className={styles.backBtn} onClick={() => router.push(`/campaign/${campaignId}`)}>
                     ← Campagna
                 </button>
-                {isOwner && (
+                {canEdit && (
                     <div className={styles.topActions}>
                         {editing ? (
                             <>
@@ -464,10 +517,12 @@ export default function CharacterSheetPage() {
                                 <span className={styles.sidePanelItemIcon}>✏️</span>
                                 <span>Modifica Personaggio</span>
                             </button>
-                            <button className={`${styles.sidePanelItem} ${styles.sidePanelItemDanger}`} style={{ animationDelay: '0.12s' }} onClick={() => { setShowSettingsMenu(false); setShowDeleteConfirm(true); }}>
-                                <span className={styles.sidePanelItemIcon}>🗑️</span>
-                                <span>Elimina Personaggio</span>
-                            </button>
+                            {isOwner && (
+                                <button className={`${styles.sidePanelItem} ${styles.sidePanelItemDanger}`} style={{ animationDelay: '0.12s' }} onClick={() => { setShowSettingsMenu(false); setShowDeleteConfirm(true); }}>
+                                    <span className={styles.sidePanelItemIcon}>🗑️</span>
+                                    <span>Elimina Personaggio</span>
+                                </button>
+                            )}
                         </nav>
                     </div>
                 </div>,
@@ -511,7 +566,55 @@ export default function CharacterSheetPage() {
                     </h1>
                     <p className={styles.charMeta}>{char.race} • {char.class}{char.subclass && ` — ${char.subclass}`}</p>
                     <div className={styles.charTags}>
-                        <span className={styles.levelTag}>Lv. {char.level}</span>
+                        <div className={styles.levelWrapper}>
+                            <span className={styles.levelTag}>Lv. {editing ? (editData.level ?? char.level) : char.level}</span>
+                            {editing && (
+                                <div className={styles.levelControlsHeader}>
+                                    <button
+                                        className={`${styles.levelBtn} ${styles.levelDown}`}
+                                        onClick={() => {
+                                            const currentLevel = editData.level ?? char?.level ?? 1;
+                                            const newLevel = Math.max(1, currentLevel - 1);
+                                            const newPB = Math.ceil(newLevel / 4) + 1;
+                                            upd("level", newLevel);
+                                            upd("proficiency_bonus", newPB);
+                                            // Optional: also update hit dice total if it was equal to level
+                                            if (editData.hit_dice_total === currentLevel) {
+                                                upd("hit_dice_total", newLevel);
+                                                if (editData.hit_dice_current === currentLevel) {
+                                                    upd("hit_dice_current", newLevel);
+                                                }
+                                            }
+                                        }}
+                                        disabled={(editData.level ?? char?.level ?? 1) <= 1}
+                                        title="Level Down"
+                                    >
+                                        -
+                                    </button>
+                                    <button
+                                        className={`${styles.levelBtn} ${styles.levelUp}`}
+                                        onClick={() => {
+                                            const currentLevel = editData.level ?? char?.level ?? 1;
+                                            const newLevel = Math.min(20, currentLevel + 1);
+                                            const newPB = Math.ceil(newLevel / 4) + 1;
+                                            upd("level", newLevel);
+                                            upd("proficiency_bonus", newPB);
+                                            // Optional: also update hit dice total
+                                            if (editData.hit_dice_total === currentLevel) {
+                                                upd("hit_dice_total", newLevel);
+                                                if (editData.hit_dice_current === currentLevel) {
+                                                    upd("hit_dice_current", newLevel);
+                                                }
+                                            }
+                                        }}
+                                        disabled={(editData.level ?? char?.level ?? 1) >= 20}
+                                        title="Level Up"
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                         {char.alignment && <span className={styles.alignTag}>{char.alignment}</span>}
                         {char.background && <span className={styles.bgTag}>{char.background}</span>}
                     </div>
@@ -529,7 +632,7 @@ export default function CharacterSheetPage() {
                                 <span>/</span>
                                 <input type="number" className={styles.smallInput} value={editData.hp_max ?? 1} onChange={(e) => upd("hp_max", Math.max(1, parseInt(e.target.value) || 1))} />
                             </div>
-                        ) : isOwner ? (
+                        ) : canEdit ? (
                             <div className={styles.hpEditRow}>
                                 <input type="number" className={styles.smallInput} value={char.hp_current} onChange={(e) => setChar((p) => p ? { ...p, hp_current: Math.max(0, parseInt(e.target.value) || 0) } as Character : null)} onBlur={(e) => quickSave("hp_current", Math.max(0, parseInt(e.target.value) || 0))} />
                                 <span>/ {char.hp_max}</span>
@@ -541,10 +644,10 @@ export default function CharacterSheetPage() {
                     <div className="hp-bar-container" style={{ height: 8 }}>
                         <div className="hp-bar" style={{ width: `${hpPercent}%`, background: hpPercent > 50 ? "var(--hp-green)" : hpPercent > 25 ? "var(--hp-yellow)" : "var(--hp-red)" }} />
                     </div>
-                    {(char.hp_temp > 0 || isOwner) && (
+                    {(char.hp_temp > 0 || canEdit) && (
                         <div className={styles.hpTemp}>
                             <span>HP Temp:</span>
-                            {(editing || isOwner) ? (
+                            {(editing || canEdit) ? (
                                 <input type="number" className={styles.tinyInput} value={editing ? (editData.hp_temp ?? 0) : char.hp_temp} onChange={(e) => { const v = Math.max(0, parseInt(e.target.value) || 0); if (editing) upd("hp_temp", v); else setChar((p) => p ? { ...p, hp_temp: v } as Character : null); }} onBlur={(e) => { if (!editing) quickSave("hp_temp", Math.max(0, parseInt(e.target.value) || 0)); }} />
                             ) : (
                                 <span className={styles.tempValue}>{char.hp_temp}</span>
@@ -555,7 +658,10 @@ export default function CharacterSheetPage() {
                 <div className={styles.statBox}><span className={styles.statLabel}>AC</span><span className={styles.statValue}>{effectiveAc}{equipBonuses["ac"] ? <small className={styles.bonusNote}>({fmtMod(equipBonuses["ac"])})</small> : null}</span></div>
                 <div className={styles.statBox}><span className={styles.statLabel}>VEL</span><span className={styles.statValue}>{effectiveSpeed}</span></div>
                 <div className={styles.statBox}><span className={styles.statLabel}>INIT</span><span className={styles.statValue}>{fmtMod(getMod(abs.dex))}</span></div>
-                <div className={styles.statBox}><span className={styles.statLabel}>PROF</span><span className={styles.statValue}>+{pb}</span></div>
+                <div className={styles.statBox}>
+                    <span className={styles.statLabel}>BC</span>
+                    <span className={styles.statValue}>+{pb}</span>
+                </div>
             </div>
 
             {/* Tabs */}
@@ -856,10 +962,37 @@ export default function CharacterSheetPage() {
                             <h3 className={styles.sectionTitle}>Dadi Vita</h3>
                             <div className={styles.hitDiceRow}>
                                 {editing ? (
-                                    <>
-                                        <input type="number" className={styles.smallInput} value={editData.hit_dice_current ?? 0} onChange={(e) => upd("hit_dice_current", Math.max(0, parseInt(e.target.value) || 0))} />
-                                        <span>/ {char.hit_dice_total}</span>
-                                    </>
+                                    <div className={styles.hitDiceEditGroup}>
+                                        <div className={styles.hitDiceInputWrap}>
+                                            <input
+                                                type="number"
+                                                className={styles.smallInput}
+                                                value={editData.hit_dice_current ?? 0}
+                                                onChange={(e) => upd("hit_dice_current", Math.max(0, parseInt(e.target.value) || 0))}
+                                                placeholder="Corr."
+                                            />
+                                            <span className={styles.hitDiceSeparator}>/</span>
+                                            <input
+                                                type="number"
+                                                className={styles.smallInput}
+                                                value={editData.hit_dice_total ?? 1}
+                                                onChange={(e) => upd("hit_dice_total", Math.max(1, parseInt(e.target.value) || 1))}
+                                                placeholder="Tot."
+                                            />
+                                        </div>
+                                        <div className={styles.hitDieTypeSelect}>
+                                            <span className={styles.hitDieLabel}>Tipo: d</span>
+                                            <select
+                                                className={styles.tinySelect}
+                                                value={editData.hit_die ?? 8}
+                                                onChange={(e) => upd("hit_die", parseInt(e.target.value))}
+                                            >
+                                                {[6, 8, 10, 12].map(d => (
+                                                    <option key={d} value={d}>{d}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
                                 ) : (
                                     <>
                                         {isOwner && (
@@ -869,7 +1002,10 @@ export default function CharacterSheetPage() {
                                                 quickSave("hit_dice_current", next);
                                             }}>−</button>
                                         )}
-                                        <span className={styles.hitDiceValue}>{char.hit_dice_current} / {char.hit_dice_total}</span>
+                                        <div className={styles.hitDiceDisplay}>
+                                            <span className={styles.hitDiceValue}>{char.hit_dice_current} / {char.hit_dice_total}</span>
+                                            <span className={styles.hitDieType}>d{char.hit_die ?? 8}</span>
+                                        </div>
                                         {isOwner && (
                                             <button type="button" className={styles.hitDiceBtn} onClick={() => {
                                                 const next = Math.min(char.hit_dice_total, char.hit_dice_current + 1);

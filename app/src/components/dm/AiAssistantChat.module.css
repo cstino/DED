@@ -31,7 +31,8 @@
     width: 350px;
     height: 500px;
     max-height: calc(100vh - 120px);
-    background: var(--card-bg);
+    background: #0f172a;
+    /* Solid background to remove transparency */
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
@@ -52,7 +53,8 @@
 
 .header {
     padding: var(--space-md);
-    background: rgba(30, 41, 59, 0.8);
+    background: #1e293b;
+    /* Solid color instead of rgba */
     border-bottom: 1px solid var(--border-color);
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     display: flex;
@@ -193,7 +195,8 @@
     border-top: 1px solid var(--border-color);
     display: flex;
     gap: var(--space-sm);
-    background: rgba(30, 41, 59, 0.5);
+    background: #1e293b;
+    /* Solid color instead of rgba */
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 

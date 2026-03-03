@@ -32,27 +32,113 @@
 
 /* Create Form */
 .createForm {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--accent-teal);
-    box-shadow: 0 0 20px rgba(0, 229, 160, 0.05);
+    background: rgba(10, 15, 20, 0.4) !important;
+    border: 1px solid rgba(0, 229, 160, 0.15) !important;
+    padding: var(--space-xl) !important;
+    backdrop-filter: blur(10px);
 }
 
-.createForm h3 {
-    margin-bottom: var(--space-md);
-    color: var(--accent-teal);
-    font-size: 1.1rem;
-}
-
-.formRow {
+.creatorHeader {
     display: flex;
-    gap: var(--space-md);
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
 }
 
-@media (max-width: 600px) {
-    .formRow {
-        flex-direction: column;
-        gap: var(--space-sm);
+.creatorHeader h3 {
+    margin: 0;
+    color: var(--accent-teal);
+    font-size: 1.25rem;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.closeBtn:hover {
+    color: var(--text-primary);
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.formField {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fullWidth {
+    grid-column: 1 / -1;
+}
+
+.formField label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.formInput {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    outline: none;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.formInput:focus {
+    border-color: var(--accent-teal);
+    background: rgba(0, 229, 160, 0.05);
+    box-shadow: 0 0 10px rgba(0, 229, 160, 0.1);
+}
+
+.formTextarea {
+    min-height: 120px;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        gap: var(--space-lg);
+    }
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 100px 1fr 180px;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+@media (max-width: 800px) {
+    .formGrid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .fullWidth {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 500px) {
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .fullWidth {
+        grid-column: span 1;
     }
 }
 

@@ -236,6 +236,7 @@ export default function CreateCharacterPage() {
             money: { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 },
             personality: { traits: "", ideals: "", bonds: "", flaws: "" },
             spell_slots: buildSpellSlots(hitDice, level),
+            hit_die: hitDice,
         });
 
         if (insertError) {

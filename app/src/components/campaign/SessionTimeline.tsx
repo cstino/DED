@@ -104,55 +104,61 @@ export function SessionTimeline({ campaignId, isMaster }: SessionTimelineProps) 
             </div>
 
             {isCreating && (
-                <form onSubmit={handleAddSession} className={`card ${styles.createForm}`}>
-                    <h3>Registra Nuova Sessione</h3>
+                <form onSubmit={handleAddSession} className={`card card-glow-teal ${styles.createForm}`}>
+                    <div className={styles.creatorHeader}>
+                        <h3>📜 Registra Nuova Sessione</h3>
+                        <button type="button" className={styles.closeBtn} onClick={() => setIsCreating(false)}>✕</button>
+                    </div>
 
-                    <div className={styles.formRow}>
-                        <div className="form-group" style={{ flex: 1 }}>
-                            <label>Numero</label>
+                    <div className={styles.formGrid}>
+                        <div className={styles.formField}>
+                            <label>Sessione #</label>
                             <input
                                 type="number"
                                 min="1"
-                                className="form-control"
+                                className={styles.formInput}
                                 value={newNumber}
                                 onChange={(e) => setNewNumber(parseInt(e.target.value))}
                                 required
                             />
                         </div>
-                        <div className="form-group" style={{ flex: 3 }}>
-                            <label>Titolo (opzionale)</label>
+                        <div className={styles.formField}>
+                            <label>Data Giocata</label>
+                            <input
+                                type="date"
+                                className={styles.formInput}
+                                value={newDate}
+                                onChange={(e) => setNewDate(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className={`${styles.formField} ${styles.fullWidth}`}>
+                            <label>Titolo del Capitolo</label>
                             <input
                                 type="text"
-                                className="form-control"
-                                placeholder="es. L'agguato nella foresta"
+                                className={styles.formInput}
+                                placeholder="es. L'Oscurità di Sharn"
                                 value={newTitle}
                                 onChange={(e) => setNewTitle(e.target.value)}
                             />
                         </div>
-                        <div className="form-group" style={{ flex: 2 }}>
-                            <label>Data Giocata</label>
-                            <input
-                                type="date"
-                                className="form-control"
-                                value={newDate}
-                                onChange={(e) => setNewDate(e.target.value)}
-                            />
-                        </div>
                     </div>
 
-                    <div className="form-group">
-                        <label>Appunti / Riassunto</label>
+                    <div className={styles.formField}>
+                        <label>Appunti della Sessione</label>
                         <textarea
-                            className="form-control"
-                            placeholder="Cosa è successo questa volta?"
-                            rows={4}
+                            className={`${styles.formInput} ${styles.formTextarea}`}
+                            placeholder="Cosa è successo in questa avventura? (Markdown supportato)"
                             value={newNotes}
                             onChange={(e) => setNewNotes(e.target.value)}
+                            rows={6}
                         />
                     </div>
 
                     <div className={styles.formActions}>
-                        <button type="submit" className="btn btn-primary">Salva Sessione</button>
+                        <button type="submit" className="btn btn-primary">
+                            ✓ Salva Sessione
+                        </button>
                     </div>
                 </form>
             )}
