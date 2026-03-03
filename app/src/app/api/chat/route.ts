@@ -64,12 +64,12 @@ export async function POST(req: Request) {
 
         // 5. Stream the response directly to the client
         const result = await streamText({
-            model: google('gemini-1.5-flash'),
+            model: google('gemini-2.5-flash'),
             system: systemPrompt,
             messages,
         });
 
-        return result.toTextStreamResponse();
+        return result.toDataStreamResponse();
 
     } catch (error: any) {
         console.error('API Chat Error:', error);

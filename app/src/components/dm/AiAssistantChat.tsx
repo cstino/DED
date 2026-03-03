@@ -95,7 +95,7 @@ export default function AiAssistantChat() {
                 <form onSubmit={handleSubmit} className={styles.inputArea}>
                     <input
                         className={styles.input}
-                        value={input}
+                        value={input || ""}
                         onChange={handleInputChange}
                         placeholder="Fai una domanda (es. regole, npc, lore...)"
                         disabled={isLoading}
@@ -103,7 +103,7 @@ export default function AiAssistantChat() {
                     <button
                         type="submit"
                         className={styles.sendButton}
-                        disabled={isLoading || !input.trim()}
+                        disabled={isLoading || !(input || "").trim()}
                     >
                         {isLoading ? "..." : "Invia"}
                     </button>
