@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { reindexFile } from '@/lib/lore-ingestion';
 
 export const dynamic = 'force-dynamic';
 
@@ -116,7 +117,17 @@ export async function POST(request: Request) {
         }
 
         fs.writeFileSync(fullPath, content, 'utf-8');
-        return NextResponse.json({ success: true, path: path.join(normalizedRelPath, fileName) });
+
+        // Automatic re-indexing for AI
+        const relativePathForSync = path.join(normalizedRelPath, fileName);
+        try {
+            await reindexFile(relativePathForSync, content);
+        } catch (reindexErr) {
+            console.error('Re-indexing failed after POST:', reindexErr);
+            // We don't fail the whole request because the file was saved
+        }
+
+        return NextResponse.json({ success: true, path: relativePathForSync });
     } catch (error) {
         console.error('Error creating file:', error);
         return NextResponse.json({ error: 'Failed to create file' }, { status: 500 });
@@ -156,5 +167,41 @@ export async function DELETE(request: Request) {
     } catch (error) {
         console.error('Error deleting file:', error);
         return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 });
+    }
+}
+
+export async function PUT(request: Request) {
+    try {
+        const { path: filePath, content } = await request.json();
+        const contentDir = path.join(process.cwd(), '..', 'dnd-campaign');
+
+        if (!filePath || content === undefined) {
+            return NextResponse.json({ error: 'Path and content are required' }, { status: 400 });
+        }
+
+        const normalizedPath = path.normalize(filePath).replace(/^(\.\.(\/|\\|$))+/, '');
+        const fullPath = path.join(contentDir, normalizedPath);
+
+        if (!fullPath.startsWith(contentDir)) {
+            return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+        }
+
+        if (!fs.existsSync(fullPath)) {
+            return NextResponse.json({ error: 'File not found' }, { status: 404 });
+        }
+
+        fs.writeFileSync(fullPath, content, 'utf-8');
+
+        // Automatic re-indexing for AI
+        try {
+            await reindexFile(normalizedPath, content);
+        } catch (reindexErr) {
+            console.error('Re-indexing failed after PUT:', reindexErr);
+        }
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error updating file:', error);
+        return NextResponse.json({ error: 'Failed to update file' }, { status: 500 });
     }
 }

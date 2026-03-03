@@ -17,8 +17,11 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
     const [loading, setLoading] = useState(true);
     const [loadingContent, setLoadingContent] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [newName, setNewName] = useState("");
     const [newContent, setNewContent] = useState("");
+    const [editContent, setEditContent] = useState("");
+    const [isSyncing, setIsSyncing] = useState(false);
 
     useEffect(() => {
         fetchTree();
@@ -84,6 +87,29 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
         }
     }
 
+    async function handleSaveEdit() {
+        if (!selectedPath) return;
+        setIsSyncing(true);
+        try {
+            const res = await fetch("/api/lore", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: selectedPath, content: editContent }),
+            });
+
+            if (res.ok) {
+                setIsEditing(false);
+                setContent(editContent);
+            } else {
+                alert("Errore durante il salvataggio.");
+            }
+        } catch (error) {
+            console.error("Save error:", error);
+            alert("Errore di rete.");
+        }
+        setIsSyncing(false);
+    }
+
     async function handleDeleteFile(e: React.MouseEvent, pathStr: string) {
         e.stopPropagation();
         if (!confirm(`Sei sicuro di voler eliminare il file "${pathStr}"?`)) return;
@@ -123,6 +149,7 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                         onClick={() => {
                             setSelectedPath(item.path);
                             setIsCreating(false);
+                            setIsEditing(false);
                         }}
                     >
                         <div className={styles.fileItemContent}>
@@ -158,6 +185,7 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                             onClick={() => {
                                 setIsCreating(true);
                                 setSelectedPath(null);
+                                setIsEditing(false);
                             }}
                             title="Nuovo file"
                         >
@@ -208,15 +236,59 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                         </div>
                     </form>
                 ) : selectedPath ? (
-                    loadingContent ? (
-                        <div className={styles.loadingState}>Lettura file...</div>
-                    ) : (
-                        <div className={styles.markdownWrapper}>
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                {content}
-                            </ReactMarkdown>
+                    <>
+                        <div className={styles.contentHeader}>
+                            <h3 style={{ margin: 0 }}>
+                                {selectedPath.split('/').pop()?.replace(/\.(md|txt)$/, '')}
+                            </h3>
+                            {isMaster && !isEditing && (
+                                <button
+                                    className="btn btn-secondary btn-sm"
+                                    onClick={() => {
+                                        setIsEditing(true);
+                                        setEditContent(content);
+                                    }}
+                                >
+                                    📝 Modifica
+                                </button>
+                            )}
                         </div>
-                    )
+
+                        {loadingContent ? (
+                            <div className={styles.loadingState}>Lettura file...</div>
+                        ) : isEditing ? (
+                            <div className={styles.editorWrapper}>
+                                <textarea
+                                    className={`${styles.formInput} ${styles.editorTextarea}`}
+                                    value={editContent}
+                                    onChange={(e) => setEditContent(e.target.value)}
+                                    autoFocus
+                                />
+                                <div className={styles.editorActions}>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => setIsEditing(false)}
+                                        disabled={isSyncing}
+                                    >
+                                        Annulla
+                                    </button>
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={handleSaveEdit}
+                                        disabled={isSyncing}
+                                    >
+                                        {isSyncing ? "Sincronizzazione IA..." : "Salva e Aggiorna IA"}
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className={styles.markdownWrapper}>
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                    {content}
+                                </ReactMarkdown>
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <div className={styles.emptyState}>
                         <p>Seleziona un file dal menu a sinistra per visualizzarlo o creane uno nuovo.</p>
