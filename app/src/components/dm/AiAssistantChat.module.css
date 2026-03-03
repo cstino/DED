@@ -137,7 +137,55 @@
 .messageContent {
     font-size: 0.95rem;
     line-height: 1.5;
-    white-space: pre-wrap;
+}
+
+.messageContent p {
+    margin-bottom: 0.75rem;
+}
+
+.messageContent p:last-child {
+    margin-bottom: 0;
+}
+
+.messageContent strong {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.messageContent ul,
+.messageContent ol {
+    margin: 0.5rem 0 0.75rem 1.25rem;
+}
+
+.messageContent li {
+    margin-bottom: 0.25rem;
+}
+
+.messageContent h1,
+.messageContent h2,
+.messageContent h3 {
+    font-family: var(--font-cinzel);
+    color: var(--primary);
+    margin: 1rem 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.messageContent blockquote {
+    border-left: 2px solid var(--primary);
+    margin: 0.5rem 0;
+    padding-left: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.sources {
+    display: block;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px border var(--border-color);
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--text-muted);
 }
 
 .inputArea {

@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useChat } from "ai/react";
 import { useAuth } from "@/hooks/useAuth";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import styles from "./AiAssistantChat.module.css";
 
 export default function AiAssistantChat() {
@@ -71,8 +73,25 @@ export default function AiAssistantChat() {
                                     {m.role === "user" ? "Tu" : "Assistente"}
                                 </div>
                                 <div className={styles.messageContent}>
-                                    {/* Render markdown properly if needed, for now just text */}
-                                    {m.content}
+                                    {m.role === 'user' ? (
+                                        m.content
+                                    ) : (
+                                        <ReactMarkdown
+                                            remarkPlugins={[remarkGfm]}
+                                            components={{
+                                                p: ({ node, children }) => {
+                                                    // Flatten children to check if it starts with "Fonti:"
+                                                    const content = String(children);
+                                                    if (content.startsWith('Fonti:')) {
+                                                        return <span className={styles.sources}>{children}</span>;
+                                                    }
+                                                    return <p>{children}</p>;
+                                                }
+                                            }}
+                                        >
+                                            {m.content}
+                                        </ReactMarkdown>
+                                    )}
                                 </div>
                             </div>
                         ))

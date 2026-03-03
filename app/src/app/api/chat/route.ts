@@ -1,4 +1,4 @@
-import { google } from '@ai-sdk/google';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { streamText } from 'ai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@supabase/supabase-js';
@@ -10,6 +10,8 @@ const supabase = createClient(
 );
 
 export async function POST(req: Request) {
+    const geminiKeys = (process.env.GOOGLE_GENERATIVE_AI_API_KEY || "").split(',').map(k => k.trim()).filter(Boolean);
+
     try {
         const { messages, isPro } = await req.json();
 
@@ -23,20 +25,39 @@ export async function POST(req: Request) {
 
         const latestMessage = messages[messages.length - 1].content;
 
-        const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!);
-        const embeddingModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
-        const embedResult = await embeddingModel.embedContent(latestMessage);
-        const embedding = embedResult.embedding.values;
+        // 1. Get Embeddings with Rotation
+        let embedding;
+        let lastEmbedError;
+        for (const key of geminiKeys) {
+            try {
+                const genAI = new GoogleGenerativeAI(key);
+                const embeddingModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
+                const embedResult = await embeddingModel.embedContent(latestMessage);
+                embedding = embedResult.embedding.values;
+                break; // Success!
+            } catch (err: any) {
+                if (err.message.includes('429') || err.message.toLowerCase().includes('quota')) {
+                    console.log(`🔄 Embedding quota exceeded for a key, trying next...`);
+                    lastEmbedError = err;
+                    continue;
+                }
+                throw err;
+            }
+        }
+
+        if (!embedding) {
+            throw lastEmbedError || new Error("Tutte le chiavi API hanno esaurito la quota per le ricerche (embeddings).");
+        }
 
         // 2. Query Supabase pgvector for similar document chunks
-        const { data: documents, error } = await supabase.rpc('match_documents', {
+        const { data: documents, error: dbError } = await supabase.rpc('match_documents', {
             query_embedding: embedding,
-            match_threshold: 0.75, // Adjust based on precision needs
-            match_count: 5,       // Max chunks to retrieve
+            match_threshold: 0.5,
+            match_count: 10,
         });
 
-        if (error) {
-            console.error('Vector search error:', error);
+        if (dbError) {
+            console.error('Vector search error:', dbError);
             throw new Error('Failed to retrieve knowledge base context.');
         }
 
@@ -57,19 +78,36 @@ export async function POST(req: Request) {
         ${contextText}
         </contesto>
 
-        Regole ferree:
+        Regole ferree per la formattazione e le citazioni:
         1. Se la risposta non è presente nel contesto, dillo chiaramente: "Non ho trovato questa informazione nei manuali o negli appunti forniti".
-        2. Quando rispondi, **cita la fonte** (il "document_name" del frammento che hai usato) usando le parentesi quadre, es. [Player's Handbook.pdf] o [01-volta-del-cielo.md].
-        3. Rispondi in italiano. Sii conciso e diretto, sei al tavolo da gioco e il Master ha bisogno di informazioni rapide.`;
+        2. Usa SEMPRE il markdown per la formattazione (grassetto per i termini chiave, elenchi puntati per le statistiche).
+        3. **CITAZIONI**: NON inserire mai citazioni (parentesi quadre) nel mezzo del testo o alla fine di ogni riga.
+        4. **FONTI A FINE MESSAGGIO**: Elenca tutte le fonti utilizzate in una singola riga alla fine del messaggio, preceduta dalla parola "Fonti:", ad esempio: "Fonti: [Manuale del giocatore.txt], [01-volta-del-cielo.md]".
+        5. **NOMI FILE PULITI**: Usa SOLO il nome del file nelle citazioni, NON il percorso completo. 
+        6. Rispondi in italiano. Sii conciso e diretto, sei al tavolo da gioco e il Master ha bisogno di informazioni rapide.`;
 
-        // 5. Stream the response directly to the client
-        const result = await streamText({
-            model: google('gemini-2.5-flash'),
-            system: systemPrompt,
-            messages,
-        });
+        // 5. Stream the response with Rotation
+        let lastChatError;
+        for (const key of geminiKeys) {
+            try {
+                const google = createGoogleGenerativeAI({ apiKey: key });
+                const result = await streamText({
+                    model: google('gemini-2.5-flash'),
+                    system: systemPrompt,
+                    messages,
+                });
+                return result.toDataStreamResponse();
+            } catch (err: any) {
+                if (err.status === 429 || err.message?.includes('429')) {
+                    console.log(`🔄 Chat quota exceeded for a key, trying next...`);
+                    lastChatError = err;
+                    continue;
+                }
+                throw err;
+            }
+        }
 
-        return result.toDataStreamResponse();
+        throw lastChatError || new Error("Tutte le chiavi API hanno esaurito la quota giornaliera.");
 
     } catch (error: any) {
         console.error('API Chat Error:', error);
