@@ -1,123 +1,271 @@
+/* ============================================
+   NPC & Monster Generator — Matching App Theme
+   ============================================ */
+
 .generatorContainer {
-    background-color: var(--surface-100);
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-card);
     padding: var(--space-lg);
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
+    box-shadow: var(--shadow-card);
 }
 
-.controls {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+/* ===== Mode & Type Toggles ===== */
+.modeToggle,
+.typeToggle {
+    display: flex;
+    gap: var(--space-xs);
+    background: var(--bg-card);
+    border-radius: var(--radius-full);
+    padding: var(--space-xs);
+}
+
+.modeBtn,
+.typeBtn {
+    flex: 1;
+    padding: var(--space-sm) var(--space-md);
+    border: none;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.modeBtn:hover,
+.typeBtn:hover {
+    color: var(--text-primary);
+}
+
+.modeBtnActive,
+.typeBtnActive {
+    background: var(--accent-teal) !important;
+    color: var(--bg-primary) !important;
+    font-weight: 600;
+}
+
+/* ===== AI Mode ===== */
+.aiMode {
+    display: flex;
+    flex-direction: column;
     gap: var(--space-md);
 }
 
-.controlGroup {
+.promptSection {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
+    gap: var(--space-sm);
 }
 
-.controlGroup label {
+.promptLabel {
     font-size: 0.85rem;
     color: var(--text-secondary);
     font-weight: 500;
 }
 
-.select {
-    padding: var(--space-sm);
-    background-color: var(--surface-200);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    color: var(--text-primary);
-    font-size: 1rem;
-    outline: none;
-    transition: border-color var(--transition-fast);
-}
-
-.select:focus {
-    border-color: var(--primary-color);
-}
-
-.generateBtn {
-    grid-column: 1 / -1;
-    margin-top: var(--space-sm);
+.promptInput {
     padding: var(--space-md);
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: white;
+    background: var(--bg-input);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: none;
+    outline: none;
+    min-height: 44px;
+    transition: all var(--transition-fast);
 }
 
-.resultCard {
-    background-color: var(--surface-200);
+.promptInput:focus {
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 0 3px var(--accent-teal-dim);
+}
+
+.examplePrompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.exampleBtn {
+    padding: 4px 12px;
+    background: transparent;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-full);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.exampleBtn:hover {
+    border-color: var(--accent-teal);
+    color: var(--accent-teal);
+}
+
+/* ===== Generate Button ===== */
+.generateBtn {
+    width: 100%;
+    padding: var(--space-md);
+    background: var(--accent-teal);
+    color: var(--bg-primary);
+    border: none;
     border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    min-height: 48px;
+}
+
+.generateBtn:hover:not(:disabled) {
+    box-shadow: var(--shadow-glow-teal);
+    transform: translateY(-1px);
+}
+
+.generateBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.loadingText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.loadingDice {
+    animation: diceRoll 1s ease-in-out infinite;
+    display: inline-block;
+}
+
+@keyframes diceRoll {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(90deg);
+    }
+
+    50% {
+        transform: rotate(180deg);
+    }
+
+    75% {
+        transform: rotate(270deg);
+    }
+}
+
+.errorBanner {
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid rgba(255, 68, 68, 0.3);
+    border-radius: var(--radius-md);
+    color: var(--danger);
+    font-size: 0.9rem;
+}
+
+/* ===== Result Card (Generated NPC/Monster) ===== */
+.resultCard {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--radius-lg);
     padding: var(--space-lg);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 229, 160, 0.3);
+    box-shadow: var(--shadow-card), var(--shadow-glow-teal);
 }
 
 .resultHeader {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-card);
     padding-bottom: var(--space-md);
     margin-bottom: var(--space-md);
 }
 
 .resultTitle h3 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: var(--text-primary);
 }
 
 .resultSubtitle {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     margin-top: 4px;
+}
+
+.alignmentBadge {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 2px 10px;
+    background: var(--accent-teal-dim);
+    border: 1px solid rgba(0, 229, 160, 0.2);
+    border-radius: var(--radius-full);
+    font-size: 0.72rem;
+    color: var(--accent-teal);
+    font-weight: 500;
 }
 
 .combatStats {
     display: flex;
-    gap: var(--space-md);
+    gap: var(--space-sm);
 }
 
 .statBadge {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: var(--surface-300);
+    background: var(--bg-card);
     padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-sm);
-    min-width: 60px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    min-width: 56px;
+    border: 1px solid var(--border-card);
 }
 
 .statBadge.hp {
-    border-color: rgba(233, 30, 99, 0.3);
+    border-color: rgba(0, 229, 160, 0.4);
+    box-shadow: inset 0 0 12px rgba(0, 229, 160, 0.05);
 }
 
 .statBadge.ac {
-    border-color: rgba(0, 188, 212, 0.3);
+    border-color: rgba(240, 168, 48, 0.4);
+    box-shadow: inset 0 0 12px rgba(240, 168, 48, 0.05);
 }
 
 .statLabel {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
+    font-weight: 600;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.1em;
 }
 
 .statValue {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: var(--text-primary);
 }
 
+/* ===== Ability Scores ===== */
 .abilityScores {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -129,54 +277,434 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: var(--surface-100);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: var(--space-xs);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-xs);
 }
 
 .scoreLabel {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--accent-teal);
     text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
 .scoreVal {
-    font-size: 1.1rem;
-    font-weight: bold;
+    font-size: 1.2rem;
+    font-weight: 700;
 }
 
 .scoreMod {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-secondary);
 }
 
+/* ===== Traits & Actions ===== */
 .traitsSection h4 {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
+    color: var(--accent-teal);
+    font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.1em;
     margin-bottom: var(--space-sm);
 }
 
 .traitItem {
     margin-bottom: var(--space-sm);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
 }
 
 .traitItem strong {
-    color: var(--primary-light);
+    color: var(--accent-teal);
 }
 
+/* ===== Save Button ===== */
 .actions {
     display: flex;
     justify-content: flex-end;
     margin-top: var(--space-lg);
     padding-top: var(--space-md);
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-card);
 }
 
 .saveBtn {
-    background-color: var(--secondary-color);
-    color: white;
+    background: var(--accent-teal);
+    color: var(--bg-primary);
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-lg);
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    min-height: 44px;
+}
+
+.saveBtn:hover:not(:disabled) {
+    box-shadow: var(--shadow-glow-teal);
+    transform: translateY(-1px);
+}
+
+.saveBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== Manual Form ===== */
+.manualForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.manualRow {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.manualField {
+    flex: 1;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.manualField label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.manualField input,
+.manualField textarea {
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-input);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+    min-height: 44px;
+    transition: all var(--transition-fast);
+}
+
+.manualField input:focus,
+.manualField textarea:focus {
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 0 3px var(--accent-teal-dim);
+}
+
+.manualStatsGrid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-sm);
+}
+
+@media (max-width: 600px) {
+    .manualStatsGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.manualStatItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.manualStatItem label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent-teal);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.manualStatItem input {
+    width: 100%;
+    text-align: center;
+    padding: var(--space-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 600;
+    outline: none;
+}
+
+.manualStatItem input:focus {
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 0 3px var(--accent-teal-dim);
+}
+
+.manualListSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.manualListHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.manualListHeader h4 {
+    margin: 0;
+    color: var(--accent-teal);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.addItemBtn {
+    padding: 4px 14px;
+    background: transparent;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.addItemBtn:hover {
+    border-color: var(--accent-teal);
+    color: var(--accent-teal);
+}
+
+.manualListItem {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.manualListItem input {
+    flex: 1;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-input);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.85rem;
+    outline: none;
+    min-height: 40px;
+}
+
+.manualListItem input:focus {
+    border-color: var(--accent-teal);
+}
+
+.removeItemBtn {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid rgba(255, 68, 68, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--danger);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.removeItemBtn:hover {
+    background: rgba(255, 68, 68, 0.2);
+}
+
+/* ============================================
+   NPC/Monster List — Matching App Theme
+   ============================================ */
+
+.npcListContainer {
+    margin-top: var(--space-lg);
+}
+
+.listSectionTitle {
+    color: var(--accent-teal);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 var(--space-md) 0;
+}
+
+.npcGrid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.npcCard {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-card);
+}
+
+.npcCard:hover {
+    background: var(--bg-card-hover);
+    border-color: rgba(0, 229, 160, 0.2);
+}
+
+.npcCardExpanded {
+    border-color: rgba(0, 229, 160, 0.3);
+    box-shadow: var(--shadow-card), var(--shadow-glow-teal);
+}
+
+.npcCardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-lg);
+    cursor: pointer;
+}
+
+.npcCardTitle h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.npcCardSub {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    display: block;
+}
+
+.npcCardBadges {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.npcBadgeAc,
+.npcBadgeHp {
+    padding: 4px 10px;
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid;
+}
+
+.npcBadgeAc {
+    background: rgba(240, 168, 48, 0.1);
+    border-color: rgba(240, 168, 48, 0.3);
+    color: var(--accent-amber);
+}
+
+.npcBadgeHp {
+    background: var(--accent-teal-dim);
+    border-color: rgba(0, 229, 160, 0.3);
+    color: var(--accent-teal);
+}
+
+.npcCardBody {
+    padding: 0 var(--space-lg) var(--space-lg);
+    border-top: 1px solid var(--border-card);
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.npcCardStats {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-xs);
+    margin: var(--space-md) 0;
+}
+
+.npcStatItem {
+    text-align: center;
+    padding: var(--space-sm) var(--space-xs);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+}
+
+.npcStatLabel {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--accent-teal);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+}
+
+.npcStatVal {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.npcCardTraits {
+    margin-bottom: var(--space-md);
+}
+
+.npcTraitItem {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.npcTraitItem strong {
+    color: var(--accent-teal);
+}
+
+.npcCardNotes {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent-teal);
+}
+
+.npcDeleteBtn {
+    width: 100%;
+    padding: var(--space-sm);
+    background: rgba(255, 68, 68, 0.08);
+    border: 1px solid rgba(255, 68, 68, 0.2);
+    border-radius: var(--radius-md);
+    color: var(--danger);
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.npcDeleteBtn:hover {
+    background: rgba(255, 68, 68, 0.15);
 }

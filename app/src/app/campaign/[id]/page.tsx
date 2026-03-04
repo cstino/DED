@@ -10,6 +10,7 @@ import AiAssistantChat from "@/components/dm/AiAssistantChat";
 import NpcGenerator from "@/components/dm/NpcGenerator";
 import NpcList from "@/components/dm/NpcList";
 import SpellCompendium from "@/components/dm/SpellCompendium";
+import D20Dice from "@/components/ui/D20Dice";
 import styles from "./campaign.module.css";
 
 interface Campaign {
@@ -154,8 +155,8 @@ export default function CampaignPage() {
     if (authLoading || !user || loading) {
         return (
             <div className={styles.loadingContainer}>
-                <div className={styles.spinner} />
-                <p className="text-secondary">Caricamento campagna...</p>
+                <D20Dice size={80} />
+                <p className="text-secondary" style={{ marginTop: 16 }}>Caricamento campagna...</p>
             </div>
         );
     }

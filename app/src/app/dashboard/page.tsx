@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
+import D20Dice from "@/components/ui/D20Dice";
 import styles from "./dashboard.module.css";
 
 interface Campaign {
@@ -82,8 +83,8 @@ export default function DashboardPage() {
     if (authLoading || !user) {
         return (
             <div className={styles.loadingContainer}>
-                <div className={styles.spinner} />
-                <p className="text-secondary">Caricamento...</p>
+                <D20Dice size={80} />
+                <p className="text-secondary" style={{ marginTop: 16 }}>Caricamento...</p>
             </div>
         );
     }
@@ -135,7 +136,7 @@ export default function DashboardPage() {
             {/* Campaigns Lists */}
             {loading ? (
                 <div className={styles.loadingContainer}>
-                    <div className={styles.spinner} />
+                    <D20Dice size={60} />
                 </div>
             ) : campaigns.length === 0 ? (
                 <div className={styles.emptyState}>

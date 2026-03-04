@@ -20,7 +20,7 @@ async function fetchAll(url: string) {
 async function main() {
     console.log('Fetching SRD from Open5e API...');
 
-    const spellsData = await fetchAll('https://api.open5e.com/v1/spells/?limit=300');
+    const spellsData = await fetchAll('https://api.open5e.com/v1/spells/?limit=300&document__slug=wotc-srd');
     const classesData = await fetchAll('https://api.open5e.com/v1/classes/?limit=20');
     const racesData = await fetchAll('https://api.open5e.com/v1/races/?limit=10');
 
