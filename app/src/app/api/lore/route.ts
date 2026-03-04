@@ -179,7 +179,7 @@ export async function PUT(request: Request) {
             return NextResponse.json({ error: 'Path and content are required' }, { status: 400 });
         }
 
-        const normalizedPath = path.normalize(filePath).replace(/^(\.\.(\/|\\|$))+/, '');
+        const normalizedPath = path.normalize(filePath).replace(/^(\.\.((\/|\\)|$))+/, '');
         const fullPath = path.join(contentDir, normalizedPath);
 
         if (!fullPath.startsWith(contentDir)) {
@@ -203,5 +203,86 @@ export async function PUT(request: Request) {
     } catch (error) {
         console.error('Error updating file:', error);
         return NextResponse.json({ error: 'Failed to update file' }, { status: 500 });
+    }
+}
+
+// PATCH: Move a file or folder, or create a new folder
+export async function PATCH(request: Request) {
+    try {
+        const body = await request.json();
+        const contentDir = path.join(process.cwd(), '..', 'dnd-campaign');
+
+        // Create folder mode
+        if (body.action === 'create-folder') {
+            const { folderPath } = body;
+            if (!folderPath) {
+                return NextResponse.json({ error: 'folderPath is required' }, { status: 400 });
+            }
+            const normalizedPath = path.normalize(folderPath).replace(/^(\.\.((\/|\\)|$))+/, '');
+            const fullPath = path.join(contentDir, normalizedPath);
+
+            if (!fullPath.startsWith(contentDir)) {
+                return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+            }
+
+            if (fs.existsSync(fullPath)) {
+                return NextResponse.json({ error: 'La cartella esiste già' }, { status: 409 });
+            }
+
+            fs.mkdirSync(fullPath, { recursive: true });
+            return NextResponse.json({ success: true });
+        }
+
+        // Move mode (default)
+        const { from, to } = body;
+        if (!from || to === undefined) {
+            return NextResponse.json({ error: 'from and to are required' }, { status: 400 });
+        }
+
+        const normalizedFrom = path.normalize(from).replace(/^(\.\.((\/|\\)|$))+/, '');
+        const normalizedTo = path.normalize(to).replace(/^(\.\.((\/|\\)|$))+/, '');
+        const fullFrom = path.join(contentDir, normalizedFrom);
+
+        // Get the filename from the source
+        const fileName = path.basename(normalizedFrom);
+        // Build full destination: if "to" is empty string, move to root
+        const destDir = normalizedTo ? path.join(contentDir, normalizedTo) : contentDir;
+        const fullTo = path.join(destDir, fileName);
+
+        if (!fullFrom.startsWith(contentDir) || !fullTo.startsWith(contentDir)) {
+            return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+        }
+
+        if (!fs.existsSync(fullFrom)) {
+            return NextResponse.json({ error: 'Source not found' }, { status: 404 });
+        }
+
+        if (fs.existsSync(fullTo)) {
+            return NextResponse.json({ error: 'Un file con lo stesso nome esiste già nella destinazione' }, { status: 409 });
+        }
+
+        // Ensure destination directory exists
+        if (!fs.existsSync(destDir)) {
+            fs.mkdirSync(destDir, { recursive: true });
+        }
+
+        fs.renameSync(fullFrom, fullTo);
+
+        // Re-index if it's a file
+        const stats = fs.statSync(fullTo);
+        if (!stats.isDirectory() && (fullTo.endsWith('.md') || fullTo.endsWith('.txt'))) {
+            try {
+                const newContent = fs.readFileSync(fullTo, 'utf-8');
+                const newRelPath = path.relative(contentDir, fullTo);
+                await reindexFile(newRelPath, newContent);
+            } catch (reindexErr) {
+                console.error('Re-indexing failed after move:', reindexErr);
+            }
+        }
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error in PATCH:', error);
+        return NextResponse.json({ error: 'Operation failed' }, { status: 500 });
     }
 }

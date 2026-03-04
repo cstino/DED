@@ -194,7 +194,9 @@ export default function CreateCharacterPage() {
         let portraitUrl: string | null = null;
         if (portraitFile) {
             const ext = portraitFile.name.split(".").pop();
-            const path = `portraits/${user.id}/${Date.now()}.${ext}`;
+            // eslint-disable-next-line react-hooks/purity
+            const timestamp = Date.now();
+            const path = `portraits/${user.id}/${timestamp}.${ext}`;
             const { error: uploadError } = await supabase.storage
                 .from("character-portraits")
                 .upload(path, portraitFile);
@@ -595,18 +597,26 @@ export default function CreateCharacterPage() {
 
 // Build initial spell slots based on class (basic heuristic)
 function buildSpellSlots(hitDice: number, level: number): Record<string, number> {
-    // Full casters (d6/d8 hit dice): Wizard, Sorcerer, Bard, Cleric, Druid
-    // Half casters (d10): Ranger, Paladin
-    // No casting: Barbarian (d12), Fighter (d10), Monk (d8 but no casting), Rogue (d8 but no casting)
-    // This is a simple heuristic; exact slots come from the spell_table in the class data
     const slots: Record<string, number> = {};
     if (hitDice <= 8) {
-        // Potential full caster
-        if (level >= 1) slots["1"] = level >= 1 ? Math.min(4, level + 1) : 0;
-        if (level >= 3) slots["2"] = level >= 3 ? Math.min(3, Math.floor((level - 1) / 2)) : 0;
-        if (level >= 5) slots["3"] = level >= 5 ? Math.min(3, Math.floor((level - 3) / 2)) : 0;
-        if (level >= 7) slots["4"] = level >= 7 ? Math.min(3, Math.ceil((level - 5) / 2)) : 0;
-        if (level >= 9) slots["5"] = level >= 9 ? Math.min(3, Math.ceil((level - 7) / 2)) : 0;
+        // Full casters (Wizard, Sorcerer, Bard, Cleric, Druid)
+        if (level >= 1) slots["1"] = Math.min(4, level + 1);
+        if (level >= 3) slots["2"] = Math.min(3, Math.floor((level - 1) / 2));
+        if (level >= 5) slots["3"] = Math.min(3, Math.floor((level - 3) / 2));
+        if (level >= 7) slots["4"] = Math.min(3, Math.ceil((level - 5) / 2));
+        if (level >= 9) slots["5"] = Math.min(3, Math.ceil((level - 7) / 2));
+    } else if (hitDice === 10) {
+        // Half casters (Ranger, Paladin)
+        // Level 1 slots start at level 2
+        if (level >= 2) slots["1"] = level >= 5 ? 4 : (level >= 3 ? 3 : 2);
+        // Level 2 slots start at level 5
+        if (level >= 5) slots["2"] = level >= 9 ? 3 : (level >= 7 ? 3 : 2);
+        // Level 3 slots start at level 9
+        if (level >= 9) slots["3"] = level >= 13 ? 3 : (level >= 11 ? 3 : 2);
+        // Level 4 slots start at level 13
+        if (level >= 13) slots["4"] = level >= 17 ? 3 : (level >= 15 ? 3 : 1);
+        // Level 5 slots start at level 17
+        if (level >= 17) slots["5"] = 2;
     }
     return slots;
 }

@@ -1,0 +1,185 @@
+================================================================================
+LA BRUMARGENTEA — Discoteca dei cugini Donny e Joe
+================================================================================
+Quartiere: Approdo di Thavik, Dura Inferiore
+
+DESCRIZIONE AMBIENTALE (da leggere ai giocatori)
+================================================================================
+
+La Brumargentea non ha un'insegna. Ha un riflesso.
+
+Dalla strada vedete solo un portone di ferro battuto coperto da una patina d'argento vivo che
+pulsa come un respiro lento. Due buttafuori — un mezzorco con anelli d'osso alle orecchie e
+un halfling su uno sgabello alto con una balestra a ripetizione sulle ginocchia — vi squadrano
+prima di annuire verso l'interno.
+
+Appena varcata la soglia, il mondo cambia.
+
+Un lungo corridoio discendente, le pareti ricoperte di muschio bioluminescente azzurro e viola,
+vi conduce verso il basso. Il suono cresce a ogni passo: non è musica normale. È un battito.
+Un ritmo che sentite prima nello stomaco, poi nel petto, poi dietro gli occhi. Tamburi arcani,
+corde di liuto accelerate da magia e una voce — forse incantata, forse no — che canta in
+una lingua che non riconoscete ma che vi fa venir voglia di muovervi.
+
+Uscite dal corridoio e la sala vi colpisce come un'onda.
+
+La Brumargentea è scavata dentro una cavità naturale nella roccia, sotto il livello stradale.
+Il soffitto, alto una decina di metri, è coperto da stalattiti ricoperte di cristalli che riflettono e
+frammentano la luce in migliaia di schegge colorate. Al centro della sala, una piattaforma
+circolare rialzata funge da pista da ballo — e sotto di essa, visibile attraverso il pavimento
+di vetro magico, scorre un fiume sotterraneo che emette un bagliore argentato tenue.
+
+L'aria è densa di fumo argentato — la "bruma" che dà il nome al locale. Non è fumo da pipa:
+è un vapore alchemico che viene diffuso da bocchette nel pavimento, leggermente euforico,
+inebriante. Rende i colori più vivi, la musica più profonda, i volti più belli.
+
+Ai lati della caverna, nicchie semicircolari scavate nella roccia fungono da aree VIP,
+separate da tende di seta scura. In fondo, il bancone del bar è un unico blocco di ossidiana
+lucida, dietro il quale tre baristi (un forgiato con braccia-shaker incorporate, una mezza-elfa
+tatuata e un goblin acrobatico) preparano cocktail con ingredienti che brillano, fumano e
+a volte levitano.
+
+La folla è un mosaico: halfling eleganti, umani dei livelli medi che "scendono" qui per
+il brivido, qualche forgiato che oscilla al ritmo come un metronomo, changeling che cambiano
+aspetto seguendo i colori delle luci.
+
+Donny e Joe — i cugini Boromar che gestiscono il locale — si fanno vedere tra i tavoli VIP.
+Donny è l'appariscente: camicia aperta, anelli su ogni dito, ride forte. Joe è quello silenzioso:
+sempre con un sigaro spento tra i denti, osserva tutto con occhi da contabile.
+
+================================================================================
+EVENTI POSSIBILI
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+EVENTO 1: LA RISSA
+────────────────────────────────────────────────────────────────────────────────
+
+INNESCO: Un gruppo di tre marinai (umani, probabilmente mercantili dal Porto di Cliffside)
+ha bevuto troppo. Uno di loro prende in giro un changeling dicendo:
+— «Ehi faccia-di-nessuno, fammi vedere la tua vera faccia... o non ne hai una?»
+
+Il changeling, offeso, gli rovescia il drink in faccia. Scoppia il caos.
+
+COME SI SVILUPPA:
+- I tre marinai (statistiche: Teppista, MM pag. 350) iniziano una rissa da taverna.
+- La folla si agita: alcuni scappano, altri si godono lo spettacolo, qualcuno si unisce per
+  il gusto di menare.
+- I PG possono:
+  1. IGNORARE — la rissa si risolve da sola in qualche minuto. I buttafuori intervengono
+     e buttano fuori tutti. Donny ride, Joe scuote la testa.
+  2. INTERVENIRE per fermare la rissa — Prova di Intimidire (CD 13) o Persuasione (CD 15).
+     Se riescono, Donny li nota e li apprezza: «Gente che sa usare le parole, non solo i pugni.
+     Mi piace.» Questo può dare un vantaggio futuro coi Boromar.
+  3. UNIRSI alla rissa — Combattimento non letale. I buttafuori intervengono dopo 3 round.
+     Se i PG hanno picchiato i marinai, questi potrebbero tornare giorni dopo per vendetta
+     (gancio secondario). Se hanno difeso il changeling, guadagnano un contatto
+     (il changeling è un informatore dei bassifondi).
+
+INFORMAZIONE NASCOSTA: Il changeling si chiama Velk. Se i PG gli parlano dopo la rissa,
+scopriranno che lavora come informatore freelance e conosce bene i quartieri bassi.
+Può essere un contatto utile per sessioni future. Si offre di vendere informazioni:
+10 mo per un indirizzo, 25 mo per un nome, 50 mo per un segreto.
+
+────────────────────────────────────────────────────────────────────────────────
+EVENTO 2: QUALCUNO FA USO DI SANGUE DI DRAGO
+────────────────────────────────────────────────────────────────────────────────
+
+INNESCO: A un certo punto della serata, i PG notano (Percezione CD 12, o automatico se
+stanno osservando la folla) una scena in una delle nicchie VIP.
+
+DESCRIZIONE (da leggere):
+In una delle nicchie laterali, seminascosto dalle tende di seta, un giovane umano ben vestito
+— capelli biondi, vestiti costosi, probabilmente un figlio di qualche mercante dei livelli medi —
+è seduto rigido sulla poltrona. Accanto a lui, un tipo incappucciato gli sta porgendo una
+piccola fiala con un liquido rosso scuro, denso come sangue rappreso.
+
+Il giovane beve. Per un istante non succede nulla.
+
+Poi il suo corpo si irrigidisce. Le vene del collo e delle tempie si gonfiano, diventando visibili
+sotto la pelle — e assumono un colore rosso scuro, quasi nero. I suoi occhi si spalancano e
+per un secondo le pupille diventano verticali, come quelle di un rettile.
+
+Poi sorride. Un sorriso troppo largo per essere naturale.
+
+Si alza dalla poltrona con un movimento fluido, innaturalmente aggraziato, e torna sulla pista
+da ballo muovendosi con una sicurezza che prima non aveva. Il tipo incappucciato è già
+sparito tra la folla.
+
+INTERAZIONE POSSIBILE:
+- Se i PG seguono il tipo incappucciato: Prova di Furtività contrapposta (lo spacciatore ha
+  Furtività +5). Se riescono a seguirlo, lo vedono uscire dal locale e sparire in un vicolo
+  dove scompare letteralmente (usa una porta segreta o un passaggio nelle fogne).
+  Indizio: nel punto dove scompare, c'è un simbolo graffiato nel muro — un artiglio a tre dita.
+  I PG non sanno cosa significhi (è il simbolo del Daask).
+- Se i PG parlano al giovane sotto effetto: È euforico, parla velocissimo, dice di sentirsi
+  «invincibile, come un drago». Non sa cosa ha preso, dice solo che «tutti qui lo usano»
+  e che il tipo incappucciato «viene ogni sera». Prova di Medicina (CD 14): il PG nota che
+  il battito cardiaco del ragazzo è pericolosamente accelerato e che la pelle attorno alle vene
+  scure è calda al tatto — quasi scottante.
+- Se i PG chiedono a Donny o Joe: Donny fa spallucce: «Qui la gente fa quello che vuole,
+  basta che paga.» Joe è più pensieroso: «Quella roba rossa è nuova. Non è roba nostra.
+  E quello che non è roba nostra non mi piace.»
+
+────────────────────────────────────────────────────────────────────────────────
+EVENTO 3: IL BARBONE ALL'USCITA
+────────────────────────────────────────────────────────────────────────────────
+
+SETUP: Prima che i PG entrino in discoteca, descrivi brevemente la scena esterna.
+Tra le persone in fila e i passanti, c'è un barbone seduto contro il muro del vicolo.
+Non è aggressivo, non chiede l'elemosina. È semplicemente lì, con una coperta logora,
+le mani attorno a una tazza di latta vuota. Ha gli occhi chiari, una barba incolta ma un viso
+che tradisce qualcuno che un tempo stava meglio. Magari un PG gli lancia una moneta,
+magari no. Segnati mentalmente se interagiscono con lui.
+
+DESCRIZIONE (quando escono dal locale — da leggere):
+L'aria della notte vi colpisce come uno schiaffo freddo dopo il calore della Brumargentea.
+Le orecchie vi fischiano ancora per la musica. Il vicolo è quasi vuoto adesso.
+
+E poi lo vedete.
+
+Il barbone di prima. Ma non è più seduto.
+
+È in piedi, rigido, al centro del vicolo. Ha la testa reclinata all'indietro, la bocca aperta.
+Le vene del collo, delle braccia, delle mani — tutte visibili, gonfie, di un rosso quasi nero.
+Trema. Non come chi ha freddo. Come chi sta lottando contro qualcosa dentro di sé.
+
+Le sue dita sono contratte come artigli. La tazza di latta è a terra, accanto a una fiala
+rotta — lo stesso liquido rosso scuro che avete visto nella nicchia VIP.
+
+Quando vi nota, i suoi occhi si girano verso di voi. Le pupille sono fessure verticali.
+Non vi riconosce. Non riconosce nulla.
+
+Apre la bocca e ne esce un suono — non un grido, non una parola. Un rantolo basso,
+vibrante, come il ringhio di un animale ferito.
+
+Poi si lancia verso di voi.
+
+COMBATTIMENTO (opzionale):
+Se i PG vogliono fermarlo senza ucciderlo, possono tentare:
+- Prova di Atletica (CD 12) per bloccarlo fisicamente
+- Incantesimo di controllo (Comando, Sonno, ecc.)
+- Prova di Medicina (CD 15) per capire che sta avendo una crisi e che è necessario
+  immobilizzarlo e aspettare che la droga passi (circa 10 minuti)
+
+Se i PG non intervengono o falliscono, il barbone attacca con furia cieca per 2-3 round,
+poi collassa a terra, privo di sensi. Battito debolissimo. Schiuma alla bocca.
+
+STATISTICHE BARBONE SOTTO EFFETTO:
+- CA 10 (nessuna armatura)
+- PF 22 (improvvisamente resistente per un civile)
+- Velocità: 12 m (innaturalmente veloce)
+- Attacco: Artigli improvvisati +4, 1d6+2 danni taglienti
+- Vantaggio a tutti i tiri per colpire (furia cieca)
+- Immune alla condizione spaventato
+- Svantaggio a tutti i TS su Saggezza
+
+DOPO LA CRISI:
+Se i PG lo salvano e lo stabilizzano, il barbone si risveglia dopo qualche ora.
+Non ricorda quasi nulla. Sa solo che «un tipo gentile con il cappuccio» gli ha offerto
+"qualcosa da bere per scaldarsi". Dice che era «come fuoco nelle vene» e poi... il buio.
+Ha un dettaglio utile: l'uomo incappucciato aveva « mani strane...
+troppo grandi... e grigie». (Mani di un mostro — un indizio verso il Daask.)
+
+Se il barbone muore, i PG si trovano con un cadavere con le vene nere e gli occhi
+da rettile. Lady Saela vorrebbe sicuramente esaminare il corpo.

@@ -1,0 +1,89 @@
+ENCOUNTER: LE GUARDIE CORROTTE DELLE FOGNE
+
+Difficoltà: Mortale per 4 PG di livello 5
+CR Totale: ~11 (Kaidon CR 5 + 2 Guardie d'Élite CR 3 ciascuna)
+Ambiente: Fogne di Dura Inferiore — corridoi stretti, acqua stagnante, poca luce
+
+================================================================================
+SERGENTE KAIDON
+================================================================================
+Umanoide (umano) medio, legale malvagio
+
+Classe Armatura: 18 (corazza di piastre della Sharn Watch)
+Punti Ferita: 90 (12d8 + 36)
+Velocità: 9 m
+
+FOR     DES     COS     INT     SAG     CAR
+18(+4)  14(+2)  16(+3)  12(+1)  14(+2)  13(+1)
+
+Tiri Salvezza: For +7, Cos +6, Sag +5
+Competenze: Atletica +7, Intimidire +4, Percezione +5, Intuizione +5
+Sensi: Percezione passiva 15
+Lingue: Comune, Goblin
+Grado di Sfida: 5 (1.800 PE)
+
+TRATTI
+- Tattico Fognario: Kaidon ha vantaggio ai tiri per colpire contro creature che si trovano in spazi stretti (corridoi larghi 1,5 m o meno) o che sono in acqua fino alle ginocchia.
+- Secondo Vento (1/riposo breve): Come azione bonus, Kaidon recupera 1d10+12 punti ferita.
+- Autorità Corrotta: Kaidon può usare un'azione bonus per ordinare a una delle sue guardie di effettuare un attacco come reazione.
+
+AZIONI
+- Multiattacco: Kaidon effettua tre attacchi con la spada lunga.
+- Spada Lunga: Attacco con arma da mischia: +7 al tiro per colpire, portata 1,5 m, un bersaglio. Colpito: 8 (1d8+4) danni taglienti, o 9 (1d10+4) se impugnata a due mani.
+- Balestra Pesante: Attacco con arma a distanza: +5 al tiro per colpire, gittata 30/120 m, un bersaglio. Colpito: 7 (1d10+2) danni perforanti.
+
+REAZIONI
+- Parare: Kaidon aggiunge 3 alla sua CA contro un attacco in mischia che lo colpirebbe. Per farlo, deve vedere l'attaccante e impugnare un'arma da mischia.
+
+================================================================================
+GUARDIA D'ÉLITE DELLA SHARN WATCH (×2)
+================================================================================
+Umanoide (umano) medio, legale neutrale
+
+Nomi suggeriti: Tarvok e Yellan
+
+Classe Armatura: 17 (corazza a scaglie + scudo)
+Punti Ferita: 65 (10d8 + 20)
+Velocità: 9 m
+
+FOR     DES     COS     INT     SAG     CAR
+16(+3)  12(+1)  14(+2)  10(+0)  13(+1)  10(+0)
+
+Tiri Salvezza: For +5, Cos +4
+Competenze: Atletica +5, Percezione +3
+Sensi: Percezione passiva 13
+Lingue: Comune
+Grado di Sfida: 3 (700 PE)
+
+TRATTI
+- Formazione di Pattuglia: Quando una guardia è entro 1,5 m da un alleato, ha vantaggio ai tiri salvezza contro essere spaventata.
+- Senza Testimoni: Le guardie infliggono 1d6 danni extra con i loro attacchi se nessun civile non-combattente sta osservando lo scontro.
+
+AZIONI
+- Multiattacco: La guardia effettua due attacchi con la spada lunga.
+- Spada Lunga: Attacco con arma da mischia: +5 al tiro per colpire, portata 1,5 m, un bersaglio. Colpito: 10 (1d8+3 +1d6) danni taglienti.
+- Colpo di Scudo: Attacco con arma da mischia: +5 al tiro per colpire, portata 1,5 m, un bersaglio. Colpito: 5 (1d4+3) danni contundenti e il bersaglio deve superare un TS su Forza (CD 13) o cadere prono.
+- Rete da Cattura (1/combattimento): Attacco con arma a distanza: +3 al tiro per colpire, gittata 1,5/4,5 m, un bersaglio Grande o più piccolo. Colpito: il bersaglio è trattenuto. Una creatura può liberarsi con una prova di Forza (CD 13) come azione. La rete ha CA 10, 5 PF, immunità ai danni contundenti e psichici.
+
+REAZIONI
+- Proteggere il Sergente: Quando Kaidon subisce un attacco che la guardia può vedere, e la guardia è entro 1,5 m da lui, la guardia può diventare il bersaglio dell'attacco al suo posto.
+
+================================================================================
+NOTE TATTICHE PER IL DM
+================================================================================
+
+STRATEGIA DELLE GUARDIE
+- Kaidon apre il combattimento ordinando alle guardie di usare le reti su Mega Knight o Lou (i più pericolosi in mischia)
+- Le guardie lavorano sempre in coppia, restando vicine per il bonus Formazione di Pattuglia
+- Kaidon usa Autorità Corrotta per spremere azioni extra dalle sue guardie
+- Nelle fogne strette, Tattico Fognario dà a Kaidon un vantaggio costante
+- Se i PG cercano di fuggire, Kaidon ordina di bloccare le uscite
+
+PERCHÉ È PERICOLOSO
+- Azioni totali per round: Kaidon fa 3 attacchi + 1 attacco bonus della guardia. Le 2 guardie fanno 2 attacchi ciascuna. Totale: 8 attacchi per round.
+- Il danno medio per round è circa 60-70 PF se tutti colpiscono — sufficiente a buttare giù un PG di livello 5 in un round.
+- Le reti possono neutralizzare un PG chiave.
+
+VIA DI FUGA E CONSEGUENZE
+- Se i PG fuggono: Kaidon uccide Rorik e Grug. I PG perdono il contatto Boromar ma hanno visto qualcosa di inquietante.
+- Se i PG vincono: hanno 3 cadaveri di guardie corrotte da gestire. Possono interrogare un superstite, trovare ordini scritti addosso a Kaidon, o scoprire un simbolo/moneta/oggetto legato al Daask che non sanno ancora identificare.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
@@ -242,6 +242,7 @@ export default function CharacterSheetPage() {
     const [editing, setEditing] = useState(false);
     const [editData, setEditData] = useState<Partial<Character>>({});
     const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<"stats" | "combat" | "equipment" | "spells" | "notes">("stats");
     const [showSpellBrowser, setShowSpellBrowser] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -256,6 +257,11 @@ export default function CharacterSheetPage() {
     const [showPortraitFull, setShowPortraitFull] = useState(false);
 
     const [campaignMasterId, setCampaignMasterId] = useState<string | null>(null);
+
+    // Prevent concurrent Supabase writes
+    const saveLockRef = useRef(false);
+    const quickSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const pendingQuickSaveRef = useRef<{ field: string; value: unknown } | null>(null);
 
     const isOwner = char?.user_id === user?.id;
     const isMaster = user?.id === campaignMasterId;
@@ -329,7 +335,29 @@ export default function CharacterSheetPage() {
 
     async function saveChanges() {
         if (!char || !canEdit) return;
+        if (saveLockRef.current) return; // Already saving, don't stack
+
+        // Cancel any pending quickSave — saveChanges will include all data
+        if (quickSaveTimerRef.current) {
+            clearTimeout(quickSaveTimerRef.current);
+            quickSaveTimerRef.current = null;
+            pendingQuickSaveRef.current = null;
+        }
+
+        saveLockRef.current = true;
         setSaving(true);
+        setSaveError(null);
+
+        // Helper: wrap a promise with a timeout
+        function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+            return Promise.race([
+                promise,
+                new Promise<never>((_, reject) =>
+                    setTimeout(() => reject(new Error("TIMEOUT")), ms)
+                ),
+            ]);
+        }
+
         try {
             const d = editData;
 
@@ -337,54 +365,64 @@ export default function CharacterSheetPage() {
             let newPortraitUrl = char.portrait_url;
             if (portraitFile) {
                 const ext = portraitFile.name.split(".").pop();
-                const path = `portraits/${user!.id}/${Date.now()}.${ext}`;
-                const { error: uploadError } = await supabase.storage
-                    .from("character-portraits")
-                    .upload(path, portraitFile);
-                if (!uploadError) {
-                    const { data: urlData } = supabase.storage
-                        .from("character-portraits")
-                        .getPublicUrl(path);
-                    newPortraitUrl = urlData.publicUrl;
-                } else {
-                    console.error("Portrait upload error:", uploadError);
+                const ts = Date.now();
+                const path = `portraits/${user!.id}/${ts}.${ext}`;
+                try {
+                    const { error: uploadError } = await withTimeout(
+                        Promise.resolve(supabase.storage.from("character-portraits").upload(path, portraitFile)),
+                        10000
+                    );
+                    if (!uploadError) {
+                        const { data: urlData } = supabase.storage
+                            .from("character-portraits")
+                            .getPublicUrl(path);
+                        newPortraitUrl = urlData.publicUrl;
+                    } else {
+                        console.error("Portrait upload error:", uploadError);
+                    }
+                } catch (uploadErr) {
+                    console.error("Portrait upload timed out or failed:", uploadErr);
+                    // Continue saving without the new portrait
                 }
             }
 
-            const { data: updatedChar, error } = await supabase.from("characters").update({
-                name: d.name,
-                level: d.level,
-                hp_current: d.hp_current,
-                hp_max: d.hp_max,
-                hp_temp: d.hp_temp,
-                ac: d.ac,
-                speed: d.speed,
-                ability_scores: d.ability_scores,
-                initiative_bonus: getMod(d.ability_scores?.dex ?? 10),
-                hit_dice_current: d.hit_dice_current,
-                hit_dice_total: d.hit_dice_total,
-                death_saves: d.death_saves,
-                money: d.money,
-                saving_throw_prof: d.saving_throw_prof,
-                skill_proficiencies: d.skill_proficiencies,
-                notes: d.notes,
-                alignment: d.alignment,
-                background: d.background,
-                proficiencies: d.proficiencies,
-                equipment: d.equipment,
-                features: d.features,
-                personality: d.personality,
-                known_spells: d.known_spells,
-                spell_slots: d.spell_slots,
-                spell_slots_used: d.spell_slots_used,
-                languages: d.languages,
-                class_abilities: d.class_abilities,
-                portrait_url: newPortraitUrl,
-            }).eq("id", char.id).select().single();
+            const { data: updatedChar, error } = await withTimeout(
+                Promise.resolve(supabase.from("characters").update({
+                    name: d.name,
+                    level: d.level,
+                    hp_current: d.hp_current,
+                    hp_max: d.hp_max,
+                    hp_temp: d.hp_temp,
+                    ac: d.ac,
+                    speed: d.speed,
+                    ability_scores: d.ability_scores,
+                    initiative_bonus: getMod(d.ability_scores?.dex ?? 10),
+                    hit_dice_current: d.hit_dice_current,
+                    hit_dice_total: d.hit_dice_total,
+                    death_saves: d.death_saves,
+                    money: d.money,
+                    saving_throw_prof: d.saving_throw_prof,
+                    skill_proficiencies: d.skill_proficiencies,
+                    notes: d.notes,
+                    alignment: d.alignment,
+                    background: d.background,
+                    proficiencies: d.proficiencies,
+                    equipment: d.equipment,
+                    features: d.features,
+                    personality: d.personality,
+                    known_spells: d.known_spells,
+                    spell_slots: d.spell_slots,
+                    spell_slots_used: d.spell_slots_used,
+                    languages: d.languages,
+                    class_abilities: d.class_abilities,
+                    portrait_url: newPortraitUrl,
+                }).eq("id", char.id).select().single()),
+                10000
+            );
 
             if (error) {
                 console.error("Error saving character:", error);
-                alert("Errore durante il salvataggio: " + error.message);
+                setSaveError("Errore dal server: " + error.message);
                 return;
             }
 
@@ -415,17 +453,24 @@ export default function CharacterSheetPage() {
                 setEditData(c);
                 setPortraitFile(null);
                 setPortraitPreview(null);
+                setSaveError(null);
                 setEditing(false);
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error("Unexpected error during save:", err);
-            alert("Si è verificato un errore inaspettato durante il salvataggio.");
+            if (err?.message === "TIMEOUT") {
+                setSaveError("Connessione lenta o assente. Le modifiche NON sono state perse, riprova.");
+            } else {
+                setSaveError("Errore inaspettato: " + (err?.message ?? "sconosciuto"));
+            }
         } finally {
+            saveLockRef.current = false;
             setSaving(false);
         }
     }
 
     // Quick save a single field without entering edit mode
+    // Debounced (300ms) and serialized to prevent concurrent writes
     async function quickSave(field: string, value: unknown) {
         if (!char || !canEdit) return;
         // Don't try to save proficiency_bonus if it's not in DB
@@ -434,14 +479,33 @@ export default function CharacterSheetPage() {
             setEditData((prev) => ({ ...prev, [field]: value as any }));
             return;
         }
-        try {
-            const { error } = await supabase.from("characters").update({ [field]: value }).eq("id", char.id);
-            if (error) throw error;
-            setChar((prev) => prev ? { ...prev, [field]: value as any } as Character : null);
-            setEditData((prev) => ({ ...prev, [field]: value as any }));
-        } catch (err) {
-            console.error(`Error during quickSave of ${field}:`, err);
-        }
+
+        // Immediately update local state for responsiveness
+        setChar((prev) => prev ? { ...prev, [field]: value as any } as Character : null);
+        setEditData((prev) => ({ ...prev, [field]: value as any }));
+
+        // Store the pending save and debounce
+        pendingQuickSaveRef.current = { field, value };
+        if (quickSaveTimerRef.current) clearTimeout(quickSaveTimerRef.current);
+
+        quickSaveTimerRef.current = setTimeout(async () => {
+            const pending = pendingQuickSaveRef.current;
+            if (!pending) return;
+            pendingQuickSaveRef.current = null;
+
+            // Wait for any in-flight full save to finish
+            if (saveLockRef.current) return;
+            saveLockRef.current = true;
+
+            try {
+                const { error } = await supabase.from("characters").update({ [pending.field]: pending.value }).eq("id", char.id);
+                if (error) console.error(`quickSave error (${pending.field}):`, error);
+            } catch (err) {
+                console.error(`quickSave failed (${pending.field}):`, err);
+            } finally {
+                saveLockRef.current = false;
+            }
+        }, 300);
     }
 
     async function deleteCharacter() {
@@ -511,7 +575,7 @@ export default function CharacterSheetPage() {
                     <div className={styles.topActions}>
                         {editing ? (
                             <>
-                                <button className="btn btn-secondary" onClick={() => { setEditing(false); setEditData(char); }}>Annulla</button>
+                                <button className="btn btn-secondary" onClick={() => { setEditing(false); setEditData(char); setSaveError(null); }}>Annulla</button>
                                 <button className="btn btn-primary" onClick={saveChanges} disabled={saving}>
                                     {saving ? "Salvo..." : "💾 Salva"}
                                 </button>
@@ -552,6 +616,17 @@ export default function CharacterSheetPage() {
                     </div>
                 </div>,
                 document.body
+            )}
+
+            {/* Save Error Banner */}
+            {saveError && (
+                <div className={styles.saveErrorBanner}>
+                    <span>⚠️ {saveError}</span>
+                    <button className="btn btn-primary" onClick={saveChanges} disabled={saving} style={{ marginLeft: 12, padding: '4px 12px', fontSize: '0.85rem' }}>
+                        {saving ? "Riprovo..." : "🔄 Riprova"}
+                    </button>
+                    <button className={styles.saveErrorClose} onClick={() => setSaveError(null)}>✕</button>
+                </div>
             )}
 
             {/* Character Header */}

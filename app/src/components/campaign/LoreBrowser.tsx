@@ -6,6 +6,20 @@ import remarkGfm from "remark-gfm";
 import styles from "./LoreBrowser.module.css";
 import { LoreFile } from "@/app/api/lore/route";
 
+// Recursively collect all folder paths from the tree
+function collectFolders(items: LoreFile[], prefix = ''): { path: string; name: string }[] {
+    const folders: { path: string; name: string }[] = [];
+    for (const item of items) {
+        if (item.isDirectory) {
+            folders.push({ path: item.path, name: prefix + item.name });
+            if (item.children) {
+                folders.push(...collectFolders(item.children, prefix + item.name + '/'));
+            }
+        }
+    }
+    return folders;
+}
+
 interface LoreBrowserProps {
     isMaster?: boolean;
 }
@@ -22,6 +36,9 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
     const [newContent, setNewContent] = useState("");
     const [editContent, setEditContent] = useState("");
     const [isSyncing, setIsSyncing] = useState(false);
+    const [movingPath, setMovingPath] = useState<string | null>(null);
+    const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+    const [newFolderName, setNewFolderName] = useState("");
 
     useEffect(() => {
         fetchTree();
@@ -135,6 +152,56 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
         }
     }
 
+    async function handleMoveFile(targetFolder: string) {
+        if (!movingPath) return;
+        try {
+            const res = await fetch("/api/lore", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ from: movingPath, to: targetFolder }),
+            });
+
+            if (res.ok) {
+                if (selectedPath === movingPath) {
+                    setSelectedPath(null);
+                    setContent("");
+                }
+                setMovingPath(null);
+                fetchTree();
+            } else {
+                const data = await res.json();
+                alert(data.error || "Errore durante lo spostamento.");
+            }
+        } catch (error) {
+            console.error("Move error:", error);
+            alert("Errore di rete.");
+        }
+    }
+
+    async function handleCreateFolder(e: React.FormEvent) {
+        e.preventDefault();
+        if (!newFolderName.trim()) return;
+        try {
+            const res = await fetch("/api/lore", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "create-folder", folderPath: newFolderName.trim() }),
+            });
+
+            if (res.ok) {
+                setIsCreatingFolder(false);
+                setNewFolderName("");
+                fetchTree();
+            } else {
+                const data = await res.json();
+                alert(data.error || "Errore durante la creazione della cartella.");
+            }
+        } catch (error) {
+            console.error("Create folder error:", error);
+            alert("Errore di rete.");
+        }
+    }
+
     function renderTree(items: LoreFile[], depth = 0) {
         return items.map((item) => (
             <div key={item.path} style={{ marginLeft: `${depth * 12}px` }}>
@@ -157,13 +224,22 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                             {item.name}
                         </div>
                         {isMaster && (
-                            <span
-                                className={styles.deleteFileBtn}
-                                onClick={(e) => handleDeleteFile(e, item.path)}
-                                title="Elimina file"
-                            >
-                                🗑️
-                            </span>
+                            <div className={styles.fileActions}>
+                                <span
+                                    className={styles.moveFileBtn}
+                                    onClick={(e) => { e.stopPropagation(); setMovingPath(item.path); }}
+                                    title="Sposta file"
+                                >
+                                    📂
+                                </span>
+                                <span
+                                    className={styles.deleteFileBtn}
+                                    onClick={(e) => handleDeleteFile(e, item.path)}
+                                    title="Elimina file"
+                                >
+                                    🗑️
+                                </span>
+                            </div>
                         )}
                     </button>
                 )}
@@ -171,6 +247,8 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
             </div>
         ));
     }
+
+    const allFolders = collectFolders(tree);
 
     if (loading && tree.length === 0) return <div className={styles.loadingState}>Caricamento archivio...</div>;
 
@@ -180,19 +258,45 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                 <div className={styles.sidebarHeader}>
                     <h3>Archivio Campagna</h3>
                     {isMaster && (
-                        <button
-                            className={styles.addFileBtn}
-                            onClick={() => {
-                                setIsCreating(true);
-                                setSelectedPath(null);
-                                setIsEditing(false);
-                            }}
-                            title="Nuovo file"
-                        >
-                            +
-                        </button>
+                        <div className={styles.sidebarActions}>
+                            <button
+                                className={styles.addFileBtn}
+                                onClick={() => {
+                                    setIsCreatingFolder(true);
+                                    setNewFolderName("");
+                                }}
+                                title="Nuova cartella"
+                            >
+                                📁+
+                            </button>
+                            <button
+                                className={styles.addFileBtn}
+                                onClick={() => {
+                                    setIsCreating(true);
+                                    setSelectedPath(null);
+                                    setIsEditing(false);
+                                }}
+                                title="Nuovo file"
+                            >
+                                +
+                            </button>
+                        </div>
                     )}
                 </div>
+                {isCreatingFolder && (
+                    <form className={styles.createFolderForm} onSubmit={handleCreateFolder}>
+                        <input
+                            className={styles.createFolderInput}
+                            type="text"
+                            placeholder="Nome cartella..."
+                            value={newFolderName}
+                            onChange={(e) => setNewFolderName(e.target.value)}
+                            autoFocus
+                        />
+                        <button type="submit" className={styles.createFolderSubmit}>✓</button>
+                        <button type="button" className={styles.createFolderCancel} onClick={() => setIsCreatingFolder(false)}>✕</button>
+                    </form>
+                )}
                 <div className={styles.treeContainer}>
                     {tree.length === 0 ? (
                         <p className={styles.emptyText}>Nessun file trovato.</p>
@@ -295,6 +399,38 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                     </div>
                 )}
             </div>
+
+            {/* Folder Picker Overlay */}
+            {movingPath && (
+                <div className={styles.folderPickerOverlay} onClick={() => setMovingPath(null)}>
+                    <div className={styles.folderPicker} onClick={(e) => e.stopPropagation()}>
+                        <h4 className={styles.folderPickerTitle}>Sposta &quot;{movingPath.split('/').pop()}&quot; in...</h4>
+                        <div className={styles.folderPickerList}>
+                            <button
+                                className={styles.folderPickerItem}
+                                onClick={() => handleMoveFile('')}
+                            >
+                                📂 Radice (nessuna cartella)
+                            </button>
+                            {allFolders.map((folder) => (
+                                <button
+                                    key={folder.path}
+                                    className={styles.folderPickerItem}
+                                    onClick={() => handleMoveFile(folder.path)}
+                                >
+                                    📁 {folder.name}
+                                </button>
+                            ))}
+                        </div>
+                        <button
+                            className={styles.folderPickerCancel}
+                            onClick={() => setMovingPath(null)}
+                        >
+                            Annulla
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
