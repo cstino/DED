@@ -262,39 +262,47 @@ export default function CharacterSheetPage() {
     const canEdit = isOwner || isMaster;
 
     const fetchChar = useCallback(async () => {
-        const { data } = await supabase.from("characters").select("*").eq("id", charId).single();
-        if (data) {
-            // Ensure new fields have defaults for older records
-            const c = {
-                ...data,
-                hp_temp: data.hp_temp ?? 0,
-                speed: data.speed ?? 30,
-                hit_dice_total: data.hit_dice_total ?? data.level,
-                hit_dice_current: data.hit_dice_current ?? data.level,
-                death_saves: data.death_saves ?? { successes: 0, failures: 0 },
-                money: data.money ?? { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 },
-                saving_throw_prof: data.saving_throw_prof ?? [],
-                skill_proficiencies: data.skill_proficiencies ?? [],
-                spell_slots_used: data.spell_slots_used ?? {},
-                known_spells: data.known_spells ?? [],
-                prepared_spells: Array.isArray(data.prepared_spells) ? data.prepared_spells : [],
-                personality: data.personality ?? { traits: "", ideals: "", bonds: "", flaws: "" },
-                equipment: Array.isArray(data.equipment) ? data.equipment : [],
-                features: Array.isArray(data.features) ? data.features : [],
-                proficiencies: Array.isArray(data.proficiencies) ? data.proficiencies : [],
-                languages: Array.isArray(data.languages) ? data.languages : [],
-                class_abilities: Array.isArray(data.class_abilities) ? data.class_abilities : [],
-                hit_die: data.hit_die ?? 8,
-                proficiency_bonus: data.proficiency_bonus ?? Math.ceil((data.level || 1) / 4) + 1,
-            } as Character;
-            setChar(c);
-            setEditData(c);
+        try {
+            setLoading(true);
+            const { data, error } = await supabase.from("characters").select("*").eq("id", charId).single();
+            if (error) throw error;
 
-            // Also fetch campaign to get master_id
-            const { data: campData } = await supabase.from("campaigns").select("master_id").eq("id", data.campaign_id).single();
-            if (campData) setCampaignMasterId(campData.master_id);
+            if (data) {
+                // Ensure new fields have defaults for older records
+                const c = {
+                    ...data,
+                    hp_temp: data.hp_temp ?? 0,
+                    speed: data.speed ?? 30,
+                    hit_dice_total: data.hit_dice_total ?? data.level,
+                    hit_dice_current: data.hit_dice_current ?? data.level,
+                    death_saves: data.death_saves ?? { successes: 0, failures: 0 },
+                    money: data.money ?? { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 },
+                    saving_throw_prof: data.saving_throw_prof ?? [],
+                    skill_proficiencies: data.skill_proficiencies ?? [],
+                    spell_slots_used: data.spell_slots_used ?? {},
+                    known_spells: data.known_spells ?? [],
+                    prepared_spells: Array.isArray(data.prepared_spells) ? data.prepared_spells : [],
+                    personality: data.personality ?? { traits: "", ideals: "", bonds: "", flaws: "" },
+                    equipment: Array.isArray(data.equipment) ? data.equipment : [],
+                    features: Array.isArray(data.features) ? data.features : [],
+                    proficiencies: Array.isArray(data.proficiencies) ? data.proficiencies : [],
+                    languages: Array.isArray(data.languages) ? data.languages : [],
+                    class_abilities: Array.isArray(data.class_abilities) ? data.class_abilities : [],
+                    hit_die: data.hit_die ?? 8,
+                    proficiency_bonus: data.proficiency_bonus ?? Math.ceil((data.level || 1) / 4) + 1,
+                } as Character;
+                setChar(c);
+                setEditData(c);
+
+                // Also fetch campaign to get master_id
+                const { data: campData } = await supabase.from("campaigns").select("master_id").eq("id", data.campaign_id).single();
+                if (campData) setCampaignMasterId(campData.master_id);
+            }
+        } catch (err) {
+            console.error("Error fetching character:", err);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }, [charId]);
 
     useEffect(() => { if (!authLoading && !user) router.push("/login"); }, [authLoading, user, router]);
@@ -322,93 +330,99 @@ export default function CharacterSheetPage() {
     async function saveChanges() {
         if (!char || !canEdit) return;
         setSaving(true);
-        const d = editData;
+        try {
+            const d = editData;
 
-        // Upload portrait if changed
-        let newPortraitUrl = char.portrait_url;
-        if (portraitFile) {
-            const ext = portraitFile.name.split(".").pop();
-            const path = `portraits/${user!.id}/${Date.now()}.${ext}`;
-            const { error: uploadError } = await supabase.storage
-                .from("character-portraits")
-                .upload(path, portraitFile);
-            if (!uploadError) {
-                const { data: urlData } = supabase.storage
+            // Upload portrait if changed
+            let newPortraitUrl = char.portrait_url;
+            if (portraitFile) {
+                const ext = portraitFile.name.split(".").pop();
+                const path = `portraits/${user!.id}/${Date.now()}.${ext}`;
+                const { error: uploadError } = await supabase.storage
                     .from("character-portraits")
-                    .getPublicUrl(path);
-                newPortraitUrl = urlData.publicUrl;
+                    .upload(path, portraitFile);
+                if (!uploadError) {
+                    const { data: urlData } = supabase.storage
+                        .from("character-portraits")
+                        .getPublicUrl(path);
+                    newPortraitUrl = urlData.publicUrl;
+                } else {
+                    console.error("Portrait upload error:", uploadError);
+                }
             }
-        }
 
-        const { data: updatedChar, error } = await supabase.from("characters").update({
-            name: d.name,
-            level: d.level,
-            hp_current: d.hp_current,
-            hp_max: d.hp_max,
-            hp_temp: d.hp_temp,
-            ac: d.ac,
-            speed: d.speed,
-            ability_scores: d.ability_scores,
-            initiative_bonus: getMod(d.ability_scores?.dex ?? 10),
-            hit_dice_current: d.hit_dice_current,
-            hit_dice_total: d.hit_dice_total,
-            death_saves: d.death_saves,
-            money: d.money,
-            saving_throw_prof: d.saving_throw_prof,
-            skill_proficiencies: d.skill_proficiencies,
-            notes: d.notes,
-            alignment: d.alignment,
-            background: d.background,
-            proficiencies: d.proficiencies,
-            equipment: d.equipment,
-            features: d.features,
-            personality: d.personality,
-            known_spells: d.known_spells,
-            spell_slots: d.spell_slots,
-            spell_slots_used: d.spell_slots_used,
-            languages: d.languages,
-            class_abilities: d.class_abilities,
-            portrait_url: newPortraitUrl,
-        }).eq("id", char.id).select().single();
+            const { data: updatedChar, error } = await supabase.from("characters").update({
+                name: d.name,
+                level: d.level,
+                hp_current: d.hp_current,
+                hp_max: d.hp_max,
+                hp_temp: d.hp_temp,
+                ac: d.ac,
+                speed: d.speed,
+                ability_scores: d.ability_scores,
+                initiative_bonus: getMod(d.ability_scores?.dex ?? 10),
+                hit_dice_current: d.hit_dice_current,
+                hit_dice_total: d.hit_dice_total,
+                death_saves: d.death_saves,
+                money: d.money,
+                saving_throw_prof: d.saving_throw_prof,
+                skill_proficiencies: d.skill_proficiencies,
+                notes: d.notes,
+                alignment: d.alignment,
+                background: d.background,
+                proficiencies: d.proficiencies,
+                equipment: d.equipment,
+                features: d.features,
+                personality: d.personality,
+                known_spells: d.known_spells,
+                spell_slots: d.spell_slots,
+                spell_slots_used: d.spell_slots_used,
+                languages: d.languages,
+                class_abilities: d.class_abilities,
+                portrait_url: newPortraitUrl,
+            }).eq("id", char.id).select().single();
 
-        if (error) {
-            console.error("Error saving character:", error);
-            alert("Errore durante il salvataggio: " + error.message);
+            if (error) {
+                console.error("Error saving character:", error);
+                alert("Errore durante il salvataggio: " + error.message);
+                return;
+            }
+
+            if (updatedChar) {
+                const c = {
+                    ...updatedChar,
+                    hp_temp: updatedChar.hp_temp ?? 0,
+                    speed: updatedChar.speed ?? 30,
+                    hit_dice_total: updatedChar.hit_dice_total ?? updatedChar.level,
+                    hit_dice_current: updatedChar.hit_dice_current ?? updatedChar.level,
+                    death_saves: updatedChar.death_saves ?? { successes: 0, failures: 0 },
+                    money: updatedChar.money ?? { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 },
+                    saving_throw_prof: updatedChar.saving_throw_prof ?? [],
+                    skill_proficiencies: updatedChar.skill_proficiencies ?? [],
+                    spell_slots_used: updatedChar.spell_slots_used ?? {},
+                    known_spells: updatedChar.known_spells ?? [],
+                    prepared_spells: Array.isArray(updatedChar.prepared_spells) ? updatedChar.prepared_spells : [],
+                    personality: updatedChar.personality ?? { traits: "", ideals: "", bonds: "", flaws: "" },
+                    equipment: Array.isArray(updatedChar.equipment) ? updatedChar.equipment : [],
+                    features: Array.isArray(updatedChar.features) ? updatedChar.features : [],
+                    proficiencies: Array.isArray(updatedChar.proficiencies) ? updatedChar.proficiencies : [],
+                    languages: Array.isArray(updatedChar.languages) ? updatedChar.languages : [],
+                    class_abilities: Array.isArray(updatedChar.class_abilities) ? updatedChar.class_abilities : [],
+                    hit_die: updatedChar.hit_die ?? 8,
+                    proficiency_bonus: updatedChar.proficiency_bonus ?? Math.ceil((updatedChar.level || 1) / 4) + 1,
+                } as Character;
+                setChar(c);
+                setEditData(c);
+                setPortraitFile(null);
+                setPortraitPreview(null);
+                setEditing(false);
+            }
+        } catch (err) {
+            console.error("Unexpected error during save:", err);
+            alert("Si è verificato un errore inaspettato durante il salvataggio.");
+        } finally {
             setSaving(false);
-            return;
         }
-
-        if (updatedChar) {
-            const c = {
-                ...updatedChar,
-                hp_temp: updatedChar.hp_temp ?? 0,
-                speed: updatedChar.speed ?? 30,
-                hit_dice_total: updatedChar.hit_dice_total ?? updatedChar.level,
-                hit_dice_current: updatedChar.hit_dice_current ?? updatedChar.level,
-                death_saves: updatedChar.death_saves ?? { successes: 0, failures: 0 },
-                money: updatedChar.money ?? { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 },
-                saving_throw_prof: updatedChar.saving_throw_prof ?? [],
-                skill_proficiencies: updatedChar.skill_proficiencies ?? [],
-                spell_slots_used: updatedChar.spell_slots_used ?? {},
-                known_spells: updatedChar.known_spells ?? [],
-                prepared_spells: Array.isArray(updatedChar.prepared_spells) ? updatedChar.prepared_spells : [],
-                personality: updatedChar.personality ?? { traits: "", ideals: "", bonds: "", flaws: "" },
-                equipment: Array.isArray(updatedChar.equipment) ? updatedChar.equipment : [],
-                features: Array.isArray(updatedChar.features) ? updatedChar.features : [],
-                proficiencies: Array.isArray(updatedChar.proficiencies) ? updatedChar.proficiencies : [],
-                languages: Array.isArray(updatedChar.languages) ? updatedChar.languages : [],
-                class_abilities: Array.isArray(updatedChar.class_abilities) ? updatedChar.class_abilities : [],
-                hit_die: updatedChar.hit_die ?? 8,
-                proficiency_bonus: updatedChar.proficiency_bonus ?? Math.ceil((updatedChar.level || 1) / 4) + 1,
-            } as Character;
-            setChar(c);
-            setEditData(c);
-        }
-
-        setPortraitFile(null);
-        setPortraitPreview(null);
-        setEditing(false);
-        setSaving(false);
     }
 
     // Quick save a single field without entering edit mode
@@ -420,20 +434,31 @@ export default function CharacterSheetPage() {
             setEditData((prev) => ({ ...prev, [field]: value as any }));
             return;
         }
-        await supabase.from("characters").update({ [field]: value }).eq("id", char.id);
-        setChar((prev) => prev ? { ...prev, [field]: value as any } as Character : null);
-        setEditData((prev) => ({ ...prev, [field]: value as any }));
+        try {
+            const { error } = await supabase.from("characters").update({ [field]: value }).eq("id", char.id);
+            if (error) throw error;
+            setChar((prev) => prev ? { ...prev, [field]: value as any } as Character : null);
+            setEditData((prev) => ({ ...prev, [field]: value as any }));
+        } catch (err) {
+            console.error(`Error during quickSave of ${field}:`, err);
+        }
     }
 
     async function deleteCharacter() {
         if (!char || !canEdit) return;
         if (!confirm(`Sei sicuro di voler eliminare definitivamente questo personaggio?`)) return;
         setDeleting(true);
-        const { error } = await supabase.from("characters").delete().eq("id", char.id);
-        if (!error) {
-            router.push(`/campaign/${campaignId}`);
-        } else {
-            console.error("Error deleting character", error);
+        try {
+            const { error } = await supabase.from("characters").delete().eq("id", char.id);
+            if (!error) {
+                router.push(`/campaign/${campaignId}`);
+            } else {
+                throw error;
+            }
+        } catch (err: any) {
+            console.error("Error deleting character", err);
+            alert("Errore durante l'eliminazione: " + err.message);
+        } finally {
             setDeleting(false);
             setShowDeleteConfirm(false);
         }

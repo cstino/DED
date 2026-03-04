@@ -238,31 +238,37 @@ function CreateCampaignModal({
             code += chars.charAt(Math.floor(Math.random() * chars.length));
         }
 
-        const { data, error: insertError } = await supabase
-            .from("campaigns")
-            .insert({
-                name: name.trim(),
-                description: description.trim() || null,
-                master_id: userId,
-                invite_code: code,
-            })
-            .select()
-            .single();
+        try {
+            const { data, error: insertError } = await supabase
+                .from("campaigns")
+                .insert({
+                    name: name.trim(),
+                    description: description.trim() || null,
+                    master_id: userId,
+                    invite_code: code,
+                })
+                .select()
+                .single();
 
-        if (insertError) {
-            setError(insertError.message);
+            if (insertError) {
+                setError(insertError.message);
+                return;
+            }
+
+            // Also add the master as a campaign_member with role 'master'
+            await supabase.from("campaign_members").insert({
+                campaign_id: data.id,
+                user_id: userId,
+                role: "master",
+            });
+
+            onCreated(data);
+        } catch (err: any) {
+            console.error("Error creating campaign:", err);
+            setError("Si è verificato un errore imprevisto.");
+        } finally {
             setLoading(false);
-            return;
         }
-
-        // Also add the master as a campaign_member with role 'master'
-        await supabase.from("campaign_members").insert({
-            campaign_id: data.id,
-            user_id: userId,
-            role: "master",
-        });
-
-        onCreated(data);
     }
 
     return (
@@ -352,49 +358,53 @@ function JoinCampaignModal({
         setLoading(true);
         setError("");
 
-        // Find campaign by invite code
-        const { data: campaign, error: fetchError } = await supabase
-            .from("campaigns")
-            .select("*")
-            .eq("invite_code", code.trim().toUpperCase())
-            .single();
+        try {
+            // Find campaign by invite code
+            const { data: campaign, error: fetchError } = await supabase
+                .from("campaigns")
+                .select("*")
+                .eq("invite_code", code.trim().toUpperCase())
+                .single();
 
-        if (fetchError || !campaign) {
-            setError("Codice invito non trovato. Verifica e riprova.");
+            if (fetchError || !campaign) {
+                setError("Codice invito non trovato. Verifica e riprova.");
+                return;
+            }
+
+            // Check if already a member
+            const { data: existing } = await supabase
+                .from("campaign_members")
+                .select("id")
+                .eq("campaign_id", campaign.id)
+                .eq("user_id", userId)
+                .single();
+
+            if (existing) {
+                setError("Fai già parte di questa campagna!");
+                return;
+            }
+
+            // Join
+            const { error: joinError } = await supabase
+                .from("campaign_members")
+                .insert({
+                    campaign_id: campaign.id,
+                    user_id: userId,
+                    role: "player",
+                });
+
+            if (joinError) {
+                setError(joinError.message);
+                return;
+            }
+
+            onJoined(campaign);
+        } catch (err: any) {
+            console.error("Error joining campaign:", err);
+            setError("Si è verificato un errore imprevisto.");
+        } finally {
             setLoading(false);
-            return;
         }
-
-        // Check if already a member
-        const { data: existing } = await supabase
-            .from("campaign_members")
-            .select("id")
-            .eq("campaign_id", campaign.id)
-            .eq("user_id", userId)
-            .single();
-
-        if (existing) {
-            setError("Fai già parte di questa campagna!");
-            setLoading(false);
-            return;
-        }
-
-        // Join
-        const { error: joinError } = await supabase
-            .from("campaign_members")
-            .insert({
-                campaign_id: campaign.id,
-                user_id: userId,
-                role: "player",
-            });
-
-        if (joinError) {
-            setError(joinError.message);
-            setLoading(false);
-            return;
-        }
-
-        onJoined(campaign);
     }
 
     return (
