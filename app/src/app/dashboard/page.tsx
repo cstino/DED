@@ -93,11 +93,16 @@ export default function DashboardPage() {
         <div className="page">
             {/* Header */}
             <div className={styles.header}>
-                <div>
-                    <h1 className="page-title">
-                        Ciao, {profile?.username || "Avventuriero"} 👋
-                    </h1>
-                    <p className="page-subtitle">Le tue campagne D&D</p>
+                <div className={styles.headerLeft}>
+                    <div className={styles.logoMini}>
+                        <D20Dice size={40} autoRollInterval={10000} />
+                    </div>
+                    <div>
+                        <h1 className="page-title">
+                            Ciao, {profile?.username || "Avventuriero"} 👋
+                        </h1>
+                        <p className="page-subtitle">Le tue campagne D&D</p>
+                    </div>
                 </div>
                 <button
                     className="btn btn-secondary btn-icon"
@@ -134,81 +139,87 @@ export default function DashboardPage() {
             </div>
 
             {/* Campaigns Lists */}
-            {loading ? (
-                <div className={styles.loadingContainer}>
-                    <D20Dice size={60} />
-                </div>
-            ) : campaigns.length === 0 ? (
-                <div className={styles.emptyState}>
-                    <div className={styles.emptyIcon}>🏰</div>
-                    <h2>Nessuna campagna</h2>
-                    <p className="text-secondary">
-                        Crea la tua prima campagna o unisciti ad una esistente con un codice
-                        invito!
-                    </p>
-                </div>
-            ) : (
-                <div className={styles.campaignList}>
-                    {campaigns.map((campaign) => (
-                        <div
-                            key={campaign.id}
-                            className={`card ${styles.campaignCard} ${campaign.master_id === user.id ? "card-glow-amber" : ""
-                                }`}
-                            onClick={() => router.push(`/campaign/${campaign.id}`)}
-                        >
-                            <div className={styles.campaignHeader}>
-                                <h3>{campaign.name}</h3>
-                                <span
-                                    className={`${styles.roleBadge} ${campaign.master_id === user.id
-                                        ? styles.roleMaster
-                                        : styles.rolePlayer
-                                        }`}
-                                >
-                                    {campaign.master_id === user.id ? "DM" : "Giocatore"}
-                                </span>
+            {
+                loading ? (
+                    <div className={styles.loadingContainer}>
+                        <D20Dice size={60} />
+                    </div>
+                ) : campaigns.length === 0 ? (
+                    <div className={styles.emptyState}>
+                        <div className={styles.emptyIcon}>🏰</div>
+                        <h2>Nessuna campagna</h2>
+                        <p className="text-secondary">
+                            Crea la tua prima campagna o unisciti ad una esistente con un codice
+                            invito!
+                        </p>
+                    </div>
+                ) : (
+                    <div className={styles.campaignList}>
+                        {campaigns.map((campaign) => (
+                            <div
+                                key={campaign.id}
+                                className={`card ${styles.campaignCard} ${campaign.master_id === user.id ? "card-glow-amber" : ""
+                                    }`}
+                                onClick={() => router.push(`/campaign/${campaign.id}`)}
+                            >
+                                <div className={styles.campaignHeader}>
+                                    <h3>{campaign.name}</h3>
+                                    <span
+                                        className={`${styles.roleBadge} ${campaign.master_id === user.id
+                                            ? styles.roleMaster
+                                            : styles.rolePlayer
+                                            }`}
+                                    >
+                                        {campaign.master_id === user.id ? "DM" : "Giocatore"}
+                                    </span>
+                                </div>
+                                {campaign.description && (
+                                    <p className="text-secondary" style={{ fontSize: "0.9rem" }}>
+                                        {campaign.description}
+                                    </p>
+                                )}
+                                <div className={styles.campaignFooter}>
+                                    <span className="text-muted" style={{ fontSize: "0.8rem" }}>
+                                        Codice: {campaign.invite_code}
+                                    </span>
+                                </div>
                             </div>
-                            {campaign.description && (
-                                <p className="text-secondary" style={{ fontSize: "0.9rem" }}>
-                                    {campaign.description}
-                                </p>
-                            )}
-                            <div className={styles.campaignFooter}>
-                                <span className="text-muted" style={{ fontSize: "0.8rem" }}>
-                                    Codice: {campaign.invite_code}
-                                </span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+                        ))}
+                    </div>
+                )
+            }
 
             {/* Create Campaign Modal */}
-            {showCreateModal && (
-                <CreateCampaignModal
-                    userId={user.id}
-                    onClose={() => setShowCreateModal(false)}
-                    onCreated={(c) => {
-                        setCampaigns((prev) => [c, ...prev]);
-                        setShowCreateModal(false);
-                    }}
-                />
-            )}
+            {
+                showCreateModal && (
+                    <CreateCampaignModal
+                        userId={user.id}
+                        onClose={() => setShowCreateModal(false)}
+                        onCreated={(c) => {
+                            setCampaigns((prev) => [c, ...prev]);
+                            setShowCreateModal(false);
+                        }}
+                    />
+                )
+            }
 
             {/* Join Campaign Modal */}
-            {showJoinModal && (
-                <JoinCampaignModal
-                    userId={user.id}
-                    onClose={() => setShowJoinModal(false)}
-                    onJoined={(c) => {
-                        setCampaigns((prev) => {
-                            if (prev.find((p) => p.id === c.id)) return prev;
-                            return [c, ...prev];
-                        });
-                        setShowJoinModal(false);
-                    }}
-                />
-            )}
-        </div>
+            {
+                showJoinModal && (
+                    <JoinCampaignModal
+                        userId={user.id}
+                        onClose={() => setShowJoinModal(false)}
+                        onJoined={(c) => {
+                            setCampaigns((prev) => {
+                                if (prev.find((p) => p.id === c.id)) return prev;
+                                return [c, ...prev];
+                            });
+                            setShowJoinModal(false);
+                        }}
+                    />
+                )
+            }
+        </div >
     );
 }
 

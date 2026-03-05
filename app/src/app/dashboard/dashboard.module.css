@@ -30,9 +30,22 @@
 /* ---------- Header ---------- */
 .header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: var(--space-xl);
+}
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.logoMini {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    margin-top: -4px;
 }
 
 .greeting {
