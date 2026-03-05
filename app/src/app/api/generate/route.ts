@@ -92,7 +92,7 @@ Rispondi in italiano.`;
             try {
                 const google = createGoogleGenerativeAI({ apiKey: key });
                 const result = await generateObject({
-                    model: google('gemini-2.5-flash'),
+                    model: google('gemini-3.1-flash-lite'),
                     schema,
                     system: systemPrompt,
                     prompt: `Genera: ${prompt}`,

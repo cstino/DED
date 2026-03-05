@@ -92,7 +92,7 @@ export async function POST(req: Request) {
             try {
                 const google = createGoogleGenerativeAI({ apiKey: key });
                 const result = await streamText({
-                    model: google('gemini-2.5-flash'), // 1.5 e 2.0 sono disabilitati/rimossi sulla free tier per queste chiavi API, ma 2.5 funziona.
+                    model: google('gemini-3.1-flash-lite'),
                     system: systemPrompt,
                     messages,
                     maxRetries: 0, // Disable internal retries to let our rotation take over
