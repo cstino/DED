@@ -412,6 +412,29 @@
     }
 }
 
+/* NPC Party Member Special Styling */
+.npcMemberCard {
+    background: linear-gradient(135deg, rgba(255, 170, 0, 0.05) 0%, rgba(255, 170, 0, 0.02) 100%);
+    border: 1px solid rgba(255, 170, 0, 0.2) !important;
+}
+
+.npcMemberCard:hover {
+    border-color: var(--accent-amber) !important;
+    background: linear-gradient(135deg, rgba(255, 170, 0, 0.08) 0%, rgba(255, 170, 0, 0.04) 100%);
+}
+
+.npcTag {
+    font-size: 0.6rem;
+    font-weight: 900;
+    color: var(--accent-amber);
+    background: rgba(255, 170, 0, 0.1);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 170, 0, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
 @media (min-width: 1024px) {
     .characterGrid {
         grid-template-columns: repeat(3, 1fr);

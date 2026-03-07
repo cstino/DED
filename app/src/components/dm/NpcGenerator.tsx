@@ -17,6 +17,7 @@ interface GeneratedEntity {
     equipment: string[];
     notes: string;
     challenge_rating: string;
+    is_party_member: boolean;
 }
 
 interface NpcGeneratorProps {
@@ -39,6 +40,7 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
         hp: 10, ac: 10,
         stats: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
         traits: [], actions: [], equipment: [], notes: "", challenge_rating: "1",
+        is_party_member: false,
     });
 
     const handleGenerate = async () => {
@@ -96,6 +98,7 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
                     ...entity.actions.map(a => ({ name: `Azione: ${a.name}`, description: a.description }))
                 ],
                 notes: entity.notes,
+                is_party_member: entity.is_party_member || false,
             };
             console.log("Saving NPC/Monster:", payload);
 
@@ -117,6 +120,7 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
                     hp: 10, ac: 10,
                     stats: { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
                     traits: [], actions: [], equipment: [], notes: "", challenge_rating: "1",
+                    is_party_member: false,
                 });
             }
         } catch (err: any) {
@@ -323,6 +327,24 @@ function EntityCard({
                 </div>
             )}
 
+            {entityType === 'npc' && (
+                <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <input
+                        type="checkbox"
+                        id="is_party_member_ai"
+                        checked={entity.is_party_member || false}
+                        onChange={(e) => {
+                            // Since entity is from generated state, we need to update it if we want it reactive here
+                            // but usually generated is just a preview. Let's make it work for the save.
+                            entity.is_party_member = e.target.checked;
+                        }}
+                    />
+                    <label htmlFor="is_party_member_ai" style={{ cursor: 'pointer', color: 'var(--accent-teal)', fontWeight: 'bold' }}>
+                        🛡️ Questo NPC è un membro del Party
+                    </label>
+                </div>
+            )}
+
             <div className={styles.actions}>
                 <button
                     className={`btn ${styles.saveBtn}`}
@@ -440,6 +462,21 @@ function ManualForm({
                     <label>AC</label>
                     <input type="number" value={data.ac} onChange={(e) => setData({ ...data, ac: parseInt(e.target.value) || 0 })} />
                 </div>
+                {entityType === 'npc' && (
+                    <div className={styles.manualField} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '24px' }}>
+                        <input
+                            type="checkbox"
+                            role="switch"
+                            id="is_party_member_manual"
+                            checked={data.is_party_member}
+                            onChange={(e) => setData({ ...data, is_party_member: e.target.checked })}
+                            style={{ width: 'auto', minHeight: 'auto' }}
+                        />
+                        <label htmlFor="is_party_member_manual" style={{ margin: 0, cursor: 'pointer', color: 'var(--accent-teal)' }}>
+                            🛡️ Membro del Party
+                        </label>
+                    </div>
+                )}
             </div>
 
             {/* Ability Scores */}

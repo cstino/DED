@@ -23,6 +23,7 @@ interface SavedNpc {
     traits: { name: string; description: string }[];
     stats: { str: number; dex: number; con: number; int: number; wis: number; cha: number };
     is_alive: boolean;
+    is_party_member: boolean;
 }
 
 export default function NpcList({ campaignId, refreshTrigger }: NpcListProps) {
@@ -54,6 +55,7 @@ export default function NpcList({ campaignId, refreshTrigger }: NpcListProps) {
                     traits: Array.isArray(n.traits) ? n.traits : [],
                     stats: n.stats || { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
                     is_alive: n.is_alive !== false,
+                    is_party_member: n.is_party_member || false,
                 }));
                 setNpcs(mapped);
             }

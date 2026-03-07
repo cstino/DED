@@ -11,6 +11,7 @@ import NpcGenerator from "@/components/dm/NpcGenerator";
 import NpcList from "@/components/dm/NpcList";
 import SpellCompendium from "@/components/dm/SpellCompendium";
 import D20Dice from "@/components/ui/D20Dice";
+import { calculateEquipmentBonuses, type EquipmentItem } from "@/components/character/EquipmentManager";
 import styles from "./campaign.module.css";
 
 interface Campaign {
@@ -36,12 +37,25 @@ interface Character {
     ability_scores: { str: number; dex: number; con: number; int: number; wis: number; cha: number };
     skill_proficiencies: string[];
     proficiency_bonus?: number;
+    equipment?: EquipmentItem[];
+    is_party_member?: boolean;
 }
 
 interface Member {
     user_id: string;
     role: string;
     profiles: { username: string; avatar_url: string | null };
+}
+
+interface NpcPartyMember {
+    id: string;
+    name: string;
+    race: string;
+    role: string;
+    hp: number;
+    ac: number;
+    stats: any;
+    is_party_member: boolean;
 }
 
 export default function CampaignPage() {
@@ -53,7 +67,9 @@ export default function CampaignPage() {
     const [campaign, setCampaign] = useState<Campaign | null>(null);
     const [characters, setCharacters] = useState<Character[]>([]);
     const [members, setMembers] = useState<Member[]>([]);
+    const [npcMembers, setNpcMembers] = useState<NpcPartyMember[]>([]);
     const [loading, setLoading] = useState(true);
+    const [slowLoading, setSlowLoading] = useState(false);
     const [copied, setCopied] = useState(false);
     const [activeTab, setActiveTab] = useState<"party" | "sessions" | "lore" | "npcs" | "spells">("party");
     const [npcRefreshTrigger, setNpcRefreshTrigger] = useState(0);
@@ -67,30 +83,49 @@ export default function CampaignPage() {
     useEffect(() => {
         if (!user || !campaignId) return;
 
+        let isMounted = true;
+        const timeout = setTimeout(() => {
+            if (isMounted && loading) setSlowLoading(true);
+        }, 5000);
+
         async function fetchAll() {
             try {
-                setLoading(true);
+                if (isMounted) {
+                    setLoading(true);
+                    setSlowLoading(false);
+                }
 
-                const [campaignRes, charsRes, membersRes] = await Promise.all([
+                const [campaignRes, charsRes, membersRes, npcMembersRes] = await Promise.all([
                     supabase.from("campaigns").select("*").eq("id", campaignId).single(),
                     supabase.from("characters").select("*").eq("campaign_id", campaignId),
                     supabase
                         .from("campaign_members")
                         .select("user_id, role, profiles(username, avatar_url)")
                         .eq("campaign_id", campaignId),
+                    supabase.from("npcs").select("*").eq("campaign_id", campaignId).eq("is_party_member", true).then(
+                        (res) => res,
+                        (err: any) => ({ data: [], error: err })
+                    ),
                 ]);
+
+                if (!isMounted) return;
 
                 if (campaignRes.data) setCampaign(campaignRes.data);
                 if (charsRes.data) setCharacters(charsRes.data);
                 if (membersRes.data) setMembers(membersRes.data as unknown as Member[]);
+                if (npcMembersRes.data) setNpcMembers(npcMembersRes.data as unknown as NpcPartyMember[]);
             } catch (error) {
                 console.error("Error fetching campaign data:", error);
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                    clearTimeout(timeout);
+                }
             }
         }
 
         fetchAll();
+        return () => { isMounted = false; clearTimeout(timeout); };
     }, [user, campaignId]);
 
     function copyInviteCode() {
@@ -157,6 +192,14 @@ export default function CampaignPage() {
             <div className={styles.loadingContainer}>
                 <D20Dice size={80} />
                 <p className="text-secondary" style={{ marginTop: 16 }}>Caricamento campagna...</p>
+                {slowLoading && (
+                    <div className={styles.slowLoadingHint}>
+                        <p>Il caricamento sta impiegando più del previsto.</p>
+                        <button className="btn btn-secondary btn-sm" onClick={() => window.location.reload()}>
+                            🔄 Riprova Caricamento
+                        </button>
+                    </div>
+                )}
             </div>
         );
     }
@@ -174,11 +217,22 @@ export default function CampaignPage() {
 
     // Group characters by user
     const myCharacters = characters.filter((c) => c.user_id === user.id);
-    // Players only see other players' characters (not Master's characters in the party section)
-    const otherCharacters = characters.filter((c) =>
-        c.user_id !== user.id &&
-        c.user_id !== campaign.master_id
-    );
+    // Characters that belong to the "Party" view.
+    // Players: See others' characters + Master's party members.
+    // Master: See all players' characters + their own party members.
+    const otherCharacters = characters.filter((c) => {
+        const isMine = c.user_id === user.id;
+        const isMasterChar = c.user_id === campaign.master_id;
+
+        // If it's my character and I'm a player, it's shown in the top "My Characters" section
+        if (isMine && !isMaster) return false;
+
+        // If it's a Master character, only show if it's explicitly marked as a party member
+        if (isMasterChar) return c.is_party_member;
+
+        // Otherwise it's another player's character
+        return true;
+    });
 
     return (
         <div className="page">
@@ -312,7 +366,9 @@ export default function CampaignPage() {
                                                     <div className={styles.badgesSection}>
                                                         <div className={styles.statBadge}>
                                                             <span className={styles.statLabel}>AC</span>
-                                                            <span className={styles.statValue}>{char.ac}</span>
+                                                            <span className={styles.statValue}>
+                                                                {char.ac + (calculateEquipmentBonuses(char.equipment || [])["ac"] || 0)}
+                                                            </span>
                                                         </div>
                                                         <div className={styles.statBadge}>
                                                             <span className={styles.statLabel}>BC</span>
@@ -337,8 +393,8 @@ export default function CampaignPage() {
                         </section>
                     )}
 
-                    {/* Party Section - Other Players' Characters */}
-                    {otherCharacters.length > 0 && (
+                    {/* Party Section - Other Players' Characters & NPC Members */}
+                    {(otherCharacters.length > 0 || npcMembers.length > 0) && (
                         <section className={styles.section}>
                             <div className={styles.sectionHeader}>
                                 <h2>Il Party</h2>
@@ -401,7 +457,9 @@ export default function CampaignPage() {
                                                 <div className={styles.badgesSection}>
                                                     <div className={styles.statBadge}>
                                                         <span className={styles.statLabel}>AC</span>
-                                                        <span className={styles.statValue}>{char.ac}</span>
+                                                        <span className={styles.statValue}>
+                                                            {char.ac + (calculateEquipmentBonuses(char.equipment || [])["ac"] || 0)}
+                                                        </span>
                                                     </div>
                                                     <div className={styles.statBadge}>
                                                         <span className={styles.statLabel}>BC</span>
@@ -426,6 +484,78 @@ export default function CampaignPage() {
                                         </div>
                                     );
                                 })}
+
+                                {npcMembers.map((npc) => (
+                                    <div
+                                        key={npc.id}
+                                        className={`card ${styles.characterCard} ${styles.npcMemberCard}`}
+                                        onClick={() => setActiveTab('npcs')}
+                                    >
+                                        <div className={styles.charHeader}>
+                                            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                                <div className={styles.cardPortraitFallback} style={{ background: 'var(--accent-amber-dim)', color: 'var(--accent-amber)' }}>
+                                                    {npc.name.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                        {npc.name}
+                                                        <span className={styles.npcTag}>NPC</span>
+                                                    </h3>
+                                                </div>
+                                            </div>
+                                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                                {isMaster && (
+                                                    <button
+                                                        className={styles.deleteBtn}
+                                                        onClick={async (e) => {
+                                                            e.stopPropagation();
+                                                            if (confirm(`Rimuovere ${npc.name} dal party? Ritornerà un semplice NPC.`)) {
+                                                                await supabase.from('npcs').update({ is_party_member: false }).eq('id', npc.id);
+                                                                setNpcMembers(prev => prev.filter(n => n.id !== npc.id));
+                                                            }
+                                                        }}
+                                                        title="Rimuovi dal Party"
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <p className={styles.charInfo}>
+                                            {npc.race} • {npc.role}
+                                        </p>
+                                        <div className={styles.charStats}>
+                                            <div className={styles.hpSection}>
+                                                <div className={styles.hpHeader}>
+                                                    <span className={styles.hpLabel}>HP</span>
+                                                    <span className={styles.hpNumbers}>{npc.hp} / {npc.hp}</span>
+                                                </div>
+                                                <div className={styles.hpBarOuter}>
+                                                    <div
+                                                        className={styles.hpBarInner}
+                                                        style={{
+                                                            width: `100%`,
+                                                            background: "var(--hp-green)",
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className={styles.badgesSection}>
+                                                <div className={styles.statBadge}>
+                                                    <span className={styles.statLabel}>AC</span>
+                                                    <span className={styles.statValue}>{npc.ac}</span>
+                                                </div>
+                                                <div className={styles.statBadge}>
+                                                    <span className={styles.statLabel}>INIT</span>
+                                                    <span className={styles.statValue}>+{Math.floor(((npc.stats?.dex ?? 10) - 10) / 2)}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p className={styles.charOwner} style={{ color: 'var(--accent-amber)' }}>
+                                            Gestito dal Master
+                                        </p>
+                                    </div>
+                                ))}
                             </div>
                         </section>
                     )}
@@ -576,7 +706,9 @@ export default function CampaignPage() {
                                                     <div className={styles.badgesSection}>
                                                         <div className={styles.statBadge}>
                                                             <span className={styles.statLabel}>AC</span>
-                                                            <span className={styles.statValue}>{char.ac}</span>
+                                                            <span className={styles.statValue}>
+                                                                {char.ac + (calculateEquipmentBonuses(char.equipment || [])["ac"] || 0)}
+                                                            </span>
                                                         </div>
                                                         <div className={styles.statBadge}>
                                                             <span className={styles.statLabel}>BC</span>

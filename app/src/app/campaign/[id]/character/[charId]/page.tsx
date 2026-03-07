@@ -63,6 +63,7 @@ interface Character {
     class_abilities: ClassAbility[];
     hit_die: number;
     proficiency_bonus: number;
+    is_party_member: boolean;
 }
 
 const ABILITIES = [
@@ -110,12 +111,12 @@ const SCHOOL_IT: Record<string, string> = {
     Necromancy: "Necromanzia", Transmutation: "Trasmutazione", Transformation: "Trasmutazione",
 };
 
-function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpandedSpell, isOwner, onRemove, preparedSpells, onTogglePrepare, canPrepareSpells }: {
+function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpandedSpell, canEdit, onRemove, preparedSpells, onTogglePrepare, canPrepareSpells }: {
     knownSpells: string[];
     spellDetails: Record<string, any>;
     expandedSpell: string | null;
     setExpandedSpell: (s: string | null) => void;
-    isOwner: boolean;
+    canEdit: boolean;
     onRemove: (name: string) => void;
     preparedSpells?: string[];
     onTogglePrepare?: (name: string) => void;
@@ -179,10 +180,10 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
                                                         <button
                                                             type="button"
                                                             className={`${styles.prepareToggle} ${preparedSpells?.includes(name) ? styles.prepareToggleActive : ""}`}
-                                                            disabled={!isOwner}
+                                                            disabled={!canEdit}
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                if (isOwner && onTogglePrepare) onTogglePrepare(name);
+                                                                if (canEdit && onTogglePrepare) onTogglePrepare(name);
                                                             }}
                                                             title={preparedSpells?.includes(name) ? "Incantesimo preparato" : "Prepara incantesimo"}
                                                         />
@@ -197,7 +198,7 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
                                                 </div>
                                             </div>
                                             <div className={styles.knownSpellActions}>
-                                                {isOwner && (
+                                                {canEdit && (
                                                     <button type="button" className={styles.removeSpellBtn} onClick={(e) => {
                                                         e.stopPropagation();
                                                         onRemove(name);
@@ -255,25 +256,29 @@ export default function CharacterSheetPage() {
     const [portraitFile, setPortraitFile] = useState<File | null>(null);
     const [portraitPreview, setPortraitPreview] = useState<string | null>(null);
     const [showPortraitFull, setShowPortraitFull] = useState(false);
+    const [slowLoading, setSlowLoading] = useState(false);
 
     const [campaignMasterId, setCampaignMasterId] = useState<string | null>(null);
 
     // Prevent concurrent Supabase writes
     const saveLockRef = useRef(false);
     const quickSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const pendingQuickSaveRef = useRef<{ field: string; value: unknown } | null>(null);
+    const pendingQuickSaveRef = useRef<Record<string, unknown>>({});
 
     const isOwner = char?.user_id === user?.id;
     const isMaster = user?.id === campaignMasterId;
     const canEdit = isOwner || isMaster;
 
-    const fetchChar = useCallback(async () => {
+    const fetchChar = useCallback(async (isMounted: boolean) => {
         try {
-            setLoading(true);
+            if (isMounted) {
+                setLoading(true);
+                setSlowLoading(false);
+            }
             const { data, error } = await supabase.from("characters").select("*").eq("id", charId).single();
             if (error) throw error;
 
-            if (data) {
+            if (data && isMounted) {
                 // Ensure new fields have defaults for older records
                 const c = {
                     ...data,
@@ -296,6 +301,7 @@ export default function CharacterSheetPage() {
                     class_abilities: Array.isArray(data.class_abilities) ? data.class_abilities : [],
                     hit_die: data.hit_die ?? 8,
                     proficiency_bonus: data.proficiency_bonus ?? Math.ceil((data.level || 1) / 4) + 1,
+                    is_party_member: !!data.is_party_member,
                 } as Character;
                 setChar(c);
                 setEditData(c);
@@ -307,12 +313,38 @@ export default function CharacterSheetPage() {
         } catch (err) {
             console.error("Error fetching character:", err);
         } finally {
-            setLoading(false);
+            if (isMounted) setLoading(false);
         }
     }, [charId]);
 
     useEffect(() => { if (!authLoading && !user) router.push("/login"); }, [authLoading, user, router]);
-    useEffect(() => { if (user && charId) fetchChar(); }, [user, charId, fetchChar]);
+
+    useEffect(() => {
+        if (!user || !charId) return;
+
+        let isMounted = true;
+        const timeout = setTimeout(() => {
+            if (isMounted && loading) setSlowLoading(true);
+        }, 5000);
+
+        fetchChar(isMounted).finally(() => {
+            if (isMounted) clearTimeout(timeout);
+        });
+
+        return () => { isMounted = false; clearTimeout(timeout); };
+    }, [user, charId, fetchChar]);
+
+    // Beforeunload to prevent data loss
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (Object.keys(pendingQuickSaveRef.current).length > 0 || saving) {
+                e.preventDefault();
+                e.returnValue = "Ci sono salvataggi in corso. Sei sicuro di voler uscire?";
+            }
+        };
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    }, [saving]);
 
     // Fetch spell details for known spells
     useEffect(() => {
@@ -341,7 +373,7 @@ export default function CharacterSheetPage() {
         if (quickSaveTimerRef.current) {
             clearTimeout(quickSaveTimerRef.current);
             quickSaveTimerRef.current = null;
-            pendingQuickSaveRef.current = null;
+            pendingQuickSaveRef.current = {};
         }
 
         saveLockRef.current = true;
@@ -469,10 +501,11 @@ export default function CharacterSheetPage() {
         }
     }
 
-    // Quick save a single field without entering edit mode
-    // Debounced (300ms) and serialized to prevent concurrent writes
+    // Quick save fields without entering edit mode
+    // Debounced and batched to prevent data loss and concurrent writes
     async function quickSave(field: string, value: unknown) {
         if (!char || !canEdit) return;
+
         // Don't try to save proficiency_bonus if it's not in DB
         if (field === "proficiency_bonus") {
             setChar((prev) => prev ? { ...prev, [field]: value as any } as Character : null);
@@ -484,28 +517,55 @@ export default function CharacterSheetPage() {
         setChar((prev) => prev ? { ...prev, [field]: value as any } as Character : null);
         setEditData((prev) => ({ ...prev, [field]: value as any }));
 
-        // Store the pending save and debounce
-        pendingQuickSaveRef.current = { field, value };
+        // Accumulate pending changes in a record
+        pendingQuickSaveRef.current[field] = value;
+
+        // Start showing "Saving..." immediately for feedback
+        setSaving(true);
+        setSaveError(null);
+
         if (quickSaveTimerRef.current) clearTimeout(quickSaveTimerRef.current);
 
         quickSaveTimerRef.current = setTimeout(async () => {
-            const pending = pendingQuickSaveRef.current;
-            if (!pending) return;
-            pendingQuickSaveRef.current = null;
+            const changes = { ...pendingQuickSaveRef.current };
+            if (Object.keys(changes).length === 0) {
+                setSaving(false);
+                return;
+            }
 
-            // Wait for any in-flight full save to finish
-            if (saveLockRef.current) return;
+            // Clear the ref BEFORE starting the request so new changes can be added
+            pendingQuickSaveRef.current = {};
+            quickSaveTimerRef.current = null;
+
+            // Wait for any in-flight full save or other quick save to finish
+            // (Simple serial queue using saveLockRef)
+            let retries = 0;
+            while (saveLockRef.current && retries < 10) {
+                await new Promise(r => setTimeout(r, 500));
+                retries++;
+            }
+
             saveLockRef.current = true;
 
             try {
-                const { error } = await supabase.from("characters").update({ [pending.field]: pending.value }).eq("id", char.id);
-                if (error) console.error(`quickSave error (${pending.field}):`, error);
+                const { error } = await supabase.from("characters").update(changes).eq("id", char.id);
+                if (error) {
+                    console.error("quickSave error:", error);
+                    setSaveError("Errore salvataggio automatico. Riprova.");
+                    // In case of error, put changes back (if they weren't updated again)
+                    // This is a simplified approach; in production we might want a more robust queue
+                }
             } catch (err) {
-                console.error(`quickSave failed (${pending.field}):`, err);
+                console.error("quickSave failed:", err);
+                setSaveError("Errore salvataggio automatico (network).");
             } finally {
                 saveLockRef.current = false;
+                // Only turn off saving if no new changes arrived in the meantime
+                if (Object.keys(pendingQuickSaveRef.current).length === 0) {
+                    setSaving(false);
+                }
             }
-        }, 300);
+        }, 500); // 500ms debounce for stability
     }
 
     async function deleteCharacter() {
@@ -539,7 +599,19 @@ export default function CharacterSheetPage() {
     }
 
     if (authLoading || !user || loading) {
-        return <div className={styles.loadingContainer}><div className={styles.spinner} /></div>;
+        return (
+            <div className={styles.loadingContainer}>
+                <div className={styles.spinner} />
+                {slowLoading && (
+                    <div className={styles.slowLoadingHint}>
+                        <p>Il caricamento sta impiegando più del previsto.</p>
+                        <button className="btn btn-secondary btn-sm" onClick={() => window.location.reload()}>
+                            🔄 Riprova Caricamento
+                        </button>
+                    </div>
+                )}
+            </div>
+        );
     }
     if (!char) {
         return (
@@ -606,6 +678,20 @@ export default function CharacterSheetPage() {
                                 <span className={styles.sidePanelItemIcon}>✏️</span>
                                 <span>Modifica Personaggio</span>
                             </button>
+                            {isMaster && (
+                                <button
+                                    className={styles.sidePanelItem}
+                                    style={{ animationDelay: '0.08s', color: char.is_party_member ? 'var(--accent-teal)' : 'var(--text-secondary)' }}
+                                    onClick={() => {
+                                        const newValue = !char.is_party_member;
+                                        setChar(p => p ? { ...p, is_party_member: newValue } as Character : null);
+                                        quickSave("is_party_member", newValue);
+                                    }}
+                                >
+                                    <span className={styles.sidePanelItemIcon}>{char.is_party_member ? '🛡️' : '👤'}</span>
+                                    <span>{char.is_party_member ? 'Rimuovi dal Party' : 'Aggiungi al Party'}</span>
+                                </button>
+                            )}
                             {isOwner && (
                                 <button className={`${styles.sidePanelItem} ${styles.sidePanelItemDanger}`} style={{ animationDelay: '0.12s' }} onClick={() => { setShowSettingsMenu(false); setShowDeleteConfirm(true); }}>
                                     <span className={styles.sidePanelItemIcon}>🗑️</span>
@@ -659,11 +745,17 @@ export default function CharacterSheetPage() {
                     )}
                 </div>
                 <div className={styles.charInfo}>
-                    <h1 className={styles.charName}>
+                    <div className={styles.nameRow}>
                         {editing ? (
                             <input type="text" className={`input ${styles.nameInput}`} value={editData.name ?? ""} onChange={(e) => upd("name", e.target.value)} />
-                        ) : char.name}
-                    </h1>
+                        ) : (
+                            <h1 className={styles.charName}>{char.name}</h1>
+                        )}
+                        <div className={`${styles.savingIndicator} ${saving ? styles.savingIndicatorActive : ""}`}>
+                            <span className={styles.savingDot} />
+                            <span>Salvataggio...</span>
+                        </div>
+                    </div>
                     <p className={styles.charMeta}>{char.race} • {char.class}{char.subclass && ` — ${char.subclass}`}</p>
                     <div className={styles.charTags}>
                         <div className={styles.levelWrapper}>
@@ -1023,9 +1115,9 @@ export default function CharacterSheetPage() {
                                                                             key={dotIdx}
                                                                             type="button"
                                                                             className={`${styles.classAbilityDot} ${dotIdx < ability.uses_remaining ? styles.classAbilityDotActive : ""}`}
-                                                                            disabled={!isOwner}
+                                                                            disabled={!canEdit}
                                                                             onClick={() => {
-                                                                                if (!isOwner) return;
+                                                                                if (!canEdit) return;
                                                                                 const newUses = dotIdx < ability.uses_remaining && dotIdx === ability.uses_remaining - 1
                                                                                     ? dotIdx // Toggle off last active
                                                                                     : dotIdx + 1; // Toggle on up to here
@@ -1042,7 +1134,80 @@ export default function CharacterSheetPage() {
                                                             <span className={styles.expandArrow}>{isExpanded ? "▾" : "▸"}</span>
                                                         </div>
                                                     </div>
-                                                    {isExpanded && (
+                                                    {isExpanded && canEdit && (
+                                                        <div className={styles.abilityEditForm}>
+                                                            <input
+                                                                type="text"
+                                                                className={`input ${styles.abilityNameInput}`}
+                                                                value={ability.name}
+                                                                onChange={(e) => {
+                                                                    const arr = [...char.class_abilities];
+                                                                    arr[i] = { ...arr[i], name: e.target.value };
+                                                                    setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
+                                                                    quickSave("class_abilities", arr);
+                                                                }}
+                                                                placeholder="Nome abilità..."
+                                                            />
+                                                            <textarea
+                                                                className={`input ${styles.classAbilityDescInput}`}
+                                                                value={ability.description}
+                                                                onChange={(e) => {
+                                                                    const arr = [...char.class_abilities];
+                                                                    arr[i] = { ...arr[i], description: e.target.value };
+                                                                    setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
+                                                                    quickSave("class_abilities", arr);
+                                                                }}
+                                                                placeholder="Descrizione..."
+                                                                rows={2}
+                                                            />
+                                                            <div className={styles.classAbilityUsesRow}>
+                                                                <label className={styles.classAbilityUsesLabel}>
+                                                                    Usi max:
+                                                                    <input
+                                                                        type="number"
+                                                                        className={`input ${styles.tinyInput}`}
+                                                                        value={ability.max_uses ?? ""}
+                                                                        placeholder="∞"
+                                                                        onChange={(e) => {
+                                                                            const val = e.target.value ? parseInt(e.target.value) : null;
+                                                                            const arr = [...char.class_abilities];
+                                                                            arr[i] = { ...arr[i], max_uses: val, uses_remaining: val ?? 0 };
+                                                                            setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
+                                                                            quickSave("class_abilities", arr);
+                                                                        }}
+                                                                    />
+                                                                </label>
+                                                                <label className={styles.classAbilityUsesLabel}>
+                                                                    Ricarica:
+                                                                    <select
+                                                                        className={`input ${styles.smallInput}`}
+                                                                        value={ability.recharge}
+                                                                        onChange={(e) => {
+                                                                            const arr = [...char.class_abilities];
+                                                                            arr[i] = { ...arr[i], recharge: e.target.value };
+                                                                            setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
+                                                                            quickSave("class_abilities", arr);
+                                                                        }}
+                                                                    >
+                                                                        <option value="">Nessuna</option>
+                                                                        <option value="Riposo Breve">Rip. Breve</option>
+                                                                        <option value="Riposo Lungo">Rip. Lungo</option>
+                                                                    </select>
+                                                                </label>
+                                                                <button
+                                                                    type="button"
+                                                                    className={styles.deleteAbilityBtn}
+                                                                    onClick={() => {
+                                                                        const arr = char.class_abilities.filter((_, idx) => idx !== i);
+                                                                        setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
+                                                                        quickSave("class_abilities", arr);
+                                                                        setExpandedAbility(null);
+                                                                    }}
+                                                                >🗑️ Elimina</button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    {isExpanded && !canEdit && (
                                                         <div className={styles.classAbilityDetail}>
                                                             <p className={styles.classAbilityDesc}>{ability.description || <span className="text-muted">Nessuna descrizione.</span>}</p>
                                                         </div>
@@ -1053,6 +1218,21 @@ export default function CharacterSheetPage() {
                                     ) : (
                                         <p className={styles.notesEmpty}>Nessuna abilità specificata.</p>
                                     )
+                                )}
+                                {!editing && canEdit && (
+                                    <button
+                                        type="button"
+                                        className={styles.addClassAbilityBtn}
+                                        onClick={() => {
+                                            const newAb: ClassAbility = { name: "", description: "", max_uses: null, uses_remaining: 0, recharge: "" };
+                                            const arr = [...(char.class_abilities || []), newAb];
+                                            setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
+                                            quickSave("class_abilities", arr);
+                                            setExpandedAbility(arr.length - 1); // Auto-expand new ability
+                                        }}
+                                    >
+                                        + Aggiungi Abilità
+                                    </button>
                                 )}
                             </div>
                         </div>
@@ -1095,7 +1275,7 @@ export default function CharacterSheetPage() {
                                     </div>
                                 ) : (
                                     <>
-                                        {isOwner && (
+                                        {canEdit && (
                                             <button type="button" className={styles.hitDiceBtn} onClick={() => {
                                                 const next = Math.max(0, char.hit_dice_current - 1);
                                                 setChar((p) => p ? { ...p, hit_dice_current: next } as Character : null);
@@ -1106,7 +1286,7 @@ export default function CharacterSheetPage() {
                                             <span className={styles.hitDiceValue}>{char.hit_dice_current} / {char.hit_dice_total}</span>
                                             <span className={styles.hitDieType}>d{char.hit_die ?? 8}</span>
                                         </div>
-                                        {isOwner && (
+                                        {canEdit && (
                                             <button type="button" className={styles.hitDiceBtn} onClick={() => {
                                                 const next = Math.min(char.hit_dice_total, char.hit_dice_current + 1);
                                                 setChar((p) => p ? { ...p, hit_dice_current: next } as Character : null);
@@ -1133,7 +1313,7 @@ export default function CharacterSheetPage() {
                                                     type="button"
                                                     className={`${styles.deathDot} ${i < ds.successes ? styles.deathSuccess : ""}`}
                                                     onClick={() => {
-                                                        if (!isOwner) return;
+                                                        if (!canEdit) return;
                                                         const newDs = { ...ds, successes: i < ds.successes ? i : i + 1 };
                                                         if (editing) upd("death_saves", newDs);
                                                         else {
@@ -1157,7 +1337,7 @@ export default function CharacterSheetPage() {
                                                     type="button"
                                                     className={`${styles.deathDot} ${i < ds.failures ? styles.deathFail : ""}`}
                                                     onClick={() => {
-                                                        if (!isOwner) return;
+                                                        if (!canEdit) return;
                                                         const newDs = { ...ds, failures: i < ds.failures ? i : i + 1 };
                                                         if (editing) upd("death_saves", newDs);
                                                         else {
@@ -1190,8 +1370,8 @@ export default function CharacterSheetPage() {
                                             <span className={styles.moneyLabel}>{label}</span>
                                             {editing ? (
                                                 <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => upd("money", { ...money, [key]: Math.max(0, parseInt(e.target.value) || 0) })} />
-                                            ) : isOwner ? (
-                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => { const newMoney = { ...money, [key]: Math.max(0, parseInt(e.target.value) || 0) }; setChar((p) => p ? { ...p, money: newMoney } as Character : null); }} onBlur={() => { const currentMoney = char.money ?? { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 }; quickSave("money", currentMoney); }} />
+                                            ) : canEdit ? (
+                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => { const val = Math.max(0, parseInt(e.target.value) || 0); const newMoney = { ...money, [key]: val }; setChar((p) => p ? { ...p, money: newMoney } as Character : null); quickSave("money", newMoney); }} />
                                             ) : (
                                                 <span className={styles.moneyValue}>{money[key as keyof typeof money]}</span>
                                             )}
@@ -1251,7 +1431,7 @@ export default function CharacterSheetPage() {
                             }
                         }}
                         editing={editing}
-                        isOwner={isOwner}
+                        canEdit={canEdit}
                     />
                 )}
 
@@ -1262,7 +1442,7 @@ export default function CharacterSheetPage() {
                             <p className={styles.spellHint}>
                                 Incantesimi conosciuti: <strong>{char.known_spells?.length ?? 0}</strong>
                             </p>
-                            {isOwner && (
+                            {canEdit && (
                                 <button className="btn btn-primary" onClick={() => setShowSpellBrowser(true)}>
                                     📖 Sfoglia Incantesimi
                                 </button>
@@ -1313,9 +1493,9 @@ export default function CharacterSheetPage() {
                                                                 key={i}
                                                                 type="button"
                                                                 className={`${styles.slotDot} ${i < remaining ? styles.slotAvailable : styles.slotUsed}`}
-                                                                disabled={editing || !isOwner}
+                                                                disabled={editing || !canEdit}
                                                                 onClick={() => {
-                                                                    if (editing || !isOwner) return;
+                                                                    if (editing || !canEdit) return;
                                                                     const slotsUsed = { ...char.spell_slots_used };
                                                                     slotsUsed[lvl] = i < remaining ? used + 1 : Math.max(0, used - 1);
                                                                     setChar((p) => p ? { ...p, spell_slots_used: slotsUsed } as Character : null);
@@ -1369,7 +1549,7 @@ export default function CharacterSheetPage() {
                                 spellDetails={spellDetails}
                                 expandedSpell={expandedSpell}
                                 setExpandedSpell={setExpandedSpell}
-                                isOwner={isOwner}
+                                canEdit={canEdit}
                                 onRemove={(spellName) => {
                                     const updated = char.known_spells.filter((s) => s !== spellName);
                                     setChar((p) => p ? { ...p, known_spells: updated } as Character : null);
@@ -1389,7 +1569,7 @@ export default function CharacterSheetPage() {
                         )}
 
                         {(char.known_spells?.length ?? 0) === 0 && (
-                            <p className={styles.emptyNote}>Nessun incantesimo conosciuto. {isOwner ? 'Clicca "Sfoglia Incantesimi" per aggiungerne.' : ''}</p>
+                            <p className={styles.emptyNote}>Nessun incantesimo conosciuto. {canEdit ? 'Clicca "Sfoglia Incantesimi" per aggiungerne.' : ''}</p>
                         )}
 
                         {/* Spell Browser Overlay */}
@@ -1397,6 +1577,7 @@ export default function CharacterSheetPage() {
                             <SpellBrowser
                                 knownSpells={char.known_spells ?? []}
                                 onConfirm={(spells) => {
+                                    if (!canEdit) return;
                                     setChar((p) => p ? { ...p, known_spells: spells } as Character : null);
                                     quickSave("known_spells", spells);
                                 }}
@@ -1427,7 +1608,7 @@ export default function CharacterSheetPage() {
 
                     return (
                         <div className={styles.notesSection}>
-                            {isOwner && (
+                            {canEdit && (
                                 <button
                                     type="button"
                                     className={styles.addNoteBtn}
@@ -1444,18 +1625,18 @@ export default function CharacterSheetPage() {
                             )}
 
                             {notesList.length === 0 && (
-                                <p className={styles.notesEmpty}>Nessuna nota. {isOwner ? "Aggiungi la prima!" : ""}</p>
+                                <p className={styles.notesEmpty}>Nessuna nota. {canEdit ? "Aggiungi la prima!" : ""}</p>
                             )}
 
                             {notesList.map((note, i) => (
                                 <div key={i} className={styles.noteCard}>
                                     <div className={styles.noteHeader}>
                                         {note.date && <span className={styles.noteDate}>{note.date}</span>}
-                                        {isOwner && (
+                                        {canEdit && (
                                             <button type="button" className={styles.noteDeleteBtn} onClick={() => setNoteToDelete(i)}>🗑️</button>
                                         )}
                                     </div>
-                                    {isOwner ? (
+                                    {canEdit ? (
                                         <textarea
                                             className={`input ${styles.noteTextarea}`}
                                             value={note.text}

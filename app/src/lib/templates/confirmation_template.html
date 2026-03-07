@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conferma il tuo Account D&D</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0f172a;
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+        .header {
+            background: linear-gradient(135deg, #00e5a0 0%, #00b8d4 100%);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+        .content {
+            padding: 40px;
+            line-height: 1.6;
+        }
+        .content h2 {
+            margin-top: 0;
+            color: #64ffda;
+            font-size: 20px;
+        }
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #00e5a0;
+            color: #0f172a;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: transform 0.2s ease;
+        }
+        .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+            border-top: 1px solid #334155;
+        }
+        .dice-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="dice-icon">🎲</div>
+            <h1>D&D Campaign Manager</h1>
+        </div>
+        <div class="content">
+            <h2>Benvenuto, Avventuriero!</h2>
+            <p>Grazie per esserti unito alla nostra compagnia. Per iniziare il tuo viaggio e accedere alla tua campagna, devi confermare il tuo indirizzo email.</p>
+            
+            <div class="button-container">
+                <a href="{{ .ConfirmationURL }}" class="button">Conferma Account</a>
+            </div>
+            
+            <p>Se il pulsante non funziona, puoi copiare e incollare il seguente link nel tuo browser:</p>
+            <p style="word-break: break-all; color: #94a3b8; font-size: 14px;">{{ .ConfirmationURL }}</p>
+            
+            <p>Che i tuoi tiri siano sempre naturali! 🎲</p>
+        </div>
+        <div class="footer">
+            &copy; 2026 D&D Campaign Manager. Tutti i diritti riservati.<br>
+            Se non hai richiesto questa registrazione, puoi ignorare questa email.
+        </div>
+    </div>
+</body>
+</html>

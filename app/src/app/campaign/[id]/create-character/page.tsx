@@ -99,6 +99,10 @@ export default function CreateCharacterPage() {
 
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+    const [campaign, setCampaign] = useState<{ master_id: string } | null>(null);
+    const [isPartyMember, setIsPartyMember] = useState(false);
+
+    const isMaster = campaign?.master_id === user?.id;
 
     // Derived: auto saving throws from selected class
     const selectedClassData = classes.find((c) => c.name === selectedClass);
@@ -119,20 +123,22 @@ export default function CreateCharacterPage() {
         setPortraitPreview(URL.createObjectURL(file));
     }
 
-    // Fetch races, classes, subclasses from DB
+    // Fetch races, classes, subclasses, and campaign from DB
     useEffect(() => {
         async function loadOptions() {
-            const [racesRes, classesRes, subclassesRes] = await Promise.all([
+            const [racesRes, classesRes, subclassesRes, campaignRes] = await Promise.all([
                 supabase.from("races").select("name, movement, ability_bonuses").order("name"),
                 supabase.from("classes").select("name, hit_dice, saving_throws").order("name"),
                 supabase.from("subclasses").select("name, class_name").order("name"),
+                supabase.from("campaigns").select("master_id").eq("id", campaignId).single(),
             ]);
             if (racesRes.data) setRaces(racesRes.data);
             if (classesRes.data) setClasses(classesRes.data);
             if (subclassesRes.data) setSubclasses(subclassesRes.data);
+            if (campaignRes.data) setCampaign(campaignRes.data);
         }
         loadOptions();
-    }, []);
+    }, [campaignId]);
 
     useEffect(() => {
         if (!authLoading && !user) router.push("/login");
@@ -239,6 +245,7 @@ export default function CreateCharacterPage() {
             personality: { traits: "", ideals: "", bonds: "", flaws: "" },
             spell_slots: buildSpellSlots(hitDice, level),
             hit_die: hitDice,
+            is_party_member: isMaster ? isPartyMember : false,
         });
 
         if (insertError) {
@@ -580,6 +587,25 @@ export default function CreateCharacterPage() {
                             />
                         </div>
                     </div>
+
+                    {/* Master-only Party Toggle */}
+                    {isMaster && (
+                        <div className={styles.field} style={{ background: 'rgba(0, 229, 160, 0.05)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(0, 229, 160, 0.2)', marginBottom: 'var(--space-lg)', marginTop: 'var(--space-lg)' }}>
+                            <label className={styles.skillCheck} style={{ margin: 0, padding: 0 }}>
+                                <input
+                                    type="checkbox"
+                                    checked={isPartyMember}
+                                    onChange={(e) => setIsPartyMember(e.target.checked)}
+                                />
+                                <span className={styles.skillCheckLabel} style={{ fontWeight: 'bold', color: 'var(--accent-teal)' }}>
+                                    🛡️ Questo personaggio fa parte del Party
+                                </span>
+                            </label>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '8px 0 0 28px' }}>
+                                Se attivato, questo PG comparirà nella scheda riepilogativa del party per tutti i giocatori.
+                            </p>
+                        </div>
+                    )}
 
                     {/* Submit */}
                     <button

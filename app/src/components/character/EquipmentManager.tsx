@@ -79,10 +79,10 @@ interface Props {
     equipment: EquipmentItem[];
     onChange: (equipment: EquipmentItem[]) => void;
     editing: boolean;
-    isOwner?: boolean;
+    canEdit?: boolean;
 }
 
-export default function EquipmentManager({ equipment, onChange, editing, isOwner = false }: Props) {
+export default function EquipmentManager({ equipment, onChange, editing, canEdit = false }: Props) {
     const [showAddForm, setShowAddForm] = useState(false);
     const [editingIdx, setEditingIdx] = useState<number | null>(null);
 
@@ -163,7 +163,7 @@ export default function EquipmentManager({ equipment, onChange, editing, isOwner
         <div className={styles.container}>
             {/* Equipment List */}
             {equipment.length === 0 && !showAddForm && (
-                <p className={styles.empty}>Nessun equipaggiamento. {(editing || isOwner) ? "Aggiungi il primo oggetto!" : ""}</p>
+                <p className={styles.empty}>Nessun equipaggiamento. {(editing || canEdit) ? "Aggiungi il primo oggetto!" : ""}</p>
             )}
 
             {equipment.map((item, idx) => (
@@ -179,7 +179,7 @@ export default function EquipmentManager({ equipment, onChange, editing, isOwner
                                 <span className={styles.itemDesc}>{item.description}</span>
                             )}
                         </div>
-                        {(editing || isOwner) && (
+                        {(editing || canEdit) && (
                             <div className={styles.itemActions}>
                                 <button
                                     type="button"
@@ -225,7 +225,7 @@ export default function EquipmentManager({ equipment, onChange, editing, isOwner
             ))}
 
             {/* Add / Edit Form */}
-            {(editing || isOwner) && (
+            {(editing || canEdit) && (
                 <>
                     {showAddForm ? (
                         <div className={styles.addForm}>

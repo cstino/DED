@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import D20Dice from "@/components/ui/D20Dice";
+import { getURL } from "@/lib/auth";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
@@ -46,6 +47,7 @@ function LoginForm() {
                     password,
                     options: {
                         data: { username: username || email.split("@")[0] },
+                        emailRedirectTo: getURL() + "/auth/callback",
                     },
                 });
 
