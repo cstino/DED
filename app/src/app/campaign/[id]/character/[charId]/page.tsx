@@ -98,6 +98,22 @@ const SKILLS = [
 
 function getMod(score: number): number { return Math.floor((score - 10) / 2); }
 function fmtMod(mod: number): string { return mod >= 0 ? `+${mod}` : `${mod}`; }
+
+// Helper to handle partial numeric input (allows empty string while typing)
+function parsePartialInt(value: string, currentVal: number): number | string {
+    if (value === "" || value === "-") return value;
+    const parsed = parseInt(value);
+    return isNaN(parsed) ? currentVal : parsed;
+}
+
+// Helper to ensure we save a valid number
+function finalizeInt(value: number | string, defaultValue: number = 0): number {
+    if (typeof value === "string") {
+        const parsed = parseInt(value);
+        return isNaN(parsed) ? defaultValue : parsed;
+    }
+    return value;
+}
 function profBonus(level: number): number { return Math.ceil(level / 4) + 1; }
 
 const SCHOOL_IT: Record<string, string> = {
@@ -820,13 +836,17 @@ export default function CharacterSheetPage() {
                         <span className={styles.statLabel}>HP</span>
                         {editing ? (
                             <div className={styles.hpEditRow}>
-                                <input type="number" className={styles.smallInput} value={editData.hp_current ?? 0} onChange={(e) => upd("hp_current", parseInt(e.target.value) || 0)} />
+                                <input type="number" className={styles.smallInput} value={editData.hp_current ?? ""} onChange={(e) => upd("hp_current", parsePartialInt(e.target.value, editData.hp_current ?? 0) as number)} />
                                 <span>/</span>
-                                <input type="number" className={styles.smallInput} value={editData.hp_max ?? 1} onChange={(e) => upd("hp_max", Math.max(1, parseInt(e.target.value) || 1))} />
+                                <input type="number" className={styles.smallInput} value={editData.hp_max ?? ""} onChange={(e) => upd("hp_max", parsePartialInt(e.target.value, editData.hp_max ?? 1) as number)} />
                             </div>
                         ) : canEdit ? (
                             <div className={styles.hpEditRow}>
-                                <input type="number" className={styles.smallInput} value={char.hp_current} onChange={(e) => setChar((p) => p ? { ...p, hp_current: parseInt(e.target.value) || 0 } as Character : null)} onBlur={(e) => quickSave("hp_current", parseInt(e.target.value) || 0)} />
+                                <input type="number" className={styles.smallInput} value={char.hp_current} onChange={(e) => setChar((p) => p ? { ...p, hp_current: parsePartialInt(e.target.value, p.hp_current) as number } as Character : null)} onBlur={(e) => {
+                                    const val = finalizeInt(char.hp_current, 0);
+                                    setChar(p => p ? { ...p, hp_current: val } as Character : null);
+                                    quickSave("hp_current", val);
+                                }} />
                                 <span>/ {char.hp_max}</span>
                             </div>
                         ) : (
@@ -843,7 +863,21 @@ export default function CharacterSheetPage() {
                         <div className={styles.hpTemp}>
                             <span>HP Temp:</span>
                             {(editing || canEdit) ? (
-                                <input type="number" className={styles.tinyInput} value={editing ? (editData.hp_temp ?? 0) : char.hp_temp} onChange={(e) => { const v = Math.max(0, parseInt(e.target.value) || 0); if (editing) upd("hp_temp", v); else setChar((p) => p ? { ...p, hp_temp: v } as Character : null); }} onBlur={(e) => { if (!editing) quickSave("hp_temp", Math.max(0, parseInt(e.target.value) || 0)); }} />
+                                <input type="number" className={styles.tinyInput}
+                                    value={editing ? (editData.hp_temp ?? "") : char.hp_temp}
+                                    onChange={(e) => {
+                                        const v = parsePartialInt(e.target.value, editing ? (editData.hp_temp ?? 0) : char.hp_temp);
+                                        if (editing) upd("hp_temp", v as number);
+                                        else setChar((p) => p ? { ...p, hp_temp: v as number } as Character : null);
+                                    }}
+                                    onBlur={(e) => {
+                                        if (!editing) {
+                                            const val = finalizeInt(char.hp_temp, 0);
+                                            setChar(p => p ? { ...p, hp_temp: val } as Character : null);
+                                            quickSave("hp_temp", val);
+                                        }
+                                    }}
+                                />
                             ) : (
                                 <span className={styles.tempValue}>{char.hp_temp}</span>
                             )}
@@ -1250,8 +1284,8 @@ export default function CharacterSheetPage() {
                                             <input
                                                 type="number"
                                                 className={styles.smallInput}
-                                                value={editData.hit_dice_current ?? 0}
-                                                onChange={(e) => upd("hit_dice_current", Math.max(0, parseInt(e.target.value) || 0))}
+                                                value={editData.hit_dice_current ?? ""}
+                                                onChange={(e) => upd("hit_dice_current", parsePartialInt(e.target.value, editData.hit_dice_current ?? 0) as number)}
                                                 placeholder="Corr."
                                             />
                                             <span className={styles.hitDiceSeparator}>/</span>
@@ -1413,9 +1447,18 @@ export default function CharacterSheetPage() {
                                         <div key={key} className={styles.moneyItem}>
                                             <span className={styles.moneyLabel}>{label}</span>
                                             {editing ? (
-                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => upd("money", { ...money, [key]: Math.max(0, parseInt(e.target.value) || 0) })} />
+                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money] ?? ""} onChange={(e) => upd("money", { ...money, [key]: parsePartialInt(e.target.value, money[key as keyof typeof money] ?? 0) as number })} />
                                             ) : canEdit ? (
-                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => { const val = Math.max(0, parseInt(e.target.value) || 0); const newMoney = { ...money, [key]: val }; setChar((p) => p ? { ...p, money: newMoney } as Character : null); quickSave("money", newMoney); }} />
+                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => {
+                                                    const val = parsePartialInt(e.target.value, money[key as keyof typeof money] ?? 0);
+                                                    const newMoney = { ...money, [key]: val as number };
+                                                    setChar((p) => p ? { ...p, money: newMoney } as unknown as Character : null);
+                                                }} onBlur={() => {
+                                                    const val = finalizeInt(money[key as keyof typeof money] ?? 0, 0);
+                                                    const newMoney = { ...money, [key]: val };
+                                                    setChar((p) => p ? { ...p, money: newMoney } as unknown as Character : null);
+                                                    quickSave("money", newMoney);
+                                                }} />
                                             ) : (
                                                 <span className={styles.moneyValue}>{money[key as keyof typeof money]}</span>
                                             )}
