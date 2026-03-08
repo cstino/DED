@@ -93,6 +93,20 @@
     margin-bottom: var(--space-xl);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    /* Fade effect */
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    scrollbar-width: none;
+    /* Hide scrollbar Firefox */
+}
+
+.tabsContainer::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar Chrome/Safari */
 }
 
 .tabBtn {
@@ -105,6 +119,8 @@
     cursor: pointer;
     position: relative;
     transition: color var(--transition-fast);
+    flex-shrink: 0;
+    /* Prevent tabs from shrinking */
 }
 
 .tabBtn:hover {
