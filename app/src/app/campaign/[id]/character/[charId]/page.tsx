@@ -1353,33 +1353,6 @@ export default function CharacterSheetPage() {
                             </div>
                         </div>
 
-                        {/* Money */}
-                        <div className={styles.combatGroup}>
-                            <h3 className={styles.sectionTitle}>Denaro</h3>
-                            <div className={styles.moneyGrid}>
-                                {[
-                                    { key: "mp", label: "MP", full: "Monete di Platino" },
-                                    { key: "mo", label: "MO", full: "Monete d'Oro" },
-                                    { key: "ma", label: "MA", full: "Monete d'Argento" },
-                                    { key: "mr", label: "MR", full: "Monete di Rame" },
-                                    { key: "me", label: "ME", full: "Monete d'Electrum" },
-                                ].map(({ key, label }) => {
-                                    const money = (editing ? editData.money : char.money) ?? { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 };
-                                    return (
-                                        <div key={key} className={styles.moneyItem}>
-                                            <span className={styles.moneyLabel}>{label}</span>
-                                            {editing ? (
-                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => upd("money", { ...money, [key]: Math.max(0, parseInt(e.target.value) || 0) })} />
-                                            ) : canEdit ? (
-                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => { const val = Math.max(0, parseInt(e.target.value) || 0); const newMoney = { ...money, [key]: val }; setChar((p) => p ? { ...p, money: newMoney } as Character : null); quickSave("money", newMoney); }} />
-                                            ) : (
-                                                <span className={styles.moneyValue}>{money[key as keyof typeof money]}</span>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
 
                         {/* Personality */}
                         <div className={styles.combatGroup}>
@@ -1420,19 +1393,49 @@ export default function CharacterSheetPage() {
 
                 {/* ====== EQUIPMENT TAB ====== */}
                 {activeTab === "equipment" && (
-                    <EquipmentManager
-                        equipment={equip}
-                        onChange={(newEquip) => {
-                            if (editing) {
-                                upd("equipment", newEquip);
-                            } else {
-                                setChar((p) => p ? { ...p, equipment: newEquip } as Character : null);
-                                quickSave("equipment", newEquip);
-                            }
-                        }}
-                        editing={editing}
-                        canEdit={canEdit}
-                    />
+                    <div className={styles.equipmentSection}>
+                        {/* Money */}
+                        <div className={styles.combatGroup} style={{ marginBottom: 'var(--space-lg)' }}>
+                            <h3 className={styles.sectionTitle}>Denaro</h3>
+                            <div className={styles.moneyGrid}>
+                                {[
+                                    { key: "mp", label: "MP", full: "Monete di Platino" },
+                                    { key: "mo", label: "MO", full: "Monete d'Oro" },
+                                    { key: "ma", label: "MA", full: "Monete d'Argento" },
+                                    { key: "mr", label: "MR", full: "Monete di Rame" },
+                                    { key: "me", label: "ME", full: "Monete d'Electrum" },
+                                ].map(({ key, label }) => {
+                                    const money = (editing ? editData.money : char.money) ?? { mp: 0, mo: 0, ma: 0, mr: 0, me: 0 };
+                                    return (
+                                        <div key={key} className={styles.moneyItem}>
+                                            <span className={styles.moneyLabel}>{label}</span>
+                                            {editing ? (
+                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => upd("money", { ...money, [key]: Math.max(0, parseInt(e.target.value) || 0) })} />
+                                            ) : canEdit ? (
+                                                <input type="number" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => { const val = Math.max(0, parseInt(e.target.value) || 0); const newMoney = { ...money, [key]: val }; setChar((p) => p ? { ...p, money: newMoney } as Character : null); quickSave("money", newMoney); }} />
+                                            ) : (
+                                                <span className={styles.moneyValue}>{money[key as keyof typeof money]}</span>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <EquipmentManager
+                            equipment={equip}
+                            onChange={(newEquip) => {
+                                if (editing) {
+                                    upd("equipment", newEquip);
+                                } else {
+                                    setChar((p) => p ? { ...p, equipment: newEquip } as Character : null);
+                                    quickSave("equipment", newEquip);
+                                }
+                            }}
+                            editing={editing}
+                            canEdit={canEdit}
+                        />
+                    </div>
                 )}
 
                 {/* ====== SPELLS TAB ====== */}
