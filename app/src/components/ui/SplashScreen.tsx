@@ -72,10 +72,28 @@ function SplashD20Mesh({
     );
 }
 
+const DND_TIPS = [
+    "Un critico naturale (20) colpisce sempre, indipendentemente dalla CA.",
+    "Il riposo breve dura 1 ora e permette di spendere Dadi Vita.",
+    "Il vantaggio ti permette di lanciare due d20 e tenere il più alto.",
+    "La competenza aggiunge il tuo bonus ai tiri in cui sei addestrato.",
+    "Un riposo lungo recupera tutti i tuoi HP e metà dei tuoi Dadi Vita.",
+    "L'ispirazione può essere spesa per ottenere vantaggio su un tiro.",
+    "Gli incantesimi rituali non consumano slot se lanciati in 10 minuti extra.",
+    "Strizzare l'occhio al Master non garantisce vantaggi... di solito.",
+    "La Classe Armatura (CA) determina quanto è difficile colpirti.",
+    "La Percezione Passiva aiuta il Master a capire cosa noti senza tirare.",
+    "Cadere a 0 HP ti costringe a fare tiri salvezza contro morte.",
+    "La Schivata (Dodge) dà svantaggio ai nemici che ti attaccano.",
+    "Afferrare (Grapple) sostituisce un attacco e blocca il movimento nemico.",
+    "La Resistenza dimezza il danno di un tipo specifico.",
+];
+
 /* ─── Main Splash Screen ─── */
 export default function SplashScreen({ children }: { children: React.ReactNode }) {
     const [phase, setPhase] = useState<"spinning" | "stopped" | "done">("spinning");
     const [visible, setVisible] = useState(true);
+    const [tip, setTip] = useState("");
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -83,6 +101,10 @@ export default function SplashScreen({ children }: { children: React.ReactNode }
             if (seen) {
                 setPhase("done");
                 setVisible(false);
+            } else {
+                // Pick a random tip only once
+                const randomIndex = Math.floor(Math.random() * DND_TIPS.length);
+                setTip(DND_TIPS[randomIndex]);
             }
         }
     }, []);
@@ -122,9 +144,12 @@ export default function SplashScreen({ children }: { children: React.ReactNode }
                     </Canvas>
                 </div>
 
-                <p className={`${styles.subtitle} ${phase === "stopped" ? styles.subtitleVisible : ""}`}>
-                    D&D Campaign Manager
-                </p>
+                <div className={`${styles.textContainer} ${phase === "stopped" ? styles.textVisible : ""}`}>
+                    <p className={styles.subtitle}>
+                        D&D Campaign Manager
+                    </p>
+                    {tip && <p className={styles.tip}>"{tip}"</p>}
+                </div>
             </div>
             {children}
         </>
