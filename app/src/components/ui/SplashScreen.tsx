@@ -117,7 +117,7 @@ export default function SplashScreen({ children }: { children: React.ReactNode }
                 sessionStorage.setItem("splash_seen", "1");
             }
             setTimeout(() => setVisible(false), 500);
-        }, 1200);
+        }, 3000); // Increased from 1200ms to 3000ms for tips readability
     }, []);
 
     if (!visible) return <>{children}</>;

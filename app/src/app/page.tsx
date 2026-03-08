@@ -1,9 +1,20 @@
-"use client";
-
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import styles from "./page.module.css";
 import D20Dice from "@/components/ui/D20Dice";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        router.push("/dashboard");
+      }
+    });
+  }, [router]);
+
   return (
     <div className={styles.container}>
       {/* Ambient background effects */}

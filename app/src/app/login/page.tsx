@@ -31,7 +31,14 @@ function LoginForm() {
         if (searchParams.get("mode") === "register") {
             setIsRegister(true);
         }
-    }, [searchParams]);
+
+        // Auto-redirect if already logged in
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                router.push("/dashboard");
+            }
+        });
+    }, [searchParams, router]);
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
