@@ -424,22 +424,23 @@
 
 .portraitFullClose {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    background: rgba(255, 255, 255, 0.1);
+    top: max(20px, env(safe-area-inset-top));
+    /* Clear iOS status bar */
+    right: max(16px, env(safe-area-inset-right));
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(8px);
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
     font-size: 1.2rem;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background var(--transition-fast);
-    z-index: 1;
+    transition: all var(--transition-fast);
+    z-index: 10000;
 }
 
 .portraitFullClose:hover {
