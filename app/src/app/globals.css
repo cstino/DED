@@ -569,20 +569,13 @@ h4 {
   }
 }
 
-/* ---------- Scrollbar ---------- */
+
+/* ---------- Scrollbar (Hidden for App-like UI) ---------- */
+html, body {
+  scrollbar-width: none; /* Hide scrollbar Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-full);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  display: none; /* Hide scrollbar Chrome/Safari */
 }
