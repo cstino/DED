@@ -168,13 +168,14 @@ export default function CampaignPage() {
     }
 
     function getHpPercent(current: number, max: number) {
-        return Math.max(0, Math.min(100, (current / max) * 100));
+        // Range: -max (0%) to +max (100%), with 0 at 50%
+        return Math.max(0, Math.min(100, ((current + max) / (2 * max)) * 100));
     }
 
     function getHpColor(percent: number) {
-        if (percent > 50) return "var(--hp-green)";
-        if (percent > 25) return "var(--hp-yellow)";
-        return "var(--hp-red)";
+        if (percent > 75) return "var(--hp-green)"; // > 50% of real HP
+        if (percent > 50) return "var(--hp-yellow)"; // > 0 HP
+        return "var(--hp-red)"; // <= 0 HP or negative
     }
 
     function getPassivePerception(char: Character) {

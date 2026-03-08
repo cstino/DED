@@ -634,7 +634,7 @@ export default function CharacterSheetPage() {
     // Effective values with equipment bonuses
     const effectiveAc = (editing ? editData.ac ?? char.ac : char.ac) + (equipBonuses["ac"] ?? 0);
     const effectiveSpeed = (editing ? editData.speed ?? char.speed : char.speed) + (equipBonuses["speed"] ?? 0);
-    const hpPercent = Math.max(0, Math.min(100, (char.hp_current / char.hp_max) * 100));
+    const hpPercent = Math.max(0, Math.min(100, ((char.hp_current + char.hp_max) / (2 * char.hp_max)) * 100));
 
     return (
         <div className="page">
@@ -820,13 +820,13 @@ export default function CharacterSheetPage() {
                         <span className={styles.statLabel}>HP</span>
                         {editing ? (
                             <div className={styles.hpEditRow}>
-                                <input type="number" className={styles.smallInput} value={editData.hp_current ?? 0} onChange={(e) => upd("hp_current", Math.max(0, parseInt(e.target.value) || 0))} />
+                                <input type="number" className={styles.smallInput} value={editData.hp_current ?? 0} onChange={(e) => upd("hp_current", parseInt(e.target.value) || 0)} />
                                 <span>/</span>
                                 <input type="number" className={styles.smallInput} value={editData.hp_max ?? 1} onChange={(e) => upd("hp_max", Math.max(1, parseInt(e.target.value) || 1))} />
                             </div>
                         ) : canEdit ? (
                             <div className={styles.hpEditRow}>
-                                <input type="number" className={styles.smallInput} value={char.hp_current} onChange={(e) => setChar((p) => p ? { ...p, hp_current: Math.max(0, parseInt(e.target.value) || 0) } as Character : null)} onBlur={(e) => quickSave("hp_current", Math.max(0, parseInt(e.target.value) || 0))} />
+                                <input type="number" className={styles.smallInput} value={char.hp_current} onChange={(e) => setChar((p) => p ? { ...p, hp_current: parseInt(e.target.value) || 0 } as Character : null)} onBlur={(e) => quickSave("hp_current", parseInt(e.target.value) || 0)} />
                                 <span>/ {char.hp_max}</span>
                             </div>
                         ) : (
@@ -834,7 +834,10 @@ export default function CharacterSheetPage() {
                         )}
                     </div>
                     <div className="hp-bar-container" style={{ height: 8 }}>
-                        <div className="hp-bar" style={{ width: `${hpPercent}%`, background: hpPercent > 50 ? "var(--hp-green)" : hpPercent > 25 ? "var(--hp-yellow)" : "var(--hp-red)" }} />
+                        <div className="hp-bar" style={{
+                            width: `${hpPercent}%`,
+                            background: hpPercent > 75 ? "var(--hp-green)" : hpPercent > 50 ? "var(--hp-yellow)" : "var(--hp-red)"
+                        }} />
                     </div>
                     {(char.hp_temp > 0 || canEdit) && (
                         <div className={styles.hpTemp}>
