@@ -1,6 +1,7 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const maxDuration = 60; // Allow up to 60s for generation
 
@@ -30,6 +31,7 @@ const npcSchema = z.object({
     equipment: z.array(z.string()).describe("Lista dell'equipaggiamento"),
     notes: z.string().describe("Note aggiuntive per il DM su come interpretare questo NPC"),
     challenge_rating: z.string().describe("Grado di sfida stimato (es. 1/4, 1, 5, 10)"),
+    image_prompt: z.string().describe("Una descrizione dettagliata in INGLESE dell'aspetto fisico dell'NPC per un'IA generatrice di immagini. Specifica stile fantasy, illuminazione e dettagli distintivi."),
 });
 
 const monsterSchema = z.object({
@@ -55,9 +57,10 @@ const monsterSchema = z.object({
         name: z.string(),
         description: z.string(),
     })).describe("Azioni del mostro in combattimento, con danni esatti e meccaniche D&D 5e"),
-    equipment: z.array(z.string()).describe("Equipaggiamento o tesoro trovato sul mostro"),
+    equipment: z.array(z.string()).describe("Equipaggiamento o tesoro trovato sul mostro "),
     notes: z.string().describe("Tattiche di combattimento, abitudini e note per il DM"),
     challenge_rating: z.string().describe("Grado di sfida (CR) bilanciato secondo D&D 5e"),
+    image_prompt: z.string().describe("Una descrizione dettagliata in INGLESE dell'aspetto del mostro per un'IA generatrice di immagini. Specifica stile fantasy, mostruosità e ambiente."),
 });
 
 export async function POST(req: Request) {
@@ -80,11 +83,14 @@ export async function POST(req: Request) {
             ? `Sei un esperto di D&D 5e. Genera un MOSTRO completo e bilanciato secondo le regole del Manuale dei Mostri, con stat block accurato.
 Le statistiche devono essere coerenti con il Grado di Sfida (CR). Usa formula HP = dadi vita * (media dado + mod COS).
 I danni delle azioni devono essere espressi in notazione D&D (es. "2d6+4 danni taglienti").
-Sii creativo con i tratti speciali ma resta bilanciato. Rispondi in italiano.`
+Sii creativo con i tratti speciali ma resta bilanciato. 
+Genera anche una "image_prompt" in inglese molto dettagliata che descriva l'aspetto del mostro in uno stile fantasy epico e realistico.
+Rispondi in italiano.`
             : `Sei un esperto di D&D 5e. Genera un NPC completo e interessante seguendo le regole del Manuale del Giocatore.
 Le statistiche (1-20) devono essere coerenti con razza, classe e livello. Calcola HP e AC correttamente.
 I tratti di personalità devono essere unici e memorabili, non generici.
 Le azioni devono includere danni esatti in notazione D&D (es. "1d8+3 danni perforanti").
+Genera anche una "image_prompt" in inglese molto dettagliata che descriva l'aspetto fisico del personaggio in uno stile fantasy epico e realistico, includendo vestiario, armi e tratti somatici.
 Rispondi in italiano.`;
 
         let lastError;
@@ -99,8 +105,46 @@ Rispondi in italiano.`;
                     maxRetries: 0,
                 });
 
+                const generatedObj: any = result.object;
+                let portraitUrl = null;
+
+                // Image Generation with Imagen 4
+                try {
+                    console.log('Generating image with Imagen 4 for:', generatedObj.name);
+                    const imageModelName = "imagen-4.0-generate-001";
+                    const imageUrl = `https://generativelanguage.googleapis.com/v1beta/models/${imageModelName}:predict?key=${key}`;
+
+                    const imageResponse = await fetch(imageUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            instances: [{ prompt: generatedObj.image_prompt }],
+                            parameters: { sampleCount: 1 }
+                        })
+                    });
+
+                    if (imageResponse.ok) {
+                        const imageData = await imageResponse.json();
+                        console.log('Imagen response received');
+                        if (imageData.predictions && imageData.predictions[0] && imageData.predictions[0].bytesBase64Encoded) {
+                            portraitUrl = `data:image/png;base64,${imageData.predictions[0].bytesBase64Encoded}`;
+                            console.log('Portrait URL generated successfully');
+                        } else {
+                            console.warn('Imagen response missing image data:', imageData);
+                        }
+                    } else {
+                        const errorText = await imageResponse.text();
+                        console.error(`Imagen API Error (${imageResponse.status}):`, errorText);
+                    }
+                } catch (imgErr) {
+                    console.error('Image generation failed but continuing with character data:', imgErr);
+                }
+
                 return new Response(
-                    JSON.stringify({ result: result.object, type: isMonster ? 'monster' : 'npc' }),
+                    JSON.stringify({
+                        result: { ...generatedObj, portrait_url: portraitUrl },
+                        type: isMonster ? 'monster' : 'npc'
+                    }),
                     { status: 200, headers: { 'Content-Type': 'application/json' } }
                 );
             } catch (err: any) {

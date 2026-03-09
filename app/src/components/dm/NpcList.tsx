@@ -24,6 +24,7 @@ interface SavedNpc {
     stats: { str: number; dex: number; con: number; int: number; wis: number; cha: number };
     is_alive: boolean;
     is_party_member: boolean;
+    portrait_url?: string;
 }
 
 export default function NpcList({ campaignId, refreshTrigger }: NpcListProps) {
@@ -56,6 +57,7 @@ export default function NpcList({ campaignId, refreshTrigger }: NpcListProps) {
                     stats: n.stats || { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
                     is_alive: n.is_alive !== false,
                     is_party_member: n.is_party_member || false,
+                    portrait_url: n.portrait_url,
                 }));
                 setNpcs(mapped);
             }
@@ -139,6 +141,11 @@ function NpcCard({ npc, isExpanded, onToggle, calcMod, onDelete }: {
                         {npc.challenge_rating && ` • CR ${npc.challenge_rating}`}
                     </span>
                 </div>
+                {npc.portrait_url && (
+                    <div className={styles.npcCardPortrait}>
+                        <img src={npc.portrait_url} alt={npc.name} />
+                    </div>
+                )}
                 <div className={styles.npcCardBadges}>
                     <span className={styles.npcBadgeAc}>AC {npc.ac}</span>
                     <span className={styles.npcBadgeHp}>HP {npc.hp}</span>

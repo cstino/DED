@@ -225,6 +225,24 @@
     font-weight: 500;
 }
 
+.portraitPreview {
+    margin: var(--space-md) auto;
+    width: 200px;
+    height: 200px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 2px solid var(--accent-teal);
+    box-shadow: var(--shadow-glow-teal);
+    background: var(--bg-primary);
+}
+
+.portraitPreview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 .combatStats {
     display: flex;
     gap: var(--space-sm);
@@ -590,6 +608,21 @@
     color: var(--text-secondary);
     margin-top: 2px;
     display: block;
+}
+
+.npcCardPortrait {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--accent-teal);
+    flex-shrink: 0;
+}
+
+.npcCardPortrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .npcCardBadges {

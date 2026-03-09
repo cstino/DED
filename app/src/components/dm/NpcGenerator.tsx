@@ -18,6 +18,7 @@ interface GeneratedEntity {
     notes: string;
     challenge_rating: string;
     is_party_member: boolean;
+    portrait_url?: string;
 }
 
 interface NpcGeneratorProps {
@@ -99,6 +100,7 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
                 ],
                 notes: entity.notes,
                 is_party_member: entity.is_party_member || false,
+                portrait_url: entity.portrait_url,
             };
             console.log("Saving NPC/Monster:", payload);
 
@@ -265,6 +267,11 @@ function EntityCard({
                         <div className={styles.alignmentBadge}>{entity.alignment}</div>
                     )}
                 </div>
+                {entity.portrait_url && (
+                    <div className={styles.portraitPreview}>
+                        <img src={entity.portrait_url} alt={entity.name} />
+                    </div>
+                )}
                 <div className={styles.combatStats}>
                     <div className={`${styles.statBadge} ${styles.ac}`}>
                         <span className={styles.statLabel}>AC</span>
