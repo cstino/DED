@@ -16,7 +16,7 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@supabase/supabase-js": "^2.98.0",
-    "ai": "^3.1.37",
+    "ai": "^4.1.2",
     "next": "16.1.6",
     "nextjs-toploader": "^3.9.17",
     "react": "19.2.3",

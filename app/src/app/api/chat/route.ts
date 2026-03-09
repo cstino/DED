@@ -1,5 +1,3 @@
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { streamText } from 'ai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@supabase/supabase-js';
 
@@ -11,6 +9,12 @@ const supabase = createClient(
 
 export async function POST(req: Request) {
     const geminiKeys = (process.env.GOOGLE_GENERATIVE_AI_API_KEY || "").split(',').map(k => k.trim()).filter(Boolean);
+    const groqKey = process.env.GROQ_API_KEY;
+
+    if (!groqKey) {
+        console.error("GROQ_API_KEY is missing!");
+        return new Response(JSON.stringify({ error: "Configurazione Groq mancante." }), { status: 500 });
+    }
 
     try {
         const { messages, isPro } = await req.json();
@@ -53,7 +57,7 @@ export async function POST(req: Request) {
         const { data: documents, error: dbError } = await supabase.rpc('match_documents', {
             query_embedding: embedding,
             match_threshold: 0.5,
-            match_count: 10,
+            match_count: 2, // Optimized for Groq TPM limits
         });
 
         if (dbError) {
@@ -71,61 +75,63 @@ export async function POST(req: Request) {
 
         // 4. Create the system prompt with the RAG context
         const systemPrompt = `Sei un Dungeon Master Assistant esperto di D&D 5e e dell'ambientazione di Eberron (Sharn).
-        Il tuo compito è aiutare il Dungeon Master rispondendo alle sue domande o recuperando regole e lore.
-        
-        UTILIZZA ESCLUSIVAMENTE IL SEGUENTE CONTESTO RECUPERATO DAI MANUALI E DAGLI APPUNTI DELLA CAMPAGNA PER RISPONDERE:
-        <contesto>
-        ${contextText}
-        </contesto>
+Il tuo compito è aiutare il Dungeon Master rispondendo alle sue domande o recuperando regole e lore.
 
-        Regole ferree per la formattazione e le citazioni:
-        1. Se la risposta non è presente nel contesto, dillo chiaramente: "Non ho trovato questa informazione nei manuali o negli appunti forniti".
-        2. Usa SEMPRE il markdown per la formattazione (grassetto per i termini chiave, elenchi puntati per le statistiche).
-        3. **CITAZIONI**: NON inserire mai citazioni (parentesi quadre) nel mezzo del testo o alla fine di ogni riga.
-        4. **FONTI A FINE MESSAGGIO**: Elenca tutte le fonti utilizzate in una singola riga alla fine del messaggio, preceduta dalla parola "Fonti:", ad esempio: "Fonti: [Manuale del giocatore.txt], [01-volta-del-cielo.md]".
-        5. **NOMI FILE PULITI**: Usa SOLO il nome del file nelle citazioni, NON il percorso completo. 
-        6. Rispondi in italiano. Sii conciso e diretto, sei al tavolo da gioco e il Master ha bisogno di informazioni rapide.`;
+UTILIZZA ESCLUSIVAMENTE IL SEGUENTE CONTESTO RECUPERATO DAI MANUALI E DAGLI APPUNTI DELLA CAMPAGNA PER RISPONDERE:
+<contesto>
+${contextText}
+</contesto>
 
-        // 5. Stream the response with Rotation
-        let lastChatError;
-        for (const key of geminiKeys) {
-            try {
-                const google = createGoogleGenerativeAI({ apiKey: key });
-                const result = await streamText({
-                    model: google('gemini-3.1-flash-lite-preview') as any,
-                    system: systemPrompt,
-                    messages,
-                    maxRetries: 0, // Disable internal retries to let our rotation take over
-                });
-                return result.toAIStreamResponse();
-            } catch (err: any) {
-                // Check status code or message for quota errors across ai-sdk wrappers
-                const errorMessage = (err.message || '').toLowerCase();
-                const lastErrorMessage = (err.lastError?.message || '').toLowerCase();
-                const statusCode = err.status || err.statusCode || err.lastError?.statusCode;
+Regole ferree per la formattazione e le citazioni:
+1. Se la risposta non è presente nel contesto, dillo chiaramente: "Non ho trovato questa informazione nei manuali o negli appunti forniti".
+2. Usa SEMPRE il markdown per la formattazione (grassetto per i termini chiave, elenchi puntati per le statistiche).
+3. **CITAZIONI**: NON inserire mai citazioni (parentesi quadre) nel mezzo del testo o alla fine di ogni riga.
+4. **FONTI A FINE MESSAGGIO**: Elenca tutte le fonti utilizzate in una singola riga alla fine del messaggio, preceduta dalla parola "Fonti:", ad esempio: "Fonti: [Manuale del giocatore.txt], [01-volta-del-cielo.md]".
+5. **NOMI FILE PULITI**: Usa SOLO il nome del file nelle citazioni, NON il percorso completo. 
+6. Rispondi in italiano. Sii conciso e diretto, sei al tavolo da gioco e il Master ha bisogno di informazioni rapide.`;
 
-                const isQuotaError =
-                    statusCode === 429 ||
-                    errorMessage.includes('429') ||
-                    errorMessage.includes('quota') ||
-                    lastErrorMessage.includes('429') ||
-                    lastErrorMessage.includes('quota');
+        // 5. Direct fetch to Groq to bypass AI SDK protocol issues
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${groqKey}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "llama-3.3-70b-versatile",
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    ...messages
+                ],
+                temperature: 0.7,
+                max_tokens: 2000
+            })
+        });
 
-                if (isQuotaError) {
-                    console.log(`🔄 Chat quota exceeded for a key, trying next...`);
-                    lastChatError = err;
-                    continue; // Prova con la chiave successiva
-                }
-                throw err;
-            }
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Groq API Error Chat:", errorData);
+            throw new Error(`Errore API Groq: ${errorData.error?.message || response.statusText}`);
         }
 
-        throw lastChatError || new Error("Tutte le chiavi API hanno esaurito la quota giornaliera.");
+        const data = await response.json();
+        const text = data.choices[0]?.message?.content;
+
+        if (!text) {
+            throw new Error('Il modello AI ha restituito una risposta vuota.');
+        }
+
+        return new Response(text, {
+            headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        });
 
     } catch (error: any) {
         console.error('API Chat Error:', error);
         return new Response(
-            JSON.stringify({ error: error.message || 'Errore durante la comunicazione con l\'intelligenza artificiale.' }),
+            JSON.stringify({
+                error: error.message || 'Errore durante la comunicazione con l\'intelligenza artificiale.',
+                details: error.lastError?.message || error.cause?.message || ''
+            }),
             { status: 500, headers: { 'Content-Type': 'application/json' } }
         );
     }
