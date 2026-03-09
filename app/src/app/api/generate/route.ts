@@ -1,7 +1,6 @@
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createGroq } from '@ai-sdk/groq';
 import { generateObject } from 'ai';
 import { z } from 'zod';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const maxDuration = 60; // Allow up to 60s for generation
 
@@ -64,7 +63,14 @@ const monsterSchema = z.object({
 });
 
 export async function POST(req: Request) {
-    const geminiKeys = (process.env.GOOGLE_GENERATIVE_AI_API_KEY || "").split(',').map(k => k.trim()).filter(Boolean);
+    const groqKey = process.env.GROQ_API_KEY;
+
+    if (!groqKey) {
+        return new Response(
+            JSON.stringify({ error: 'Configurazione mancante: GROQ_API_KEY non trovata.' }),
+            { status: 500, headers: { 'Content-Type': 'application/json' } }
+        );
+    }
 
     try {
         const { type, prompt } = await req.json();
@@ -93,75 +99,34 @@ Le azioni devono includere danni esatti in notazione D&D (es. "1d8+3 danni perfo
 Genera anche una "image_prompt" in inglese molto dettagliata che descriva l'aspetto fisico del personaggio in uno stile fantasy epico e realistico, includendo vestiario, armi e tratti somatici.
 Rispondi in italiano.`;
 
-        let lastError;
-        for (const key of geminiKeys) {
-            try {
-                const google = createGoogleGenerativeAI({ apiKey: key });
-                const result = await generateObject({
-                    model: google('gemini-3.1-flash-lite-preview'),
-                    schema,
-                    system: systemPrompt,
-                    prompt: `Genera: ${prompt}`,
-                    maxRetries: 0,
-                });
+        const groq = createGroq({ apiKey: groqKey });
 
-                const generatedObj: any = result.object;
-                let portraitUrl = null;
+        const result = await generateObject({
+            model: groq('llama-3.3-70b-versatile') as any,
+            schema,
+            system: systemPrompt,
+            prompt: `Genera: ${prompt}`,
+            maxRetries: 1,
+        });
 
-                // Image Generation with Imagen 4
-                try {
-                    console.log('Generating image with Imagen 4 for:', generatedObj.name);
-                    const imageModelName = "imagen-4.0-generate-001";
-                    const imageUrl = `https://generativelanguage.googleapis.com/v1beta/models/${imageModelName}:predict?key=${key}`;
+        const generatedObj: any = result.object;
 
-                    const imageResponse = await fetch(imageUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            instances: [{ prompt: generatedObj.image_prompt }],
-                            parameters: { sampleCount: 1 }
-                        })
-                    });
+        // Image Generation with Pollinations.ai (Flux)
+        const encodedPrompt = encodeURIComponent(generatedObj.image_prompt);
+        const portraitUrl = `https://pollinations.ai/p/${encodedPrompt}?width=1024&height=1024&nologo=true&model=flux`;
 
-                    if (imageResponse.ok) {
-                        const imageData = await imageResponse.json();
-                        console.log('Imagen response received');
-                        if (imageData.predictions && imageData.predictions[0] && imageData.predictions[0].bytesBase64Encoded) {
-                            portraitUrl = `data:image/png;base64,${imageData.predictions[0].bytesBase64Encoded}`;
-                            console.log('Portrait URL generated successfully');
-                        } else {
-                            console.warn('Imagen response missing image data:', imageData);
-                        }
-                    } else {
-                        const errorText = await imageResponse.text();
-                        console.error(`Imagen API Error (${imageResponse.status}):`, errorText);
-                    }
-                } catch (imgErr) {
-                    console.error('Image generation failed but continuing with character data:', imgErr);
-                }
+        console.log('Generated entity:', generatedObj.name);
+        console.log('Pollinations Image URL:', portraitUrl);
 
-                return new Response(
-                    JSON.stringify({
-                        result: { ...generatedObj, portrait_url: portraitUrl },
-                        type: isMonster ? 'monster' : 'npc'
-                    }),
-                    { status: 200, headers: { 'Content-Type': 'application/json' } }
-                );
-            } catch (err: any) {
-                const errorMessage = (err.message || '').toLowerCase();
-                const isQuotaError = errorMessage.includes('429') || errorMessage.includes('quota');
-                if (isQuotaError) {
-                    lastError = err;
-                    continue;
-                }
-                throw err;
-            }
-        }
-
-        throw lastError || new Error("Tutte le chiavi API hanno esaurito la quota.");
-
+        return new Response(
+            JSON.stringify({
+                result: { ...generatedObj, portrait_url: portraitUrl },
+                type: isMonster ? 'monster' : 'npc'
+            }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
     } catch (error: any) {
-        console.error('API Generate Error:', error);
+        console.error('API Generate Error (Groq):', error);
         return new Response(
             JSON.stringify({ error: error.message || 'Errore durante la generazione.' }),
             { status: 500, headers: { 'Content-Type': 'application/json' } }
