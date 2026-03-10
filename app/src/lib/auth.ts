@@ -1,4 +1,7 @@
 /**
+ * Auth utilities.
+ * Deployment trigger: manual sync with magehand.xyz
+ *
  * Dynamically determines the base URL for the application.
  * This is used to set the 'redirectTo' parameter in Supabase auth calls,
  * ensuring that email confirmation links work correctly on different devices
