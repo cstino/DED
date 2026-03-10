@@ -26,7 +26,7 @@
 .container::before {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(0, 229, 160, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(93, 226, 255, 0.1) 0%, transparent 70%);
     top: -100px;
     right: -50px;
     animation: orbDrift 12s ease-in-out infinite;
@@ -114,7 +114,7 @@
     font-size: 1.75rem;
     font-weight: 700;
     margin-bottom: var(--space-sm);
-    background: linear-gradient(135deg, var(--accent-teal), var(--accent-amber));
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -164,7 +164,7 @@
 .switchButton {
     background: none;
     border: none;
-    color: var(--accent-teal);
+    color: var(--accent-purple);
     cursor: pointer;
     font-family: inherit;
     font-size: inherit;

@@ -1,76 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import * as THREE from "three";
+import { useState, useEffect } from "react";
 import styles from "./SplashScreen.module.css";
-
-/* ─── 3D D20 Mesh with deceleration and target alignment ─── */
-function SplashD20Mesh({
-    onStopped,
-    phase
-}: {
-    onStopped: () => void;
-    phase: "spinning" | "stopped" | "done";
-}) {
-    const groupRef = useRef<THREE.Group>(null);
-    const speedRef = useRef(6.0);
-    const stoppedRef = useRef(false);
-
-    // Geometry
-    const { bodyGeo, edgesGeo } = useMemo(() => {
-        const geo = new THREE.IcosahedronGeometry(1.4, 0);
-        return { bodyGeo: geo, edgesGeo: new THREE.EdgesGeometry(geo) };
-    }, []);
-
-    // Target rotation where a face is front-facing
-    // For standard Icosahedron, this brings a face to the front
-    const targetRotation = useMemo(() => new THREE.Euler(0.35, Math.PI, 0), []);
-
-    useFrame((state, delta) => {
-        if (!groupRef.current || stoppedRef.current) return;
-
-        // Decelerate
-        speedRef.current *= 0.965;
-
-        if (speedRef.current > 0.15) {
-            groupRef.current.rotation.y += delta * speedRef.current;
-            groupRef.current.rotation.x += delta * speedRef.current * 0.4;
-        } else {
-            // Smoothly move towards target rotation
-            groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotation.x, 0.1);
-            groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotation.y, 0.1);
-            groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetRotation.z, 0.1);
-
-            // Check if very close to target
-            const dx = Math.abs(groupRef.current.rotation.x - targetRotation.x);
-            const dy = Math.abs(groupRef.current.rotation.y - targetRotation.y);
-
-            if (dx < 0.01 && dy < 0.01 && !stoppedRef.current) {
-                stoppedRef.current = true;
-                groupRef.current.rotation.copy(targetRotation);
-                onStopped();
-            }
-        }
-    });
-
-    return (
-        <group ref={groupRef}>
-            <mesh geometry={bodyGeo}>
-                <meshPhysicalMaterial
-                    color="#0c1a28"
-                    metalness={0.6}
-                    roughness={0.2}
-                    clearcoat={1}
-                    clearcoatRoughness={0.1}
-                />
-            </mesh>
-            <lineSegments geometry={edgesGeo}>
-                <lineBasicMaterial color="#00e5a0" transparent opacity={0.6} linewidth={1} />
-            </lineSegments>
-        </group>
-    );
-}
+import MageHandLogo from "./MageHandLogo";
 
 const DND_TIPS = [
     "Un critico naturale (20) colpisce sempre, indipendentemente dalla CA.",
@@ -89,9 +21,8 @@ const DND_TIPS = [
     "La Resistenza dimezza il danno di un tipo specifico.",
 ];
 
-/* ─── Main Splash Screen ─── */
 export default function SplashScreen({ children }: { children: React.ReactNode }) {
-    const [phase, setPhase] = useState<"spinning" | "stopped" | "done">("spinning");
+    const [phase, setPhase] = useState<"initial" | "brand" | "tips" | "fadeout" | "done">("initial");
     const [visible, setVisible] = useState(true);
     const [tip, setTip] = useState("");
 
@@ -102,53 +33,56 @@ export default function SplashScreen({ children }: { children: React.ReactNode }
                 setPhase("done");
                 setVisible(false);
             } else {
-                // Pick a random tip only once
+                // Pick a random tip
                 const randomIndex = Math.floor(Math.random() * DND_TIPS.length);
                 setTip(DND_TIPS[randomIndex]);
+
+                // Cinematic sequence
+                // 0ms -> Logo Pop In (via logoEntrance class)
+                // 1200ms -> Fade in Brand (MageHand)
+                // 2500ms -> Fade in Tips
+                // 6000ms -> Start global fadeout
+                // 7000ms -> Finished
+
+                const t1 = setTimeout(() => setPhase("brand"), 1200);
+                const t2 = setTimeout(() => setPhase("tips"), 2500);
+                const t3 = setTimeout(() => setPhase("fadeout"), 6000);
+                const t4 = setTimeout(() => {
+                    sessionStorage.setItem("splash_seen", "1");
+                    setPhase("done");
+                    setVisible(false);
+                }, 7000);
+
+                return () => {
+                    clearTimeout(t1);
+                    clearTimeout(t2);
+                    clearTimeout(t3);
+                    clearTimeout(t4);
+                };
             }
         }
     }, []);
 
-    const handleStopped = useCallback(() => {
-        setPhase("stopped");
-        setTimeout(() => {
-            setPhase("done");
-            if (typeof window !== "undefined") {
-                sessionStorage.setItem("splash_seen", "1");
-            }
-            setTimeout(() => setVisible(false), 500);
-        }, 3000); // Increased from 1200ms to 3000ms for tips readability
-    }, []);
-
     if (!visible) return <>{children}</>;
+
+    const isTextVisible = phase !== "initial";
+    const isTipVisible = phase === "tips" || phase === "fadeout";
 
     return (
         <>
-            <div className={`${styles.overlay} ${phase === "done" ? styles.overlayHidden : ""}`}>
+            <div className={`${styles.overlay} ${phase === "fadeout" || phase === "done" ? styles.overlayHidden : ""}`}>
                 <div className={styles.diceContainer}>
-                    <div className={styles.ambientGlow} style={{ opacity: phase === "stopped" ? 1 : 0 }} />
-
-                    <Canvas
-                        camera={{ position: [0, 0, 4.2], fov: 45 }}
-                        gl={{ alpha: true, antialias: true }}
-                        style={{ pointerEvents: "none" }}
-                    >
-                        <ambientLight intensity={0.5} />
-                        <pointLight position={[2, 2, 4]} intensity={1.5} color="#00e5a0" />
-                        <pointLight position={[-2, -2, 2]} intensity={0.5} color="#ffffff" />
-
-                        <SplashD20Mesh
-                            onStopped={handleStopped}
-                            phase={phase}
-                        />
-                    </Canvas>
+                    <div className={styles.ambientGlow} style={{ opacity: isTextVisible ? 0.8 : 0.4 }} />
+                    <div className={styles.logoEntrance}>
+                        <MageHandLogo size={260} animate={true} />
+                    </div>
                 </div>
 
-                <div className={`${styles.textContainer} ${phase === "stopped" ? styles.textVisible : ""}`}>
-                    <p className={styles.subtitle}>
-                        D&D Campaign Manager
+                <div className={`${styles.textContainer} ${isTextVisible ? styles.textVisible : ""}`}>
+                    <p className={styles.subtitle}>MageHand</p>
+                    <p className={`${styles.tip} ${isTipVisible ? styles.tipVisible : ""}`}>
+                        "{tip}"
                     </p>
-                    {tip && <p className={styles.tip}>"{tip}"</p>}
                 </div>
             </div>
             {children}

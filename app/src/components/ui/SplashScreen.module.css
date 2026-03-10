@@ -1,5 +1,5 @@
 /* ============================================
-   Splash Screen — D20 Loading Animation (V3)
+   Splash Screen — MageHand Branding (Cinematic)
    ============================================ */
 
 .overlay {
@@ -18,27 +18,49 @@
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+    transition: opacity 1s ease, visibility 1s ease;
 }
 
 .diceContainer {
     position: relative;
-    width: 250px;
-    /* Increased for better visibility */
-    height: 250px;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+}
+
+.logoEntrance {
+    animation: logoPopIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes logoPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.6) rotate(-25deg);
+        filter: blur(10px) brightness(2);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+        filter: blur(0) brightness(1);
+    }
 }
 
 /* Subtitle text with Fantasy Font */
 .textContainer {
-    margin-top: 32px;
+    margin-top: 48px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(25px);
+    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
     text-align: center;
-    padding: 0 24px;
+    padding: 0 40px;
 }
 
 .textVisible {
@@ -48,31 +70,44 @@
 
 .subtitle {
     font-family: 'Cinzel Decorative', 'Cinzel', serif;
-    font-size: 1.2rem;
+    font-size: 2.2rem;
+    /* Increased size */
     font-weight: 700;
-    letter-spacing: 0.1em;
-    color: #00e5a0;
+    letter-spacing: 0.25em;
+    /* Wider spacing */
+    color: var(--accent-cyan);
     text-shadow:
-        0 0 10px rgba(0, 229, 160, 0.6),
-        0 0 20px rgba(0, 229, 160, 0.3);
+        0 0 15px rgba(93, 226, 255, 0.6),
+        0 0 35px rgba(93, 226, 255, 0.3);
+    margin: 0;
 }
 
 .tip {
     font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     font-style: italic;
     font-weight: 400;
     color: var(--text-secondary);
-    max-width: 320px;
-    line-height: 1.4;
+    max-width: 450px;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tipVisible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Ambient glow background */
 .ambientGlow {
     position: absolute;
-    inset: -20%;
+    inset: -45%;
+    /* Much wider glow */
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 229, 160, 0.12) 0%, transparent 70%);
-    transition: opacity 1s ease;
+    background: radial-gradient(circle, var(--accent-cyan-dim) 0%, transparent 70%);
+    transition: opacity 1.5s ease;
     pointer-events: none;
+    z-index: 0;
 }

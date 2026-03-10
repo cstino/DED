@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import styles from "./page.module.css";
-import D20Dice from "@/components/ui/D20Dice";
+import MageHandLogo from "@/components/ui/MageHandLogo";
 
 export default function Home() {
   const router = useRouter();
@@ -28,12 +28,11 @@ export default function Home() {
         {/* Hero Section */}
         <div className={styles.hero}>
           <div className={styles.logoContainer}>
-            <D20Dice size={120} autoRollInterval={6000} />
+            <MageHandLogo size={150} />
           </div>
 
           <h1 className={styles.title}>
-            D&D Campaign
-            <span className={styles.titleAccent}> Manager</span>
+            Mage<span className={styles.titleAccent}>Hand</span>
           </h1>
 
           <p className={styles.subtitle}>

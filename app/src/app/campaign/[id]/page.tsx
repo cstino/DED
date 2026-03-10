@@ -10,7 +10,7 @@ import AiAssistantChat from "@/components/dm/AiAssistantChat";
 import NpcGenerator from "@/components/dm/NpcGenerator";
 import NpcList from "@/components/dm/NpcList";
 import SpellCompendium from "@/components/dm/SpellCompendium";
-import D20Dice from "@/components/ui/D20Dice";
+import MageHandLogo from "@/components/ui/MageHandLogo";
 import { calculateEquipmentBonuses, type EquipmentItem } from "@/components/character/EquipmentManager";
 import styles from "./campaign.module.css";
 
@@ -191,7 +191,7 @@ export default function CampaignPage() {
     if (authLoading || !user || loading) {
         return (
             <div className={styles.loadingContainer}>
-                <D20Dice size={80} />
+                <MageHandLogo size={100} />
                 <p className="text-secondary" style={{ marginTop: 16 }}>Caricamento campagna...</p>
                 {slowLoading && (
                     <div className={styles.slowLoadingHint}>

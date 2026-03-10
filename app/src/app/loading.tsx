@@ -1,4 +1,4 @@
-import D20Dice from "@/components/ui/D20Dice";
+import MageHandLogo from "@/components/ui/MageHandLogo";
 
 export default function RootLoading() {
     return (
@@ -14,10 +14,10 @@ export default function RootLoading() {
                 zIndex: 9999,
             }}
         >
-            <D20Dice size={80} autoRollInterval={3000} />
+            <MageHandLogo size={100} />
             <p
                 style={{
-                    color: "rgba(0, 229, 160, 0.7)",
+                    color: "rgba(93, 226, 255, 0.7)",
                     marginTop: "1.5rem",
                     fontFamily: "'Inter', sans-serif",
                     fontSize: "0.9rem",

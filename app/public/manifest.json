@@ -1,6 +1,6 @@
 {
-    "name": "D&D Campaign Manager",
-    "short_name": "D&D Manager",
+    "name": "MageHand - D&D Campaign Manager",
+    "short_name": "MageHand",
     "description": "Gestisci le tue campagne D&D 5e in presenza",
     "start_url": "/",
     "display": "standalone",

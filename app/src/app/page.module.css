@@ -27,7 +27,7 @@
 .ambientOrb1 {
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(0, 229, 160, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(93, 226, 255, 0.12) 0%, transparent 70%);
     top: -150px;
     right: -100px;
     animation: orbFloat1 12s ease-in-out infinite;
@@ -115,7 +115,7 @@
 .logoGlow {
     position: absolute;
     inset: -20px;
-    background: radial-gradient(circle, rgba(0, 229, 160, 0.25) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--accent-cyan-dim) 0%, transparent 70%);
     border-radius: 50%;
     animation: logoPulse 3s ease-in-out infinite;
 }
@@ -138,7 +138,7 @@
     font-size: 5rem;
     position: relative;
     z-index: 1;
-    filter: drop-shadow(0 0 30px rgba(0, 229, 160, 0.4));
+    filter: drop-shadow(0 0 30px rgba(93, 226, 255, 0.4));
     animation: logoFloat 4s ease-in-out infinite;
 }
 
@@ -169,7 +169,7 @@
 
 .titleAccent {
     display: block;
-    background: linear-gradient(135deg, var(--accent-teal), var(--accent-amber));
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -201,7 +201,7 @@
     justify-content: center;
     gap: var(--space-sm);
     padding: 14px var(--space-xl);
-    background: linear-gradient(135deg, var(--accent-teal), #00c488);
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
     color: var(--bg-primary);
     font-family: inherit;
     font-size: 1.05rem;
@@ -211,7 +211,7 @@
     cursor: pointer;
     transition: all var(--transition-fast);
     text-decoration: none;
-    box-shadow: 0 4px 20px rgba(0, 229, 160, 0.3);
+    box-shadow: 0 4px 20px rgba(93, 226, 255, 0.3);
 }
 
 .btnPrimary:hover {

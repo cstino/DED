@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
-import D20Dice from "@/components/ui/D20Dice";
+import MageHandLogo from "@/components/ui/MageHandLogo";
 import styles from "./dashboard.module.css";
 
 interface Campaign {
@@ -83,7 +83,7 @@ export default function DashboardPage() {
     if (authLoading || !user) {
         return (
             <div className={styles.loadingContainer}>
-                <D20Dice size={80} />
+                <MageHandLogo size={100} />
                 <p className="text-secondary" style={{ marginTop: 16 }}>Caricamento...</p>
             </div>
         );
@@ -95,11 +95,11 @@ export default function DashboardPage() {
             <div className={styles.header}>
                 <div className={styles.headerLeft}>
                     <div className={styles.logoMini}>
-                        <D20Dice size={40} autoRollInterval={10000} />
+                        <MageHandLogo size={65} />
                     </div>
                     <div>
                         <h1 className="page-title">
-                            Ciao, {profile?.username || "Avventuriero"} 👋
+                            Ciao, {profile?.username || "Avventuriero"}
                         </h1>
                         <p className="page-subtitle">Le tue campagne D&D</p>
                     </div>
@@ -142,7 +142,7 @@ export default function DashboardPage() {
             {
                 loading ? (
                     <div className={styles.loadingContainer}>
-                        <D20Dice size={60} />
+                        <MageHandLogo size={80} />
                     </div>
                 ) : campaigns.length === 0 ? (
                     <div className={styles.emptyState}>

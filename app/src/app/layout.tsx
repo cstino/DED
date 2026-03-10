@@ -3,13 +3,14 @@ import "./globals.css";
 import SplashScreen from "@/components/ui/SplashScreen";
 
 export const metadata: Metadata = {
-  title: "D&D Campaign Manager",
-  description: "Gestisci le tue campagne D&D 5e in presenza",
+  metadataBase: new URL("https://magehand.xyz"),
+  title: "MageHand - D&D Campaign Manager",
+  description: "Gestisci le tue campagne D&D 5e in presenza con l'aiuto dell'AI",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "D&D Manager",
+    title: "MageHand",
   },
 };
 
@@ -42,7 +43,7 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <NextTopLoader
-            color="#00e5a0"
+            color="#5de2ff"
             initialPosition={0.08}
             crawlSpeed={200}
             height={3}
@@ -50,7 +51,7 @@ export default function RootLayout({
             showSpinner={false}
             easing="ease"
             speed={200}
-            shadow="0 0 10px #00e5a0,0 0 5px #00e5a0"
+            shadow="0 0 10px #5de2ff,0 0 5px #5de2ff"
           />
           <SplashScreen>{children}</SplashScreen>
         </AuthProvider>

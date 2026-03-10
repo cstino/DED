@@ -16,11 +16,16 @@
   --border-focus: rgba(0, 229, 160, 0.5);
 
   /* Accent */
-  --accent-teal: #00e5a0;
-  --accent-teal-dim: rgba(0, 229, 160, 0.15);
-  --accent-teal-glow: 0 0 20px rgba(0, 229, 160, 0.3);
+  --accent-cyan: #5de2ff;
+  --accent-cyan-dim: rgba(93, 226, 255, 0.15);
+  --accent-cyan-glow: 0 0 20px rgba(93, 226, 255, 0.3);
+
+  --accent-purple: #b388ff;
+  --accent-purple-dim: rgba(179, 136, 255, 0.15);
+  --accent-purple-glow: 0 0 20px rgba(179, 136, 255, 0.3);
+
+  --accent-teal: var(--accent-cyan);
   --accent-amber: #f0a830;
-  --accent-amber-dim: rgba(240, 168, 48, 0.15);
 
   /* Text */
   --text-primary: #f0f0f0;
@@ -51,7 +56,9 @@
 
   /* Shadows */
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
-  --shadow-glow-teal: 0 0 20px rgba(0, 229, 160, 0.3);
+  --shadow-glow-cyan: 0 0 20px rgba(93, 226, 255, 0.3);
+  --shadow-glow-purple: 0 0 20px rgba(179, 136, 255, 0.3);
+  --shadow-glow-teal: var(--shadow-glow-cyan);
   --shadow-glow-amber: 0 0 20px rgba(240, 168, 48, 0.3);
 
   /* Transitions */
@@ -571,11 +578,15 @@ h4 {
 
 
 /* ---------- Scrollbar (Hidden for App-like UI) ---------- */
-html, body {
-  scrollbar-width: none; /* Hide scrollbar Firefox */
-  -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
+html,
+body {
+  scrollbar-width: none;
+  /* Hide scrollbar Firefox */
+  -ms-overflow-style: none;
+  /* Hide scrollbar IE/Edge */
 }
 
 ::-webkit-scrollbar {
-  display: none; /* Hide scrollbar Chrome/Safari */
+  display: none;
+  /* Hide scrollbar Chrome/Safari */
 }

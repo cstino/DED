@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import D20Dice from "@/components/ui/D20Dice";
+import MageHandLogo from "@/components/ui/MageHandLogo";
 import { getURL } from "@/lib/auth";
 import styles from "./login.module.css";
 
@@ -109,7 +109,7 @@ function LoginForm() {
                 </a>
 
                 <div className={styles.header}>
-                    <D20Dice size={80} autoRollInterval={8000} />
+                    <MageHandLogo size={100} />
                     <h1 className={styles.title}>
                         {isRegister ? "Crea Account" : "Accedi"}
                     </h1>
