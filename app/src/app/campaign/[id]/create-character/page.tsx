@@ -458,10 +458,9 @@ export default function CreateCharacterPage() {
                         <div className={styles.field} style={{ flex: 1 }}>
                             <label className="label">Livello</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 className="input"
-                                min={1}
-                                max={20}
                                 value={level}
                                 onChange={(e) => setLevel(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
                             />
@@ -509,12 +508,11 @@ export default function CreateCharacterPage() {
                                             −
                                         </button>
                                         <input
-                                            type="number"
+                                            type="text"
+                                            inputMode="decimal"
                                             className={styles.abilityInput}
                                             value={abilities[key as keyof typeof abilities]}
                                             onChange={(e) => setAbility(key, parseInt(e.target.value) || 10)}
-                                            min={1}
-                                            max={30}
                                         />
                                         <button
                                             type="button"
@@ -559,9 +557,9 @@ export default function CreateCharacterPage() {
                         <div className={styles.field} style={{ flex: 1 }}>
                             <label className="label">HP Massimi</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 className="input"
-                                min={1}
                                 value={hpMax}
                                 onChange={(e) => setHpMax(Math.max(1, parseInt(e.target.value) || 1))}
                             />
@@ -569,9 +567,9 @@ export default function CreateCharacterPage() {
                         <div className={styles.field} style={{ flex: 1 }}>
                             <label className="label">AC</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 className="input"
-                                min={1}
                                 value={ac}
                                 onChange={(e) => setAc(Math.max(1, parseInt(e.target.value) || 10))}
                             />
@@ -579,9 +577,9 @@ export default function CreateCharacterPage() {
                         <div className={styles.field} style={{ flex: 1 }}>
                             <label className="label">Velocità (ft)</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="decimal"
                                 className="input"
-                                min={0}
                                 value={speed}
                                 onChange={(e) => setSpeed(Math.max(0, parseInt(e.target.value) || 30))}
                             />

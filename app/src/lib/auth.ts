@@ -12,6 +12,11 @@ export const getURL = () => {
         process.env.NEXT_PUBLIC_SITE_URL ?? // Set this for production
         window.location.origin; // Default to current origin (works for local IP)
 
+    // Ensure it starts with https:// unless it's localhost or an IP
+    if (!url.startsWith('http')) {
+        url = `https://${url}`;
+    }
+
     // Make sure to include `https://` if not present (except for localhost/dev)
     url = url.charAt(url.length - 1) === '/' ? url.slice(0, -1) : url;
 

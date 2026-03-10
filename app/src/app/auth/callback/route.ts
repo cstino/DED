@@ -10,9 +10,17 @@ export async function GET(request: Request) {
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         );
-        await supabase.auth.exchangeCodeForSession(code);
+        try {
+            await supabase.auth.exchangeCodeForSession(code);
+        } catch (error) {
+            console.error('Error exchanging code for session:', error);
+            // Even if exchange fails, we might want to redirect to login or show an error
+            return NextResponse.redirect(`${origin}/login?error=confirmation_failed`);
+        }
     }
 
     // Redirect to dashboard after handling the confirmation
-    return NextResponse.redirect(`${origin}/dashboard`);
+    // We use origin but fallback to a relative path if needed
+    const redirectTo = `${origin}/dashboard`;
+    return NextResponse.redirect(redirectTo);
 }
