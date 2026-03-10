@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { reindexFile } from '@/lib/lore-ingestion';
+import { reindexFile } from '../../../lib/lore-ingestion';
 
 export const dynamic = 'force-dynamic';
 

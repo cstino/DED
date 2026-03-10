@@ -92,7 +92,7 @@ export async function POST(req: Request) {
             try {
                 const google = createGoogleGenerativeAI({ apiKey: key });
                 const result = await streamText({
-                    model: google('gemini-3.1-flash-lite-preview'),
+                    model: google('gemini-1.5-flash') as any,
                     system: systemPrompt,
                     messages,
                     maxRetries: 0, // Disable internal retries to let our rotation take over
