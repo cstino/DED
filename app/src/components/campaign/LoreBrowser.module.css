@@ -229,6 +229,14 @@
     padding: 0;
 }
 
+.markdownWrapper img {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .markdownWrapper blockquote {
     border-left: 4px solid var(--accent-amber);
     padding-left: 1em;
@@ -314,6 +322,42 @@
 .formTextarea {
     min-height: 300px;
     resize: vertical;
+}
+
+.editorToolbar {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xs);
+}
+
+.toolbarBtn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-card);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.toolbarBtn:hover:not(:disabled) {
+    background: rgba(0, 229, 160, 0.1);
+    border-color: var(--accent-teal);
+    color: var(--accent-teal);
+}
+
+.toolbarBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hiddenInput {
+    display: none;
 }
 
 .formActions {

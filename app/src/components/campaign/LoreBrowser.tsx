@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { supabase } from "@/lib/supabase";
+import { useRef } from "react";
 import styles from "./LoreBrowser.module.css";
 import { LoreFile } from "@/app/api/lore/route";
 
@@ -39,6 +41,11 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
     const [movingPath, setMovingPath] = useState<string | null>(null);
     const [isCreatingFolder, setIsCreatingFolder] = useState(false);
     const [newFolderName, setNewFolderName] = useState("");
+    const [isUploading, setIsUploading] = useState(false);
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const createTextareaRef = useRef<HTMLTextAreaElement>(null);
+    const editTextareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         fetchTree();
@@ -202,6 +209,62 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
         }
     }
 
+    async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>, target: 'create' | 'edit') {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `lore-${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+            const filePath = `lore/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('character-portraits')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('character-portraits')
+                .getPublicUrl(filePath);
+
+            const markdownImage = `\n![immagine](${publicUrl})\n`;
+            
+            if (target === 'create') {
+                const textarea = createTextareaRef.current;
+                if (textarea) {
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const text = newContent;
+                    const before = text.substring(0, start);
+                    const after = text.substring(end);
+                    setNewContent(before + markdownImage + after);
+                } else {
+                    setNewContent(prev => prev + markdownImage);
+                }
+            } else {
+                const textarea = editTextareaRef.current;
+                if (textarea) {
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const text = editContent;
+                    const before = text.substring(0, start);
+                    const after = text.substring(end);
+                    setEditContent(before + markdownImage + after);
+                } else {
+                    setEditContent(prev => prev + markdownImage);
+                }
+            }
+        } catch (error) {
+            console.error("Image upload failed:", error);
+            alert("Errore durante il caricamento dell'immagine.");
+        } finally {
+            setIsUploading(false);
+            if (e.target) e.target.value = '';
+        }
+    }
+
     function renderTree(items: LoreFile[], depth = 0) {
         return items.map((item) => (
             <div key={item.path} style={{ marginLeft: `${depth * 12}px` }}>
@@ -327,7 +390,25 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                         </div>
                         <div className={styles.formGroup}>
                             <label>Contenuto (Markdown supportato)</label>
+                            <div className={styles.editorToolbar}>
+                                <button 
+                                    type="button" 
+                                    className={styles.toolbarBtn}
+                                    onClick={() => fileInputRef.current?.click()}
+                                    disabled={isUploading}
+                                >
+                                    {isUploading ? "📤 Caricamento..." : "🖼️ Inserisci Immagine"}
+                                </button>
+                                <input 
+                                    type="file" 
+                                    ref={fileInputRef} 
+                                    className={styles.hiddenInput} 
+                                    accept="image/*"
+                                    onChange={(e) => handleImageUpload(e, 'create')}
+                                />
+                            </div>
                             <textarea
+                                ref={createTextareaRef}
                                 className={`${styles.formInput} ${styles.formTextarea}`}
                                 placeholder="Scrivi qui le informazioni..."
                                 value={newContent}
@@ -362,7 +443,25 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                             <div className={styles.loadingState}>Lettura file...</div>
                         ) : isEditing ? (
                             <div className={styles.editorWrapper}>
+                                <div className={styles.editorToolbar}>
+                                    <button 
+                                        type="button" 
+                                        className={styles.toolbarBtn}
+                                        onClick={() => fileInputRef.current?.click()}
+                                        disabled={isUploading}
+                                    >
+                                        {isUploading ? "📤 Caricamento..." : "🖼️ Inserisci Immagine"}
+                                    </button>
+                                    <input 
+                                        type="file" 
+                                        ref={fileInputRef} 
+                                        className={styles.hiddenInput} 
+                                        accept="image/*"
+                                        onChange={(e) => handleImageUpload(e, 'edit')}
+                                    />
+                                </div>
                                 <textarea
+                                    ref={editTextareaRef}
                                     className={`${styles.formInput} ${styles.editorTextarea}`}
                                     value={editContent}
                                     onChange={(e) => setEditContent(e.target.value)}

@@ -24,6 +24,7 @@ interface SavedNpc {
     stats: { str: number; dex: number; con: number; int: number; wis: number; cha: number };
     is_alive: boolean;
     is_party_member: boolean;
+    portrait_url?: string | null;
 }
 
 export default function NpcList({ campaignId, refreshTrigger }: NpcListProps) {
@@ -51,11 +52,12 @@ export default function NpcList({ campaignId, refreshTrigger }: NpcListProps) {
                     type: n.type || "npc",
                     challenge_rating: n.challenge_rating,
                     alignment: n.alignment || "",
-                    notes: n.description || n.notes || "",
+                    notes: n.notes || "",
                     traits: Array.isArray(n.traits) ? n.traits : [],
                     stats: n.stats || { str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 },
                     is_alive: n.is_alive !== false,
                     is_party_member: n.is_party_member || false,
+                    portrait_url: n.portrait_url,
                 }));
                 setNpcs(mapped);
             }
@@ -129,30 +131,49 @@ function NpcCard({ npc, isExpanded, onToggle, calcMod, onDelete }: {
     calcMod: (n: number) => string;
     onDelete: () => void;
 }) {
-    return (
-        <div className={`${styles.npcCard} ${isExpanded ? styles.npcCardExpanded : ""}`}>
-            <div className={styles.npcCardHeader} onClick={onToggle}>
-                <div className={styles.npcCardTitle}>
-                    <h3>{npc.name}</h3>
-                    <span className={styles.npcCardSub}>
-                        {npc.race} • {npc.role}
-                        {npc.challenge_rating && ` • CR ${npc.challenge_rating}`}
-                    </span>
-                </div>
-                <div className={styles.npcCardBadges}>
-                    <span className={styles.npcBadgeAc}>AC {npc.ac}</span>
-                    <span className={styles.npcBadgeHp}>HP {npc.hp}</span>
-                </div>
-            </div>
+    const [showFullImage, setShowFullImage] = useState(false);
 
-            {isExpanded && (
+    return (
+        <>
+            <div className={`${styles.npcCard} ${isExpanded ? styles.npcCardExpanded : ""}`}>
+                <div className={styles.npcCardHeader} onClick={onToggle}>
+                    <div className={styles.npcInfoMain}>
+                        {npc.portrait_url && (
+                            <img
+                                src={npc.portrait_url}
+                                alt={npc.name}
+                                className={styles.npcPortrait}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setShowFullImage(true);
+                                }}
+                            />
+                        )}
+                        <div className={styles.npcCardTitle}>
+                            <h3>{npc.name}</h3>
+                            <span className={styles.npcCardSub}>
+                                {npc.race} • {npc.role}
+                                {npc.challenge_rating && ` • CR ${npc.challenge_rating}`}
+                            </span>
+                        </div>
+                    </div>
+                    <div className={styles.npcCardBadges}>
+                        <span className={styles.npcBadgeAc}>AC {npc.ac}</span>
+                        <span className={styles.npcBadgeHp}>HP {npc.hp}</span>
+                    </div>
+                </div>
+
+                {isExpanded && (
                 <div className={styles.npcCardBody}>
                     {/* Ability Scores */}
                     <div className={styles.npcCardStats}>
                         {Object.entries(npc.stats).map(([stat, val]) => (
                             <div key={stat} className={styles.npcStatItem}>
                                 <span className={styles.npcStatLabel}>{stat.toUpperCase()}</span>
-                                <span className={styles.npcStatVal}>{val} ({calcMod(val)})</span>
+                                <div className={styles.npcStatValueGroup}>
+                                    <span className={styles.npcStatVal}>{val}</span>
+                                    <span className={styles.npcStatMod}>({calcMod(val)})</span>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -190,5 +211,16 @@ function NpcCard({ npc, isExpanded, onToggle, calcMod, onDelete }: {
                 </div>
             )}
         </div>
+
+        {/* Full Image Modal */}
+        {showFullImage && npc.portrait_url && (
+            <div className={styles.modalOverlay} onClick={() => setShowFullImage(false)}>
+                <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+                    <button className={styles.modalClose} onClick={() => setShowFullImage(false)}>✕</button>
+                    <img src={npc.portrait_url} alt={npc.name} className={styles.modalImage} />
+                </div>
+            </div>
+        )}
+        </>
     );
 }

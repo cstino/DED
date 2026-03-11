@@ -18,6 +18,7 @@ interface GeneratedEntity {
     notes: string;
     challenge_rating: string;
     is_party_member: boolean;
+    portrait_url?: string;
 }
 
 interface NpcGeneratorProps {
@@ -42,6 +43,17 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
         traits: [], actions: [], equipment: [], notes: "", challenge_rating: "1",
         is_party_member: false,
     });
+
+    const [portraitFile, setPortraitFile] = useState<File | null>(null);
+    const [portraitPreview, setPortraitPreview] = useState<string | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setPortraitFile(file);
+            setPortraitPreview(URL.createObjectURL(file));
+        }
+    };
 
     const handleGenerate = async () => {
         if (!prompt.trim()) return;
@@ -79,6 +91,27 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
         setIsSaving(true);
         setError(null);
         try {
+            let portrait_url = entity.portrait_url || null;
+
+            if (portraitFile) {
+                const fileExt = portraitFile.name.split('.').pop();
+                const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+                const filePath = `${campaignId}/${fileName}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from('character-portraits')
+                    .upload(filePath, portraitFile);
+
+                if (uploadError) {
+                    console.error("Upload error:", uploadError);
+                } else {
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('character-portraits')
+                        .getPublicUrl(filePath);
+                    portrait_url = publicUrl;
+                }
+            }
+
             const payload = {
                 campaign_id: campaignId,
                 name: entity.name,
@@ -99,6 +132,7 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
                 ],
                 notes: entity.notes,
                 is_party_member: entity.is_party_member || false,
+                portrait_url: portrait_url,
             };
             console.log("Saving NPC/Monster:", payload);
 
@@ -114,6 +148,8 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
             if (onSaved) onSaved();
             setGenerated(null);
             setPrompt("");
+            setPortraitFile(null);
+            setPortraitPreview(null);
             if (mode === "manual") {
                 setManualData({
                     name: "", race: "", role: "", alignment: "Neutrale",
@@ -225,6 +261,8 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
                             calcMod={calcMod}
                             onSave={() => handleSave(generated)}
                             isSaving={isSaving}
+                            portraitPreview={portraitPreview}
+                            onFileChange={handleFileChange}
                         />
                     )}
                 </div>
@@ -236,6 +274,8 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
                     entityType={entityType}
                     onSave={() => handleSave(manualData)}
                     isSaving={isSaving}
+                    portraitPreview={portraitPreview}
+                    onFileChange={handleFileChange}
                 />
             )}
         </div>
@@ -244,16 +284,34 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
 
 /* ===== Entity Card Component ===== */
 function EntityCard({
-    entity, entityType, calcMod, onSave, isSaving
+    entity, entityType, calcMod, onSave, isSaving, portraitPreview, onFileChange
 }: {
     entity: GeneratedEntity;
     entityType: string;
     calcMod: (n: number) => string;
     onSave: () => void;
     isSaving: boolean;
+    portraitPreview?: string | null;
+    onFileChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
     return (
         <div className={`${styles.resultCard} fade-in`}>
+            <div className={styles.imageUploadWrapper}>
+                <label className={styles.imageUploadLabel}>
+                    <div className={styles.imagePreviewContainer}>
+                        {portraitPreview ? (
+                            <img src={portraitPreview} alt="Preview" className={styles.imagePreview} />
+                        ) : (
+                            <div className={styles.imagePlaceholder}>
+                                <span>📷</span>
+                                <small>Aggiungi foto</small>
+                            </div>
+                        )}
+                        <input type="file" accept="image/*" onChange={onFileChange} className={styles.hiddenFileInput} />
+                    </div>
+                </label>
+            </div>
+
             <div className={styles.resultHeader}>
                 <div className={styles.resultTitle}>
                     <h3>{entity.name}</h3>
@@ -281,8 +339,10 @@ function EntityCard({
                 {Object.entries(entity.stats).map(([stat, val]) => (
                     <div key={stat} className={styles.scoreItem}>
                         <span className={styles.scoreLabel}>{stat.toUpperCase()}</span>
-                        <span className={styles.scoreVal}>{val}</span>
-                        <span className={styles.scoreMod}>{calcMod(val)}</span>
+                        <div className={styles.scoreValueGroup}>
+                            <span className={styles.scoreVal}>{val}</span>
+                            <span className={styles.scoreMod}>{calcMod(val)}</span>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -360,13 +420,15 @@ function EntityCard({
 
 /* ===== Manual Creation Form ===== */
 function ManualForm({
-    data, setData, entityType, onSave, isSaving,
+    data, setData, entityType, onSave, isSaving, portraitPreview, onFileChange
 }: {
     data: GeneratedEntity;
     setData: (d: GeneratedEntity) => void;
     entityType: string;
     onSave: () => void;
     isSaving: boolean;
+    portraitPreview: string | null;
+    onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
     const updateStat = (stat: keyof GeneratedEntity["stats"], val: number) => {
         setData({ ...data, stats: { ...data.stats, [stat]: val } });
@@ -400,6 +462,27 @@ function ManualForm({
 
     return (
         <div className={styles.manualForm}>
+            {/* Image Upload Row */}
+            <div className={styles.imageUploadManual}>
+                <label className={styles.manualImageLabel}>
+                    <div className={styles.manualImagePreview}>
+                        {portraitPreview ? (
+                            <img src={portraitPreview} alt="Portrait" />
+                        ) : (
+                            <div className={styles.manualPlaceholder}>
+                                <span>🖼️</span>
+                                <p>Carica Immagine</p>
+                            </div>
+                        )}
+                        <input type="file" accept="image/*" onChange={onFileChange} className={styles.hiddenFileInput} />
+                    </div>
+                </label>
+                <div className={styles.imageUploadInfo}>
+                    <h4>Ritratto</h4>
+                    <p>Scegli una foto per {entityType === 'npc' ? 'il tuo NPC' : 'il tuo mostro'}.</p>
+                </div>
+            </div>
+
             {/* Identity Row */}
             <div className={styles.manualRow}>
                 <div className={styles.manualField}>

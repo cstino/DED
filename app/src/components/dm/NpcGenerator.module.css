@@ -301,6 +301,14 @@
     color: var(--text-secondary);
 }
 
+.scoreValueGroup,
+.npcStatValueGroup {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+}
+
 /* ===== Traits & Actions ===== */
 .traitsSection h4 {
     color: var(--accent-teal);
@@ -409,6 +417,18 @@
 @media (max-width: 600px) {
     .manualStatsGrid {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    .scoreValueGroup,
+    .npcStatValueGroup {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .scoreMod,
+    .npcStatMod {
+        font-size: 0.7rem;
+        margin-top: -2px;
     }
 }
 
@@ -668,6 +688,11 @@
     color: var(--text-primary);
 }
 
+.npcStatMod {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
 .npcCardTraits {
     margin-bottom: var(--space-md);
 }
@@ -707,4 +732,179 @@
 
 .npcDeleteBtn:hover {
     background: rgba(255, 68, 68, 0.15);
+}
+
+/* ===== Image Upload ===== */
+.imageUploadWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-md);
+}
+
+.imageUploadLabel {
+    cursor: pointer;
+}
+
+.imagePreviewContainer {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-lg);
+    border: 2px dashed rgba(0, 229, 160, 0.3);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all var(--transition-fast);
+}
+
+.imagePreviewContainer:hover {
+    border-color: var(--accent-teal);
+    background: rgba(0, 229, 160, 0.05);
+}
+
+.imagePreview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.imagePlaceholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+}
+
+.imagePlaceholder span {
+    font-size: 1.5rem;
+}
+
+.imagePlaceholder small {
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.hiddenFileInput {
+    display: none;
+}
+
+/* Manual Image Upload */
+.imageUploadManual {
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+    background: rgba(255, 255, 255, 0.02);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-card);
+}
+
+.manualImageLabel {
+    cursor: pointer;
+}
+
+.manualImagePreview {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border-card);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-input);
+}
+
+.manualImagePreview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.manualPlaceholder {
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.manualPlaceholder span {
+    font-size: 1.2rem;
+}
+
+.manualPlaceholder p {
+    font-size: 0.65rem;
+    margin: 4px 0 0 0;
+}
+
+.imageUploadInfo h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.imageUploadInfo p {
+    margin: 4px 0 0 0;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* List/Card Portraits */
+.npcPortrait {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    border: 1px solid var(--border-card);
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.npcPortrait:hover {
+    transform: scale(1.05);
+}
+
+.npcInfoMain {
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+    flex: 1;
+}
+
+/* Image Modal */
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+}
+
+.modalContent {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+}
+
+.modalImage {
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--accent-teal);
+}
+
+.modalClose {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 10px;
 }

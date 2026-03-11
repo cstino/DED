@@ -56,6 +56,7 @@ interface NpcPartyMember {
     ac: number;
     stats: any;
     is_party_member: boolean;
+    portrait_url?: string | null;
 }
 
 export default function CampaignPage() {
@@ -494,9 +495,13 @@ export default function CampaignPage() {
                                     >
                                         <div className={styles.charHeader}>
                                             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                                <div className={styles.cardPortraitFallback} style={{ background: 'var(--accent-amber-dim)', color: 'var(--accent-amber)' }}>
-                                                    {npc.name.charAt(0).toUpperCase()}
-                                                </div>
+                                                {npc.portrait_url ? (
+                                                    <img src={npc.portrait_url} alt={npc.name} className={styles.cardPortrait} />
+                                                ) : (
+                                                    <div className={styles.cardPortraitFallback} style={{ background: 'var(--accent-amber-dim)', color: 'var(--accent-amber)' }}>
+                                                        {npc.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                )}
                                                 <div>
                                                     <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                         {npc.name}
