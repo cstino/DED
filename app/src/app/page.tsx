@@ -32,7 +32,7 @@ export default function Home() {
           </div>
 
           <h1 className={styles.title}>
-            Mage<span className={styles.titleAccent}>Hand</span>
+            MageHand
           </h1>
 
           <p className={styles.subtitle}>
