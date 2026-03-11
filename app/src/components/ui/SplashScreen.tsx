@@ -5,20 +5,55 @@ import styles from "./SplashScreen.module.css";
 import MageHandLogo from "./MageHandLogo";
 
 const DND_TIPS = [
+    // Regole Base
     "Un critico naturale (20) colpisce sempre, indipendentemente dalla CA.",
     "Il riposo breve dura 1 ora e permette di spendere Dadi Vita.",
     "Il vantaggio ti permette di lanciare due d20 e tenere il più alto.",
     "La competenza aggiunge il tuo bonus ai tiri in cui sei addestrato.",
     "Un riposo lungo recupera tutti i tuoi HP e metà dei tuoi Dadi Vita.",
     "L'ispirazione può essere spesa per ottenere vantaggio su un tiro.",
-    "Gli incantesimi rituali non consumano slot se lanciati in 10 minuti extra.",
-    "Strizzare l'occhio al Master non garantisce vantaggi... di solito.",
     "La Classe Armatura (CA) determina quanto è difficile colpirti.",
-    "La Percezione Passiva aiuta il Master a capire cosa noti senza tirare.",
     "Cadere a 0 HP ti costringe a fare tiri salvezza contro morte.",
-    "La Schivata (Dodge) dà svantaggio ai nemici che ti attaccano.",
-    "Afferrare (Grapple) sostituisce un attacco e blocca il movimento nemico.",
+    "L'iniziativa determina l'ordine dei turni in combattimento.",
     "La Resistenza dimezza il danno di un tipo specifico.",
+    "La Vulnerabilità raddoppia il danno di un tipo specifico.",
+    "Un 1 naturale su un tiro per colpire è sempre un fallimento.",
+
+    // Azioni e Combattimento
+    "L'azione Scatto (Dash) raddoppia il tuo movimento per il turno attuale.",
+    "L'azione Disimpegno (Disengage) evita gli attacchi di opportunità.",
+    "Schivare (Dodge) dà svantaggio a chi ti attacca e vantaggio ai tuoi TS Destrezza.",
+    "Aiutare (Help) un alleato dà vantaggio al suo prossimo tiro o attacco.",
+    "Afferrare (Grapple) sostituisce un attacco e azzera il movimento nemico.",
+    "Attaccare una creatura prona dà vantaggio se sei entro 1,5m.",
+    "L'azione Preparazione (Ready) ti permette di agire fuori dal tuo turno.",
+    "Ogni creatura ha una sola Reazione per round.",
+    "Nascondersi richiede un tiro di Furtività contrapposto alla Percezione nemica.",
+    "Stabilizzare un alleato a 0 HP richiede un tiro di Medicina (CD 10).",
+
+    // Magia e Abilità
+    "Gli incantesimi rituali non consumano slot se lanciati in 10 minuti extra.",
+    "La Concentrazione si interrompe se subisci danni e fallisci il TS Costituzione.",
+    "La Percezione Passiva aiuta il Master a capire cosa noti senza tirare i dadi.",
+    "Le componenti verbali richiedono che tu possa parlare liberamente.",
+    "Le componenti somatiche richiedono l'uso di almeno una mano libera.",
+    "Un Focus Arcano sostituisce le componenti materiali senza costo specifico.",
+    "L'Indagine (Investigation) serve per dedurre, la Percezione per notare.",
+    "Identificare un oggetto magico richiede un riposo breve o l'incantesimo Identificare.",
+    "Il Trucchetto (Cantrip) può essere lanciato quante volte vuoi.",
+    "Gli incantesimi di cura non funzionano su costrutti o non morti.",
+
+    // Consigli e Curiosità
+    "Strizzare l'occhio al Master non garantisce vantaggi... di solito.",
+    "Non dimenticare mai di controllare le trappole prima di aprire un forziere!",
+    "Il fuoco è spesso la soluzione migliore contro i Troll.",
+    "Un 1 naturale su un tiro salvezza contro morte conta come due fallimenti.",
+    "La regola numero 1? Divertirsi e creare una grande storia insieme.",
+    "Porta sempre con te una corda da 15 metri, non si sa mai.",
+    "Portare una torcia non serve solo a vedere, ma anche a scacciare il buio.",
+    "Interagire con un oggetto è solitamente un'azione gratuita durante il movimento.",
+    "I punti ferita temporanei non sono cumulabili: tieni i più alti.",
+    "Un'arma con la proprietà Lancio può essere usata per attacchi a distanza.",
 ];
 
 export default function SplashScreen({ children }: { children: React.ReactNode }) {
