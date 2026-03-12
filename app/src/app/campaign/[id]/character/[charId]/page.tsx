@@ -763,34 +763,51 @@ export default function CharacterSheetPage() {
             )}
 
             {/* Character Header */}
-            <div className={styles.charHeader}>
-                <div className={styles.portraitWrap}>
-                    {editing ? (
-                        <label className={styles.portraitEditLabel}>
-                            {portraitPreview ? (
-                                <Image src={portraitPreview} alt="Preview" width={100} height={100} className={styles.portrait} />
-                            ) : char.portrait_url ? (
-                                <Image src={char.portrait_url} alt={char.name} width={100} height={100} className={styles.portrait} />
-                            ) : (
-                                <div className={styles.portraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
-                            )}
-                            <div className={styles.portraitEditOverlay}>📷</div>
-                            <input type="file" accept="image/*" className={styles.portraitFileInput} onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    setPortraitFile(file);
-                                    setPortraitPreview(URL.createObjectURL(file));
-                                }
-                            }} />
-                        </label>
-                    ) : char.portrait_url ? (
-                        <div onClick={() => setShowPortraitFull(true)} style={{ cursor: 'pointer' }}>
-                            <Image src={char.portrait_url} alt={char.name} width={100} height={100} className={styles.portrait} />
-                        </div>
-                    ) : (
-                        <div className={styles.portraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
-                    )}
-                </div>
+            <div
+                className={styles.charHeader}
+                onClick={() => !editing && char.portrait_url && setShowPortraitFull(true)}
+            >
+                {/* Background Image & Overlay */}
+                {!editing && (
+                    <>
+                        {char.portrait_url ? (
+                            <img
+                                src={char.portrait_url}
+                                alt=""
+                                className={styles.charHeaderBackground}
+                            />
+                        ) : (
+                            <div className={styles.charHeaderBackground} style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #000 100%)' }} />
+                        )}
+                        <div className={styles.charHeaderOverlay} />
+                    </>
+                )}
+
+                {(editing || !char.portrait_url) && (
+                    <div className={styles.portraitWrap}>
+                        {editing ? (
+                            <label className={styles.portraitEditLabel}>
+                                {portraitPreview ? (
+                                    <Image src={portraitPreview} alt="Preview" width={100} height={100} className={styles.portrait} />
+                                ) : char.portrait_url ? (
+                                    <Image src={char.portrait_url} alt={char.name} width={100} height={100} className={styles.portrait} />
+                                ) : (
+                                    <div className={styles.portraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
+                                )}
+                                <div className={styles.portraitEditOverlay}>📷</div>
+                                <input type="file" accept="image/*" className={styles.portraitFileInput} onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        setPortraitFile(file);
+                                        setPortraitPreview(URL.createObjectURL(file));
+                                    }
+                                }} />
+                            </label>
+                        ) : (
+                            <div className={styles.portraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
+                        )}
+                    </div>
+                )}
                 <div className={styles.charInfo}>
                     <div className={styles.nameRow}>
                         {editing ? (

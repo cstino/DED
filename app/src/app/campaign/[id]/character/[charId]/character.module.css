@@ -228,24 +228,69 @@
 
 /* Header */
 .charHeader {
+    position: relative;
     display: flex;
-    align-items: center;
-    gap: var(--space-lg);
+    flex-direction: column;
+    justify-content: flex-end;
+    /* Force content to bottom */
+    gap: 0;
     margin-bottom: var(--space-xl);
-    padding: var(--space-lg);
-    background: rgba(255, 255, 255, 0.03);
+    padding: var(--space-xl) var(--space-lg) 15px;
+    /* 15px bottom padding */
+    height: 420px;
+    /* Fixed height to ensure art is visible and info stays bottom */
+    background: #0a0b10;
     border: 1px solid var(--border-card);
     border-radius: var(--radius-xl);
+    overflow: hidden;
+    cursor: zoom-in;
+}
+
+@media (max-width: 768px) {
+    .charHeader {
+        height: 380px;
+        padding: var(--space-lg) var(--space-md) 12px;
+    }
+}
+
+.charHeaderBackground {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    opacity: 0.6;
+    z-index: 1;
+    transition: transform 0.8s ease;
+}
+
+.charHeaderOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 15, 26, 0.98) 0%, rgba(10, 15, 26, 0.4) 60%, rgba(10, 15, 26, 0.2) 100%);
+    z-index: 2;
+}
+
+@media (hover: hover) {
+    .charHeader:hover .charHeaderBackground {
+        transform: scale(1.03);
+        opacity: 0.8;
+    }
 }
 
 .portraitWrap {
+    position: relative;
+    z-index: 3;
     flex-shrink: 0;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    border-radius: var(--radius-lg);
+    /* Squares with rounded corners instead of circles */
     overflow: hidden;
-    border: 2px solid rgba(0, 229, 160, 0.3);
-    box-shadow: 0 0 20px rgba(0, 229, 160, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
 }
 
 .portrait {
@@ -457,15 +502,18 @@
 }
 
 .charInfo {
-    flex: 1;
-    min-width: 0;
+    position: relative;
+    z-index: 3;
+    width: 100%;
 }
 
 .charName {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-    line-height: 1.2;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 2px;
+    line-height: 1.1;
+    color: #fff;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 1), 0 0 40px rgba(0, 0, 0, 0.6);
 }
 
 .nameInput {
@@ -475,9 +523,12 @@
 }
 
 .charMeta {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    margin-bottom: var(--space-sm);
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 1);
+    margin-bottom: 12px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
+    font-weight: 700;
+    letter-spacing: 0.02em;
 }
 
 .charTags {
@@ -517,9 +568,9 @@
 }
 
 .bgTag {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-card);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Combat Bar */

@@ -89,11 +89,13 @@
     justify-content: flex-end;
 }
 
-.campaignCard:hover {
-    transform: translateY(-8px) scale(1.05);
-    z-index: 10;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 15px var(--accent-teal-dim);
-    border-color: var(--accent-teal);
+@media (hover: hover) {
+    .campaignCard:hover {
+        transform: translateY(-8px) scale(1.05);
+        z-index: 10;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 15px var(--accent-teal-dim);
+        border-color: var(--accent-teal);
+    }
 }
 
 .cardPoster {
@@ -106,9 +108,11 @@
     opacity: 0.7;
 }
 
-.campaignCard:hover .cardPoster {
-    transform: scale(1.1);
-    opacity: 0.9;
+@media (hover: hover) {
+    .campaignCard:hover .cardPoster {
+        transform: scale(1.1);
+        opacity: 0.9;
+    }
 }
 
 .cardOverlay {
@@ -126,8 +130,10 @@
     transition: transform 0.4s ease;
 }
 
-.campaignCard:hover .cardContent {
-    transform: translateY(0);
+@media (hover: hover) {
+    .campaignCard:hover .cardContent {
+        transform: translateY(0);
+    }
 }
 
 .campaignCard h3 {
@@ -151,8 +157,10 @@
     transition: opacity 0.3s ease 0.1s;
 }
 
-.campaignCard:hover .cardDesc {
-    opacity: 1;
+@media (hover: hover) {
+    .campaignCard:hover .cardDesc {
+        opacity: 1;
+    }
 }
 
 .roleBadgeFixed {

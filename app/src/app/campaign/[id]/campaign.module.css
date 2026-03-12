@@ -51,10 +51,18 @@
     transition: all var(--transition-fast);
 }
 
-.backBtn:hover {
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.3);
+@media (hover: hover) {
+    .backBtn:hover {
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+}
+
+@media (max-width: 768px) {
+    .backBtn {
+        display: none;
+    }
 }
 
 .heroHeader {
@@ -78,8 +86,10 @@
     transition: transform 0.8s ease;
 }
 
-.heroHeader:hover .heroBackground {
-    transform: scale(1.02);
+@media (hover: hover) {
+    .heroHeader:hover .heroBackground {
+        transform: scale(1.02);
+    }
 }
 
 .heroOverlay {
@@ -117,10 +127,12 @@
     transition: all 0.2s;
 }
 
-.editCoverBtn:hover {
-    background: var(--accent-teal);
-    border-color: var(--accent-teal);
-    transform: scale(1.1);
+@media (hover: hover) {
+    .editCoverBtn:hover {
+        background: var(--accent-teal);
+        border-color: var(--accent-teal);
+        transform: scale(1.1);
+    }
 }
 
 .headerActions {
@@ -144,9 +156,11 @@
     transition: all var(--transition-fast);
 }
 
-.inviteBtn:hover {
-    border-color: var(--accent-teal);
-    color: var(--accent-teal);
+@media (hover: hover) {
+    .inviteBtn:hover {
+        border-color: var(--accent-teal);
+        color: var(--accent-teal);
+    }
 }
 
 .inviteCopied {
@@ -203,8 +217,10 @@
     /* Prevent tabs from shrinking */
 }
 
-.tabBtn:hover {
-    color: var(--text-primary);
+@media (hover: hover) {
+    .tabBtn:hover {
+        color: var(--text-primary);
+    }
 }
 
 .tabBtnActive {
@@ -255,13 +271,47 @@
 .characterCard {
     cursor: pointer;
     position: relative;
+    overflow: hidden;
+    background: #111;
+    display: flex;
+    flex-direction: column;
 }
 
-.characterCard:hover {
-    transform: translateY(-2px);
+@media (hover: hover) {
+    .characterCard:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.charCardBackground {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    opacity: 0.5;
+    z-index: 1;
+    transition: transform 0.6s ease;
+}
+
+.charCardOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 15, 26, 0.95) 0%, rgba(10, 15, 26, 0.4) 60%, rgba(10, 15, 26, 0.2) 100%);
+    z-index: 2;
+}
+
+@media (hover: hover) {
+    .characterCard:hover .charCardBackground {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
 }
 
 .charHeader {
+    position: relative;
+    z-index: 3;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -280,13 +330,15 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: rgba(0, 229, 160, 0.1);
+    background: rgba(0, 229, 160, 0.2);
     color: var(--accent-teal);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.9rem;
     font-weight: 700;
+    position: relative;
+    z-index: 3;
 }
 
 .charHeader h3 {
@@ -308,12 +360,17 @@
 }
 
 .charInfo {
+    position: relative;
+    z-index: 3;
     font-size: 0.85rem;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.8);
     margin-bottom: var(--space-md);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .charStats {
+    position: relative;
+    z-index: 3;
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
@@ -376,9 +433,11 @@
     transition: all 0.2s;
 }
 
-.statBadge:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: var(--accent-teal);
+@media (hover: hover) {
+    .statBadge:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: var(--accent-teal);
+    }
 }
 
 .statLabel {
@@ -398,11 +457,13 @@
 }
 
 .charOwner {
+    position: relative;
+    z-index: 3;
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.5);
     margin-top: var(--space-sm);
     padding-top: var(--space-sm);
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Empty State */
@@ -481,8 +542,10 @@
     line-height: 1;
 }
 
-.deleteBtn:hover {
-    background: rgba(255, 68, 68, 0.15);
+@media (hover: hover) {
+    .deleteBtn:hover {
+        background: rgba(255, 68, 68, 0.15);
+    }
 }
 
 .deleteIconBtn {
@@ -496,9 +559,11 @@
     transition: all 0.2s;
 }
 
-.deleteIconBtn:hover {
-    color: var(--danger);
-    background: rgba(255, 68, 68, 0.1);
+@media (hover: hover) {
+    .deleteIconBtn:hover {
+        color: var(--danger);
+        background: rgba(255, 68, 68, 0.1);
+    }
 }
 
 /* Desktop */
@@ -514,9 +579,11 @@
     border: 1px solid rgba(255, 170, 0, 0.2) !important;
 }
 
-.npcMemberCard:hover {
-    border-color: var(--accent-amber) !important;
-    background: linear-gradient(135deg, rgba(255, 170, 0, 0.08) 0%, rgba(255, 170, 0, 0.04) 100%);
+@media (hover: hover) {
+    .npcMemberCard:hover {
+        border-color: var(--accent-amber) !important;
+        background: linear-gradient(135deg, rgba(255, 170, 0, 0.08) 0%, rgba(255, 170, 0, 0.04) 100%);
+    }
 }
 
 .npcTag {
@@ -603,9 +670,11 @@
     transition: all 0.2s;
 }
 
-.closeDrawerBtn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #fff;
+@media (hover: hover) {
+    .closeDrawerBtn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+    }
 }
 
 .drawerContent {
@@ -655,8 +724,10 @@
     cursor: pointer;
 }
 
-.coverPreview:hover .coverOverlay {
-    opacity: 1;
+@media (hover: hover) {
+    .coverPreview:hover .coverOverlay {
+        opacity: 1;
+    }
 }
 
 .drawerFooter {
@@ -680,10 +751,12 @@
     transition: all 0.2s;
 }
 
-.settingsTrigger:hover {
-    background: var(--accent-teal-dim);
-    border-color: var(--accent-teal);
-    transform: scale(1.05);
+@media (hover: hover) {
+    .settingsTrigger:hover {
+        background: var(--accent-teal-dim);
+        border-color: var(--accent-teal);
+        transform: scale(1.05);
+    }
 }
 
 @media (max-width: 480px) {

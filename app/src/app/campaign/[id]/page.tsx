@@ -327,7 +327,7 @@ export default function CampaignPage() {
                 )}
 
                 <div className={effectiveHero ? styles.heroContent : ""}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
                         <button
                             className={styles.backBtn}
                             onClick={() => router.push("/dashboard")}
@@ -340,6 +340,7 @@ export default function CampaignPage() {
                                 className={styles.settingsTrigger}
                                 onClick={() => setIsDrawerOpen(true)}
                                 title="Impostazioni Campagna"
+                                style={{ marginLeft: 'auto' }}
                             >
                                 ⚙️
                             </button>
@@ -517,11 +518,12 @@ export default function CampaignPage() {
                                             className={`card ${styles.characterCard}`}
                                             onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
                                         >
+                                            {char.portrait_url && <img src={char.portrait_url} alt="" className={styles.charCardBackground} />}
+                                            <div className={styles.charCardOverlay} />
+
                                             <div className={styles.charHeader}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                                    {char.portrait_url ? (
-                                                        <img src={char.portrait_url} alt={char.name} className={styles.cardPortrait} />
-                                                    ) : (
+                                                    {!char.portrait_url && (
                                                         <div className={styles.cardPortraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
                                                     )}
                                                     <h3>{char.name}</h3>
@@ -599,11 +601,12 @@ export default function CampaignPage() {
                                         className={`card ${styles.characterCard} ${styles.npcMemberCard}`}
                                         onClick={() => setActiveTab('npcs')}
                                     >
+                                        {npc.portrait_url && <img src={npc.portrait_url} alt="" className={styles.charCardBackground} />}
+                                        <div className={styles.charCardOverlay} />
+
                                         <div className={styles.charHeader}>
                                             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                                {npc.portrait_url ? (
-                                                    <img src={npc.portrait_url} alt={npc.name} className={styles.cardPortrait} />
-                                                ) : (
+                                                {!npc.portrait_url && (
                                                     <div className={styles.cardPortraitFallback} style={{ background: 'var(--accent-amber-dim)', color: 'var(--accent-amber)' }}>
                                                         {npc.name.charAt(0).toUpperCase()}
                                                     </div>
@@ -772,11 +775,12 @@ export default function CampaignPage() {
                                                 className={`card card-glow-teal ${styles.characterCard}`}
                                                 onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
                                             >
+                                                {char.portrait_url && <img src={char.portrait_url} alt="" className={styles.charCardBackground} />}
+                                                <div className={styles.charCardOverlay} />
+
                                                 <div className={styles.charHeader}>
                                                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                                        {char.portrait_url ? (
-                                                            <img src={char.portrait_url} alt={char.name} className={styles.cardPortrait} />
-                                                        ) : (
+                                                        {!char.portrait_url && (
                                                             <div className={styles.cardPortraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
                                                         )}
                                                         <h3>{char.name}</h3>
