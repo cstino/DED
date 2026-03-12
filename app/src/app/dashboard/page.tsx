@@ -11,6 +11,8 @@ interface Campaign {
     id: string;
     name: string;
     description: string | null;
+    image_url: string | null;
+    hero_url: string | null;
     invite_code: string;
     master_id: string;
     created_at: string;
@@ -158,30 +160,48 @@ export default function DashboardPage() {
                         {campaigns.map((campaign) => (
                             <div
                                 key={campaign.id}
-                                className={`card ${styles.campaignCard} ${campaign.master_id === user.id ? "card-glow-amber" : ""
-                                    }`}
+                                className={styles.campaignCard}
                                 onClick={() => router.push(`/campaign/${campaign.id}`)}
                             >
-                                <div className={styles.campaignHeader}>
-                                    <h3>{campaign.name}</h3>
-                                    <span
-                                        className={`${styles.roleBadge} ${campaign.master_id === user.id
-                                            ? styles.roleMaster
-                                            : styles.rolePlayer
-                                            }`}
-                                    >
-                                        {campaign.master_id === user.id ? "DM" : "Giocatore"}
-                                    </span>
-                                </div>
-                                {campaign.description && (
-                                    <p className="text-secondary" style={{ fontSize: "0.9rem" }}>
-                                        {campaign.description}
-                                    </p>
+                                {/* Role Badge */}
+                                <span
+                                    className={`${styles.roleBadgeFixed} ${campaign.master_id === user.id ? styles.roleMaster : styles.rolePlayer}`}
+                                >
+                                    {campaign.master_id === user.id ? "DM" : "PLAYER"}
+                                </span>
+
+                                {/* Poster Image */}
+                                {(campaign.image_url || campaign.hero_url) ? (
+                                    <img src={campaign.image_url || campaign.hero_url || ""} alt={campaign.name} className={styles.cardPoster} />
+                                ) : (
+                                    <div className={styles.cardPoster} style={{
+                                        background: `linear-gradient(135deg, #1a1a1a 0%, #000 100%)`,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '3rem',
+                                        opacity: 0.4
+                                    }}>
+                                        🏰
+                                    </div>
                                 )}
-                                <div className={styles.campaignFooter}>
-                                    <span className="text-muted" style={{ fontSize: "0.8rem" }}>
-                                        Codice: {campaign.invite_code}
-                                    </span>
+
+                                {/* Overlay */}
+                                <div className={styles.cardOverlay} />
+
+                                {/* Content */}
+                                <div className={styles.cardContent}>
+                                    <h3>{campaign.name}</h3>
+                                    {campaign.description && (
+                                        <p className={styles.cardDesc}>
+                                            {campaign.description}
+                                        </p>
+                                    )}
+                                    <div className={styles.campaignFooter}>
+                                        <span className="text-muted" style={{ fontSize: "0.7rem", letterSpacing: '0.1em' }}>
+                                            CODE: {campaign.invite_code}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         ))}

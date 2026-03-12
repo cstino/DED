@@ -35,23 +35,92 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-xs);
-    background: none;
-    border: none;
-    color: var(--text-muted);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
     font-family: inherit;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     cursor: pointer;
-    padding: 0;
+    padding: 4px 12px;
+    border-radius: var(--radius-md);
     margin-bottom: var(--space-md);
-    transition: color var(--transition-fast);
+    transition: all var(--transition-fast);
 }
 
 .backBtn:hover {
-    color: var(--accent-teal);
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.heroHeader {
+    position: relative;
+    margin: calc(var(--space-lg) * -1) calc(var(--space-lg) * -1) var(--space-xl);
+    padding: var(--space-xl) var(--space-lg) var(--space-lg);
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+}
+
+.heroBackground {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    transition: transform 0.8s ease;
+}
+
+.heroHeader:hover .heroBackground {
+    transform: scale(1.02);
+}
+
+.heroOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--bg-primary) 0%, rgba(10, 15, 26, 0.4) 60%, transparent 100%);
+    z-index: 2;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 3;
 }
 
 .headerInfo {
-    margin-bottom: var(--space-md);
+    margin-bottom: 0;
+}
+
+.editCoverBtn {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.editCoverBtn:hover {
+    background: var(--accent-teal);
+    border-color: var(--accent-teal);
+    transform: scale(1.1);
 }
 
 .headerActions {
@@ -97,11 +166,22 @@
     overflow-y: hidden;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
-    /* Fade effect */
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     scrollbar-width: none;
     /* Hide scrollbar Firefox */
+}
+
+@media (max-width: 768px) {
+    .tabsContainer {
+        mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+}
+
+@media (min-width: 769px) {
+    .tabsContainer {
+        border-bottom: none;
+        background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1) 10%, rgba(255, 255, 255, 0.1) 90%, transparent) bottom / 100% 1px no-repeat;
+    }
 }
 
 .tabsContainer::-webkit-scrollbar {
@@ -454,5 +534,160 @@
 @media (min-width: 1024px) {
     .characterGrid {
         grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Right Drawer (Settings) */
+.drawerOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.drawerOpen .drawerOverlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 400px;
+    background: rgba(13, 20, 35, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: -16px 0 64px rgba(0, 0, 0, 0.6);
+}
+
+.drawerOpen .drawer {
+    transform: translateX(0);
+}
+
+.drawerHeader {
+    padding: var(--space-xl) var(--space-lg) var(--space-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.drawerHeader h2 {
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.closeDrawerBtn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.closeDrawerBtn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.drawerContent {
+    flex: 1;
+    padding: var(--space-lg);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.drawerSection h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent-teal);
+    margin-bottom: var(--space-md);
+    font-weight: 800;
+}
+
+.coverPreview {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #111;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: var(--space-md);
+}
+
+.coverPreview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.coverOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    cursor: pointer;
+}
+
+.coverPreview:hover .coverOverlay {
+    opacity: 1;
+}
+
+.drawerFooter {
+    padding: var(--space-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.settingsTrigger {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.settingsTrigger:hover {
+    background: var(--accent-teal-dim);
+    border-color: var(--accent-teal);
+    transform: scale(1.05);
+}
+
+@media (max-width: 480px) {
+    .drawer {
+        max-width: 100%;
     }
 }

@@ -20,6 +20,8 @@ interface Campaign {
     description: string | null;
     invite_code: string;
     master_id: string;
+    image_url: string | null;
+    hero_url: string | null;
 }
 
 interface Character {
@@ -75,7 +77,20 @@ export default function CampaignPage() {
     const [activeTab, setActiveTab] = useState<"party" | "sessions" | "lore" | "npcs" | "spells">("party");
     const [npcRefreshTrigger, setNpcRefreshTrigger] = useState(0);
 
+    // Settings Drawer state
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [editName, setEditName] = useState("");
+    const [editDesc, setEditDesc] = useState("");
+    const [isSavingSettings, setIsSavingSettings] = useState(false);
+
     const isMaster = campaign?.master_id === user?.id;
+
+    useEffect(() => {
+        if (campaign) {
+            setEditName(campaign.name);
+            setEditDesc(campaign.description || "");
+        }
+    }, [campaign]);
 
     useEffect(() => {
         if (!authLoading && !user) router.push("/login");
@@ -236,25 +251,116 @@ export default function CampaignPage() {
         return true;
     });
 
+    async function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>, type: 'poster' | 'hero') {
+        const file = e.target.files?.[0];
+        if (!file || !campaign || !user) return;
+
+        try {
+            const fileExt = file.name.split('.').pop();
+            const filePath = `portraits/${user.id}/campaign-${campaign.id}-${type}-${Date.now()}.${fileExt}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('character-portraits')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('character-portraits')
+                .getPublicUrl(filePath);
+
+            const dbField = type === 'poster' ? 'image_url' : 'hero_url';
+            const { error: updateError } = await supabase
+                .from('campaigns')
+                .update({ [dbField]: publicUrl })
+                .eq('id', campaign.id);
+
+            if (updateError) throw updateError;
+
+            setCampaign({ ...campaign, [dbField]: publicUrl });
+            alert(type === 'poster' ? "Locandina aggiornata!" : "Copertina header aggiornata!");
+        } catch (error: any) {
+            console.error("Error updating cover:", error);
+            alert("Errore durante l'aggiornamento dell'immagine.");
+        }
+    }
+
+    async function handleSaveSettings() {
+        if (!campaign || !editName.trim()) return;
+        setIsSavingSettings(true);
+        try {
+            const { error: updateError } = await supabase
+                .from('campaigns')
+                .update({
+                    name: editName.trim(),
+                    description: editDesc.trim() || null
+                })
+                .eq('id', campaign.id);
+
+            if (updateError) throw updateError;
+
+            setCampaign({
+                ...campaign,
+                name: editName.trim(),
+                description: editDesc.trim() || null
+            });
+            setIsDrawerOpen(false);
+            alert("Impostazioni salvate!");
+        } catch (error: any) {
+            console.error("Error saving settings:", error);
+            alert("Errore durante il salvataggio.");
+        } finally {
+            setIsSavingSettings(false);
+        }
+    }
+
+    const effectiveHero = campaign.hero_url || campaign.image_url;
+
     return (
-        <div className="page">
-            <div className={styles.header}>
-                <button className={styles.backBtn} onClick={() => router.push("/dashboard")}>
-                    ← Dashboard
-                </button>
-                <div className={styles.headerInfo}>
-                    <h1 className="page-title">{campaign.name}</h1>
-                    {campaign.description && (
-                        <p className="page-subtitle">{campaign.description}</p>
-                    )}
-                </div>
-                <div className={styles.headerActions}>
-                    <button
-                        className={`${styles.inviteBtn} ${copied ? styles.inviteCopied : ""}`}
-                        onClick={copyInviteCode}
-                    >
-                        {copied ? "✓ Copiato!" : `📋 ${campaign.invite_code}`}
-                    </button>
+        <div className={`page ${isDrawerOpen ? styles.drawerOpen : ""}`} style={{ paddingTop: effectiveHero ? 0 : 'var(--space-lg)' }}>
+            <div className={effectiveHero ? styles.heroHeader : styles.header}>
+                {effectiveHero && (
+                    <>
+                        <img src={effectiveHero} alt="" className={styles.heroBackground} />
+                        <div className={styles.heroOverlay} />
+                    </>
+                )}
+
+                <div className={effectiveHero ? styles.heroContent : ""}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <button
+                            className={styles.backBtn}
+                            onClick={() => router.push("/dashboard")}
+                            style={{ color: effectiveHero ? '#fff' : 'var(--text-muted)' }}
+                        >
+                            ← Dashboard
+                        </button>
+                        {isMaster && (
+                            <button
+                                className={styles.settingsTrigger}
+                                onClick={() => setIsDrawerOpen(true)}
+                                title="Impostazioni Campagna"
+                            >
+                                ⚙️
+                            </button>
+                        )}
+                    </div>
+                    <div className={styles.headerInfo}>
+                        <h1 className="page-title">{campaign.name}</h1>
+                        {campaign.description && (
+                            <p className="page-subtitle" style={{ color: effectiveHero ? 'rgba(255,255,255,0.8)' : 'var(--text-secondary)' }}>
+                                {campaign.description}
+                            </p>
+                        )}
+                    </div>
+                    <div className={styles.headerActions} style={{ marginTop: 'var(--space-md)' }}>
+                        <button
+                            className={`${styles.inviteBtn} ${copied ? styles.inviteCopied : ""}`}
+                            onClick={copyInviteCode}
+                        >
+                            {copied ? "✓ Copiato!" : `📋 ${campaign.invite_code}`}
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -743,6 +849,116 @@ export default function CampaignPage() {
 
             {/* AI Assistant Floating Widget */}
             <AiAssistantChat />
+
+            {/* Right Settings Drawer */}
+            {isMaster && (
+                <>
+                    <div className={styles.drawerOverlay} onClick={() => setIsDrawerOpen(false)} />
+                    <div className={styles.drawer}>
+                        <div className={styles.drawerHeader}>
+                            <h2>⚙️ Impostazioni</h2>
+                            <button className={styles.closeDrawerBtn} onClick={() => setIsDrawerOpen(false)}>
+                                ✕
+                            </button>
+                        </div>
+
+                        <div className={styles.drawerContent}>
+                            <div className={styles.drawerSection}>
+                                <h3>Locandina (Dashboard)</h3>
+                                <div className={styles.coverPreview} style={{ aspectRatio: '2/3', maxWidth: '160px', margin: '0 auto var(--space-md)' }}>
+                                    {campaign.image_url ? (
+                                        <img src={campaign.image_url} alt="Poster" />
+                                    ) : (
+                                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111', color: '#333', fontSize: '2rem' }}>
+                                            🏰
+                                        </div>
+                                    )}
+                                    <label className={styles.coverOverlay}>
+                                        <span>📷 Cambia</span>
+                                        <input type="file" hidden accept="image/*" onChange={(e) => handleCoverChange(e, 'poster')} />
+                                    </label>
+                                </div>
+                                <p className="text-muted" style={{ fontSize: '0.75rem', textAlign: 'center' }}>
+                                    Ottimale: formato verticale (es. 1000x1500)
+                                </p>
+                            </div>
+
+                            <div className={styles.drawerSection}>
+                                <h3>Sfondo Header</h3>
+                                <div className={styles.coverPreview}>
+                                    {campaign.hero_url ? (
+                                        <img src={campaign.hero_url} alt="Hero" />
+                                    ) : (
+                                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111', color: '#333', fontSize: '2rem' }}>
+                                            🏞️
+                                        </div>
+                                    )}
+                                    <label className={styles.coverOverlay}>
+                                        <span>📷 Cambia</span>
+                                        <input type="file" hidden accept="image/*" onChange={(e) => handleCoverChange(e, 'hero')} />
+                                    </label>
+                                </div>
+                                <p className="text-muted" style={{ fontSize: '0.75rem' }}>
+                                    Ottimale: formato panoramico (es. 1920x600)
+                                </p>
+                            </div>
+
+                            <div className={styles.drawerSection}>
+                                <h3>Informazioni</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                    <div>
+                                        <label className="label">Nome Campagna</label>
+                                        <input
+                                            type="text"
+                                            className="input"
+                                            value={editName}
+                                            onChange={(e) => setEditName(e.target.value)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="label">Descrizione</label>
+                                        <textarea
+                                            className="input"
+                                            rows={4}
+                                            value={editDesc}
+                                            onChange={(e) => setEditDesc(e.target.value)}
+                                            style={{ resize: 'none' }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={styles.drawerSection}>
+                                <h3>Accesso</h3>
+                                <div className="card" style={{ padding: 'var(--space-md)', background: 'rgba(255,255,255,0.03)' }}>
+                                    <p className="text-muted" style={{ fontSize: '0.8rem', marginBottom: '8px' }}>Codice Invito:</p>
+                                    <code style={{ fontSize: '1.2rem', color: 'var(--accent-teal)', letterSpacing: '0.1em', fontWeight: '700' }}>
+                                        {campaign.invite_code}
+                                    </code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles.drawerFooter}>
+                            <button
+                                className="btn btn-secondary"
+                                style={{ flex: 1 }}
+                                onClick={() => setIsDrawerOpen(false)}
+                            >
+                                Annulla
+                            </button>
+                            <button
+                                className="btn btn-primary"
+                                style={{ flex: 1 }}
+                                onClick={handleSaveSettings}
+                                disabled={isSavingSettings || !editName.trim()}
+                            >
+                                {isSavingSettings ? "Salvataggio..." : "Salva"}
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
         </div >
     );
 }
