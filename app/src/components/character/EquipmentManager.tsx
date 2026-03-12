@@ -1,6 +1,18 @@
 "use client";
-
-import { useState } from "react";
+import React, { useState } from "react";
+import {
+    Sword,
+    Shield,
+    Shirt,
+    CircleDot,
+    Sparkles,
+    FlaskConical,
+    Package,
+    Pencil,
+    Trash2,
+    Check,
+    Square
+} from "lucide-react";
 import styles from "./EquipmentManager.module.css";
 
 export interface ItemEffect {
@@ -36,13 +48,13 @@ const STAT_OPTIONS = [
 ];
 
 const TYPE_OPTIONS = [
-    { value: "weapon", label: "🗡️ Arma" },
-    { value: "armor", label: "🛡️ Armatura" },
-    { value: "shield", label: "🛡️ Scudo" },
-    { value: "ring", label: "💍 Anello" },
-    { value: "wondrous", label: "✨ Oggetto Meraviglioso" },
-    { value: "potion", label: "🧪 Pozione" },
-    { value: "other", label: "📦 Altro" },
+    { value: "weapon", label: "Arma", icon: Sword, color: "#f87171" }, // red-ish
+    { value: "armor", label: "Armatura", icon: Shirt, color: "#a78bfa" }, // purple
+    { value: "shield", label: "Scudo", icon: Shield, color: "#60a5fa" }, // blue
+    { value: "ring", label: "Anello", icon: CircleDot, color: "#fb7185" }, // rose
+    { value: "wondrous", label: "Oggetto Meraviglioso", icon: Sparkles, color: "#fbbf24" }, // amber
+    { value: "potion", label: "Pozione", icon: FlaskConical, color: "#34d399" }, // emerald
+    { value: "other", label: "Altro", icon: Package, color: "#94a3b8" }, // slate
 ];
 
 // Calculate all stat modifications from equipped items
@@ -54,16 +66,13 @@ export function calculateEquipmentBonuses(equipment: EquipmentItem[]): Record<st
         if (!item.equipped) continue;
         for (const effect of item.effects) {
             if (effect.mode === "set") {
-                // "set" mode: use the highest set value
                 setValues[effect.stat] = Math.max(setValues[effect.stat] ?? 0, effect.value);
             } else {
-                // "add" mode: accumulate
                 bonuses[effect.stat] = (bonuses[effect.stat] ?? 0) + effect.value;
             }
         }
     }
 
-    // Merge: set values override base, then add bonuses on top
     const result: Record<string, number> = {};
     for (const stat of new Set([...Object.keys(bonuses), ...Object.keys(setValues)])) {
         if (stat in setValues) {
@@ -86,7 +95,6 @@ export default function EquipmentManager({ equipment, onChange, editing, canEdit
     const [showAddForm, setShowAddForm] = useState(false);
     const [editingIdx, setEditingIdx] = useState<number | null>(null);
 
-    // New item form state
     const [newName, setNewName] = useState("");
     const [newType, setNewType] = useState("other");
     const [newDesc, setNewDesc] = useState("");
@@ -156,80 +164,89 @@ export default function EquipmentManager({ equipment, onChange, editing, canEdit
         onChange(equipment.filter((_, i) => i !== index));
     }
 
-    const typeIcon = (type: string) =>
-        TYPE_OPTIONS.find((t) => t.value === type)?.label.split(" ")[0] || "📦";
-
     return (
         <div className={styles.container}>
-            {/* Equipment List */}
             {equipment.length === 0 && !showAddForm && (
                 <p className={styles.empty}>Nessun equipaggiamento. {(editing || canEdit) ? "Aggiungi il primo oggetto!" : ""}</p>
             )}
 
-            {equipment.map((item, idx) => (
-                <div
-                    key={idx}
-                    className={`${styles.itemCard} ${!item.equipped ? styles.itemUnequipped : ""}`}
-                >
-                    <div className={styles.itemHeader}>
-                        <span className={styles.itemIcon}>{typeIcon(item.type)}</span>
-                        <div className={styles.itemInfo}>
-                            <span className={styles.itemName}>{item.name}</span>
-                            {item.description && (
-                                <span className={styles.itemDesc}>{item.description}</span>
+            {equipment.map((item, idx) => {
+                const typeInfo = TYPE_OPTIONS.find((t) => t.value === item.type) || TYPE_OPTIONS[TYPE_OPTIONS.length - 1];
+                const Icon = typeInfo.icon;
+
+                return (
+                    <div
+                        key={idx}
+                        className={`${styles.itemCard} ${!item.equipped ? styles.itemUnequipped : ""}`}
+                    >
+                        <div className={styles.itemHeader}>
+                            <div className={styles.iconWrapper} style={{ color: typeInfo.color }}>
+                                <Icon size={20} strokeWidth={2.5} />
+                            </div>
+                            <div className={styles.itemInfo}>
+                                <span className={styles.itemName}>{item.name}</span>
+                                {item.description && (
+                                    <span className={styles.itemDesc}>{item.description}</span>
+                                )}
+                            </div>
+                            {(editing || canEdit) && (
+                                <div className={styles.itemActions}>
+                                    <button
+                                        type="button"
+                                        className={styles.equipBtn}
+                                        onClick={() => toggleEquip(idx)}
+                                        title={item.equipped ? "Rimuovi" : "Equipaggia"}
+                                        style={{ color: item.equipped ? "var(--accent-teal)" : "var(--text-muted)" }}
+                                    >
+                                        {item.equipped ? <Check size={18} strokeWidth={3} /> : <Square size={18} />}
+                                    </button>
+                                    {editing && (
+                                        <>
+                                            <button
+                                                type="button"
+                                                className={styles.editBtn}
+                                                onClick={() => startEdit(idx)}
+                                            >
+                                                <Pencil size={16} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={styles.deleteBtn}
+                                                onClick={() => removeItem(idx)}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
                             )}
                         </div>
-                        {(editing || canEdit) && (
-                            <div className={styles.itemActions}>
-                                <button
-                                    type="button"
-                                    className={styles.equipBtn}
-                                    onClick={() => toggleEquip(idx)}
-                                    title={item.equipped ? "Rimuovi" : "Equipaggia"}
-                                >
-                                    {item.equipped ? "✅" : "⬜"}
-                                </button>
-                                {editing && (
-                                    <>
-                                        <button
-                                            type="button"
-                                            className={styles.editBtn}
-                                            onClick={() => startEdit(idx)}
-                                        >✏️</button>
-                                        <button
-                                            type="button"
-                                            className={styles.deleteBtn}
-                                            onClick={() => removeItem(idx)}
-                                        >🗑️</button>
-                                    </>
-                                )}
+                        {item.effects.length > 0 && (
+                            <div className={styles.effectsList}>
+                                {item.effects.map((eff, ei) => {
+                                    const label = STAT_OPTIONS.find((s) => s.value === eff.stat)?.label || eff.stat;
+                                    return (
+                                        <span
+                                            key={ei}
+                                            className={`${styles.effectBadge} ${eff.value > 0 ? styles.effectPositive : styles.effectNegative}`}
+                                        >
+                                            {eff.mode === "set" ? `${label} = ${eff.value}` : `${label} ${eff.value > 0 ? "+" : ""}${eff.value}`}
+                                        </span>
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
-                    {item.effects.length > 0 && (
-                        <div className={styles.effectsList}>
-                            {item.effects.map((eff, ei) => {
-                                const label = STAT_OPTIONS.find((s) => s.value === eff.stat)?.label || eff.stat;
-                                return (
-                                    <span
-                                        key={ei}
-                                        className={`${styles.effectBadge} ${eff.value > 0 ? styles.effectPositive : styles.effectNegative}`}
-                                    >
-                                        {eff.mode === "set" ? `${label} = ${eff.value}` : `${label} ${eff.value > 0 ? "+" : ""}${eff.value}`}
-                                    </span>
-                                );
-                            })}
-                        </div>
-                    )}
-                </div>
-            ))}
+                );
+            })}
 
-            {/* Add / Edit Form */}
             {(editing || canEdit) && (
                 <>
                     {showAddForm ? (
                         <div className={styles.addForm}>
-                            <h4>{editingIdx !== null ? "Modifica Oggetto" : "Nuovo Oggetto"}</h4>
+                            <h4 className={styles.formTitle}>
+                                {editingIdx !== null ? "Modifica Oggetto" : "Nuovo Oggetto"}
+                            </h4>
 
                             <div className={styles.formRow}>
                                 <input
@@ -240,16 +257,17 @@ export default function EquipmentManager({ equipment, onChange, editing, canEdit
                                     onChange={(e) => setNewName(e.target.value)}
                                     style={{ flex: 2 }}
                                 />
-                                <select
-                                    className="input"
-                                    value={newType}
-                                    onChange={(e) => setNewType(e.target.value)}
-                                    style={{ flex: 1 }}
-                                >
-                                    {TYPE_OPTIONS.map((t) => (
-                                        <option key={t.value} value={t.value}>{t.label}</option>
-                                    ))}
-                                </select>
+                                <div className={styles.selectWrapper}>
+                                    <select
+                                        className="input"
+                                        value={newType}
+                                        onChange={(e) => setNewType(e.target.value)}
+                                    >
+                                        {TYPE_OPTIONS.map((t) => (
+                                            <option key={t.value} value={t.value}>{t.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             <input
@@ -260,12 +278,11 @@ export default function EquipmentManager({ equipment, onChange, editing, canEdit
                                 onChange={(e) => setNewDesc(e.target.value)}
                             />
 
-                            {/* Effects */}
                             <div className={styles.effectsEditor}>
                                 <div className={styles.effectsHeader}>
-                                    <span className={styles.effectsTitle}>Effetti</span>
+                                    <span className={styles.effectsTitle}>Effetti Statistici</span>
                                     <button type="button" className={styles.addEffectBtn} onClick={addEffect}>
-                                        + Aggiungi Effetto
+                                        + Aggiungi
                                     </button>
                                 </div>
 
@@ -285,7 +302,7 @@ export default function EquipmentManager({ equipment, onChange, editing, canEdit
                                             className="input"
                                             value={eff.mode}
                                             onChange={(e) => updateEffect(idx, "mode", e.target.value)}
-                                            style={{ flex: 1 }}
+                                            style={{ flex: 1.5 }}
                                         >
                                             <option value="add">Bonus (+/−)</option>
                                             <option value="set">Imposta (=)</option>
@@ -298,7 +315,7 @@ export default function EquipmentManager({ equipment, onChange, editing, canEdit
                                             style={{ width: 70 }}
                                         />
                                         <button type="button" className={styles.removeEffectBtn} onClick={() => removeEffect(idx)}>
-                                            ✕
+                                            <Trash2 size={14} />
                                         </button>
                                     </div>
                                 ))}

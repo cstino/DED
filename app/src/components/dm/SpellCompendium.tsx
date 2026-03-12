@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import styles from "../character/SpellBrowser.module.css";
 
@@ -47,39 +47,56 @@ export default function SpellCompendium() {
     // Expanded spell
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
+    const [totalCount, setTotalCount] = useState(0);
+
     useEffect(() => {
-        async function load() {
+        const load = async () => {
+            setLoading(true);
             try {
-                const { data, error } = await supabase
+                let query = supabase
                     .from("spells")
-                    .select("*")
+                    .select("*", { count: "exact" });
+
+                if (search) {
+                    query = query.ilike("name", `%${search}%`);
+                }
+                if (levelFilter !== null) {
+                    query = query.eq("level", levelFilter);
+                }
+                if (schoolFilter) {
+                    query = query.ilike("school", schoolFilter);
+                }
+                if (classFilter) {
+                    // JSONB filtered by key
+                    query = query.contains("casters", { [classFilter]: true });
+                }
+                if (concFilter !== null) {
+                    query = query.eq("is_concentration", concFilter);
+                }
+                if (ritualFilter !== null) {
+                    query = query.eq("is_ritual", ritualFilter);
+                }
+
+                const { data, error, count } = await query
                     .order("level")
                     .order("name")
-                    .limit(2000);
+                    .limit(100);
+
                 if (error) {
                     console.error("Error fetching spells:", error.message);
-                } else if (data) {
-                    setAllSpells(data);
+                } else {
+                    setAllSpells(data || []);
+                    setTotalCount(count || 0);
                 }
             } catch (err) {
                 console.error("Network error fetching spells:", err);
             }
             setLoading(false);
-        }
-        load();
-    }, []);
+        };
 
-    const filtered = useMemo(() => {
-        return allSpells.filter((s) => {
-            if (search && !s.name.toLowerCase().includes(search.toLowerCase())) return false;
-            if (levelFilter !== null && s.level !== levelFilter) return false;
-            if (schoolFilter && s.school.toLowerCase() !== schoolFilter.toLowerCase()) return false;
-            if (classFilter && !s.casters?.[classFilter]) return false;
-            if (concFilter !== null && s.is_concentration !== concFilter) return false;
-            if (ritualFilter !== null && s.is_ritual !== ritualFilter) return false;
-            return true;
-        });
-    }, [allSpells, search, levelFilter, schoolFilter, classFilter, concFilter, ritualFilter]);
+        const timer = setTimeout(load, search ? 400 : 0);
+        return () => clearTimeout(timer);
+    }, [search, levelFilter, schoolFilter, classFilter, concFilter, ritualFilter]);
 
     const activeFilters = [levelFilter !== null, schoolFilter, classFilter, concFilter !== null, ritualFilter !== null].filter(Boolean).length;
 
@@ -170,12 +187,12 @@ export default function SpellCompendium() {
 
             {/* Results count */}
             <div className={styles.resultsInfo}>
-                {loading ? "Caricamento biblioteca..." : `${filtered.length} incantesimi trovati`}
+                {loading ? "Caricamento biblioteca..." : `${totalCount} incantesimi trovati`}
             </div>
 
             {/* Spell List */}
             <div className={styles.spellList} style={{ maxHeight: '600px' }}>
-                {filtered.slice(0, 100).map((spell) => {
+                {allSpells.map((spell) => {
                     const isExpanded = expandedId === spell.id;
                     return (
                         <div key={spell.id} className={styles.spellCard}>
@@ -217,9 +234,9 @@ export default function SpellCompendium() {
                         </div>
                     );
                 })}
-                {filtered.length > 100 && (
+                {totalCount > 100 && (
                     <p className={styles.moreNote}>
-                        Mostrati 100 di {filtered.length} risultati. Usa i filtri per restringere la ricerca.
+                        Mostrati 100 di {totalCount} risultati. Usa i filtri per restringere la ricerca.
                     </p>
                 )}
             </div>

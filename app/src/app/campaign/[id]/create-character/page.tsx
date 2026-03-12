@@ -101,6 +101,55 @@ export default function CreateCharacterPage() {
     const [error, setError] = useState("");
     const [campaign, setCampaign] = useState<{ master_id: string } | null>(null);
     const [isPartyMember, setIsPartyMember] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    // Load draft from localStorage on mount
+    useEffect(() => {
+        if (!campaignId) return;
+        const saved = localStorage.getItem(`magehand-draft-${campaignId}`);
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                if (data.name) setName(data.name);
+                if (data.race) {
+                    setRace(data.race);
+                    setRaceSearch(data.raceSearch || data.race);
+                }
+                if (data.selectedClass) {
+                    setSelectedClass(data.selectedClass);
+                    setClassSearch(data.classSearch || data.selectedClass);
+                }
+                if (data.subclass) setSubclass(data.subclass);
+                if (data.level) setLevel(data.level);
+                if (data.alignment) setAlignment(data.alignment);
+                if (data.background) setBackground(data.background);
+                if (data.abilities) setAbilities(data.abilities);
+                if (data.hpMax) setHpMax(data.hpMax);
+                if (data.ac) setAc(data.ac);
+                if (data.speed) setSpeed(data.speed);
+                if (data.skillProfs) setSkillProfs(data.skillProfs);
+                if (data.isPartyMember !== undefined) setIsPartyMember(data.isPartyMember);
+            } catch (e) {
+                console.error("Failed to load draft", e);
+            }
+        }
+        setIsLoaded(true);
+    }, [campaignId]);
+
+    // Save draft to localStorage on change
+    useEffect(() => {
+        if (!isLoaded || !campaignId) return;
+        const draft = {
+            name, race, raceSearch, selectedClass, classSearch, subclass,
+            level, alignment, background, abilities, hpMax, ac, speed,
+            skillProfs, isPartyMember
+        };
+        localStorage.setItem(`magehand-draft-${campaignId}`, JSON.stringify(draft));
+    }, [
+        isLoaded, campaignId, name, race, raceSearch, selectedClass, classSearch,
+        subclass, level, alignment, background, abilities, hpMax, ac, speed,
+        skillProfs, isPartyMember
+    ]);
 
     const isMaster = campaign?.master_id === user?.id;
 
@@ -254,6 +303,8 @@ export default function CreateCharacterPage() {
             return;
         }
 
+        // Clear draft on success
+        localStorage.removeItem(`magehand-draft-${campaignId}`);
         router.push(`/campaign/${campaignId}`);
     }
 

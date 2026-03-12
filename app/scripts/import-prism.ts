@@ -137,6 +137,18 @@ async function main() {
                         };
                     }
 
+                    if (data[targetKey][name]) {
+                        const existing = data[targetKey][name];
+                        if (targetKey === 'spells' && dbItem.casters) {
+                            // Merge casters so that if ANY file says a class can cast it, it remains true
+                            const mergedCasters = { ...existing.casters };
+                            for (const [cls, canCast] of Object.entries(dbItem.casters)) {
+                                if (canCast === true) mergedCasters[cls] = true;
+                            }
+                            dbItem.casters = mergedCasters;
+                        }
+                    }
+
                     data[targetKey][name] = dbItem;
                 });
             }

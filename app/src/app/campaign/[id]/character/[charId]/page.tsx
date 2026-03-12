@@ -258,6 +258,33 @@ export default function CharacterSheetPage() {
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
     const [editData, setEditData] = useState<Partial<Character>>({});
+    const [isDraftLoaded, setIsDraftLoaded] = useState(false);
+
+    // Persistence for Edit Mode
+    useEffect(() => {
+        if (!charId) return;
+        const saved = localStorage.getItem(`magehand-char-edit-${charId}`);
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                setEditData(data);
+                setEditing(true);
+            } catch (e) {
+                console.error("Failed to load char edit draft", e);
+            }
+        }
+        setIsDraftLoaded(true);
+    }, [charId]);
+
+    useEffect(() => {
+        if (!isDraftLoaded || !charId) return;
+        if (editing && Object.keys(editData).length > 0) {
+            localStorage.setItem(`magehand-char-edit-${charId}`, JSON.stringify(editData));
+        } else if (!editing) {
+            localStorage.removeItem(`magehand-char-edit-${charId}`);
+        }
+    }, [isDraftLoaded, charId, editing, editData]);
+
     const [saving, setSaving] = useState(false);
     const [saveError, setSaveError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<"stats" | "combat" | "equipment" | "spells" | "notes">("stats");
@@ -502,6 +529,7 @@ export default function CharacterSheetPage() {
                 setPortraitFile(null);
                 setPortraitPreview(null);
                 setSaveError(null);
+                localStorage.removeItem(`magehand-char-edit-${char.id}`);
                 setEditing(false);
             }
         } catch (err: any) {
