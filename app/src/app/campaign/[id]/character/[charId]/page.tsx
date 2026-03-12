@@ -127,12 +127,13 @@ const SCHOOL_IT: Record<string, string> = {
     Necromancy: "Necromanzia", Transmutation: "Trasmutazione", Transformation: "Trasmutazione",
 };
 
-function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpandedSpell, canEdit, onRemove, preparedSpells, onTogglePrepare, canPrepareSpells }: {
+function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpandedSpell, canEdit, editing, onRemove, preparedSpells, onTogglePrepare, canPrepareSpells }: {
     knownSpells: string[];
     spellDetails: Record<string, any>;
     expandedSpell: string | null;
     setExpandedSpell: (s: string | null) => void;
     canEdit: boolean;
+    editing: boolean;
     onRemove: (name: string) => void;
     preparedSpells?: string[];
     onTogglePrepare?: (name: string) => void;
@@ -214,10 +215,12 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
                                                 </div>
                                             </div>
                                             <div className={styles.knownSpellActions}>
-                                                {canEdit && (
+                                                {editing && canEdit && (
                                                     <button type="button" className={styles.removeSpellBtn} onClick={(e) => {
                                                         e.stopPropagation();
-                                                        onRemove(name);
+                                                        if (window.confirm(`Sei sicuro di voler eliminare l'incantesimo "${detail?.name || name}"?`)) {
+                                                            onRemove(name);
+                                                        }
                                                     }}>✕</button>
                                                 )}
                                                 <span className={styles.expandArrow}>{isExpanded ? "▾" : "▸"}</span>
@@ -1559,6 +1562,7 @@ export default function CharacterSheetPage() {
                                 expandedSpell={expandedSpell}
                                 setExpandedSpell={setExpandedSpell}
                                 canEdit={canEdit}
+                                editing={editing}
                                 onRemove={(spellName) => {
                                     const updated = char.known_spells.filter((s) => s !== spellName);
                                     setChar((p) => p ? { ...p, known_spells: updated } as Character : null);
