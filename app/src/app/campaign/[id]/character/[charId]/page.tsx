@@ -1170,7 +1170,7 @@ export default function CharacterSheetPage() {
                                                 <div key={i} className={styles.classAbilityCard}>
                                                     <div className={styles.classAbilityRow} onClick={() => setExpandedAbility(isExpanded ? null : i)}>
                                                         <div className={styles.classAbilityInfo}>
-                                                            <span className={styles.classAbilityName}>{ability.name}</span>
+                                                            <span className={styles.classAbilityName}>{ability.name || <span className="text-muted">Nuova Abilità</span>}</span>
                                                             {ability.recharge && <span className={styles.classAbilityMeta}>↻ {ability.recharge}</span>}
                                                         </div>
                                                         <div className={styles.classAbilityActions}>
@@ -1200,83 +1200,11 @@ export default function CharacterSheetPage() {
                                                             <span className={styles.expandArrow}>{isExpanded ? "▾" : "▸"}</span>
                                                         </div>
                                                     </div>
-                                                    {isExpanded && canEdit && (
-                                                        <div className={styles.abilityEditForm}>
-                                                            <input
-                                                                type="text"
-                                                                className={`input ${styles.abilityNameInput}`}
-                                                                value={ability.name}
-                                                                onChange={(e) => {
-                                                                    const arr = [...char.class_abilities];
-                                                                    arr[i] = { ...arr[i], name: e.target.value };
-                                                                    setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
-                                                                    quickSave("class_abilities", arr);
-                                                                }}
-                                                                placeholder="Nome abilità..."
-                                                            />
-                                                            <textarea
-                                                                className={`input ${styles.classAbilityDescInput}`}
-                                                                value={ability.description}
-                                                                onChange={(e) => {
-                                                                    const arr = [...char.class_abilities];
-                                                                    arr[i] = { ...arr[i], description: e.target.value };
-                                                                    setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
-                                                                    quickSave("class_abilities", arr);
-                                                                }}
-                                                                placeholder="Descrizione..."
-                                                                rows={2}
-                                                            />
-                                                            <div className={styles.classAbilityUsesRow}>
-                                                                <label className={styles.classAbilityUsesLabel}>
-                                                                    Usi max:
-                                                                    <input
-                                                                        type="text"
-                                                                        inputMode="decimal"
-                                                                        className={`input ${styles.tinyInput}`}
-                                                                        value={ability.max_uses ?? ""}
-                                                                        placeholder="∞"
-                                                                        onChange={(e) => {
-                                                                            const val = e.target.value ? parseInt(e.target.value) : null;
-                                                                            const arr = [...char.class_abilities];
-                                                                            arr[i] = { ...arr[i], max_uses: val, uses_remaining: val ?? 0 };
-                                                                            setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
-                                                                            quickSave("class_abilities", arr);
-                                                                        }}
-                                                                    />
-                                                                </label>
-                                                                <label className={styles.classAbilityUsesLabel}>
-                                                                    Ricarica:
-                                                                    <select
-                                                                        className={`input ${styles.smallInput}`}
-                                                                        value={ability.recharge}
-                                                                        onChange={(e) => {
-                                                                            const arr = [...char.class_abilities];
-                                                                            arr[i] = { ...arr[i], recharge: e.target.value };
-                                                                            setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
-                                                                            quickSave("class_abilities", arr);
-                                                                        }}
-                                                                    >
-                                                                        <option value="">Nessuna</option>
-                                                                        <option value="Riposo Breve">Rip. Breve</option>
-                                                                        <option value="Riposo Lungo">Rip. Lungo</option>
-                                                                    </select>
-                                                                </label>
-                                                                <button
-                                                                    type="button"
-                                                                    className={styles.deleteAbilityBtn}
-                                                                    onClick={() => {
-                                                                        const arr = char.class_abilities.filter((_, idx) => idx !== i);
-                                                                        setChar(p => p ? { ...p, class_abilities: arr } as Character : null);
-                                                                        quickSave("class_abilities", arr);
-                                                                        setExpandedAbility(null);
-                                                                    }}
-                                                                >🗑️ Elimina</button>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                    {isExpanded && !canEdit && (
+                                                    {isExpanded && (
                                                         <div className={styles.classAbilityDetail}>
-                                                            <p className={styles.classAbilityDesc}>{ability.description || <span className="text-muted">Nessuna descrizione.</span>}</p>
+                                                            <p className={styles.classAbilityDesc}>
+                                                                {ability.description || <span className="text-muted">Nessuna descrizione specificata.</span>}
+                                                            </p>
                                                         </div>
                                                     )}
                                                 </div>
@@ -1717,7 +1645,7 @@ export default function CharacterSheetPage() {
                                             <button type="button" className={styles.noteDeleteBtn} onClick={() => setNoteToDelete(i)}>🗑️</button>
                                         )}
                                     </div>
-                                    {canEdit ? (
+                                    {editing ? (
                                         <textarea
                                             className={`input ${styles.noteTextarea}`}
                                             value={note.text}
