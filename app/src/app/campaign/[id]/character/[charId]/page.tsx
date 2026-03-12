@@ -347,7 +347,7 @@ export default function CharacterSheetPage() {
                     is_party_member: !!data.is_party_member,
                 } as Character;
                 setChar(c);
-                setEditData(c);
+                if (!editing) setEditData(c);
 
                 // Also fetch campaign to get master_id
                 const { data: campData } = await supabase.from("campaigns").select("master_id").eq("id", data.campaign_id).single();
@@ -380,9 +380,9 @@ export default function CharacterSheetPage() {
     // Beforeunload to prevent data loss
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-            if (Object.keys(pendingQuickSaveRef.current).length > 0 || saving) {
+            if (Object.keys(pendingQuickSaveRef.current).length > 0 || saving || editing) {
                 e.preventDefault();
-                e.returnValue = "Ci sono salvataggi in corso. Sei sicuro di voler uscire?";
+                e.returnValue = "Hai delle modifiche non salvate. Sei sicuro di voler uscire?";
             }
         };
         window.addEventListener("beforeunload", handleBeforeUnload);

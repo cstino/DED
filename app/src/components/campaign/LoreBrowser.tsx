@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { supabase } from "@/lib/supabase";
@@ -42,6 +43,10 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
     const [isCreatingFolder, setIsCreatingFolder] = useState(false);
     const [newFolderName, setNewFolderName] = useState("");
     const [isUploading, setIsUploading] = useState(false);
+    const [isDraftLoaded, setIsDraftLoaded] = useState(false);
+
+    const params = useParams();
+    const campaignId = params?.id as string;
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const createTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -50,6 +55,39 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
     useEffect(() => {
         fetchTree();
     }, []);
+
+    // Persistence logic
+    useEffect(() => {
+        if (!campaignId) return;
+        const saved = localStorage.getItem(`magehand-lore-edit-${campaignId}`);
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                if (data.isCreating) setIsCreating(data.isCreating);
+                if (data.newName) setNewName(data.newName);
+                if (data.newContent) setNewContent(data.newContent);
+                if (data.isEditing) setIsEditing(data.isEditing);
+                if (data.selectedPath) setSelectedPath(data.selectedPath);
+                if (data.editContent) setEditContent(data.editContent);
+            } catch (e) {
+                console.error("Failed to load lore draft", e);
+            }
+        }
+        setIsDraftLoaded(true);
+    }, [campaignId]);
+
+    useEffect(() => {
+        if (!isDraftLoaded || !campaignId) return;
+        const draft = {
+            isCreating,
+            newName,
+            newContent,
+            isEditing,
+            selectedPath,
+            editContent
+        };
+        localStorage.setItem(`magehand-lore-edit-${campaignId}`, JSON.stringify(draft));
+    }, [isDraftLoaded, campaignId, isCreating, newName, newContent, isEditing, selectedPath, editContent]);
 
     useEffect(() => {
         if (selectedPath) {
@@ -101,6 +139,7 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                 setIsCreating(false);
                 setNewName("");
                 setNewContent("");
+                localStorage.removeItem(`magehand-lore-edit-${campaignId}`);
                 fetchTree();
             } else {
                 alert("Errore durante la creazione del file.");
@@ -124,6 +163,7 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
             if (res.ok) {
                 setIsEditing(false);
                 setContent(editContent);
+                localStorage.removeItem(`magehand-lore-edit-${campaignId}`);
             } else {
                 alert("Errore durante il salvataggio.");
             }
@@ -230,7 +270,7 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                 .getPublicUrl(filePath);
 
             const markdownImage = `\n![immagine](${publicUrl})\n`;
-            
+
             if (target === 'create') {
                 const textarea = createTextareaRef.current;
                 if (textarea) {
@@ -391,18 +431,18 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                         <div className={styles.formGroup}>
                             <label>Contenuto (Markdown supportato)</label>
                             <div className={styles.editorToolbar}>
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     className={styles.toolbarBtn}
                                     onClick={() => fileInputRef.current?.click()}
                                     disabled={isUploading}
                                 >
                                     {isUploading ? "📤 Caricamento..." : "🖼️ Inserisci Immagine"}
                                 </button>
-                                <input 
-                                    type="file" 
-                                    ref={fileInputRef} 
-                                    className={styles.hiddenInput} 
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    className={styles.hiddenInput}
                                     accept="image/*"
                                     onChange={(e) => handleImageUpload(e, 'create')}
                                 />
@@ -444,18 +484,18 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
                         ) : isEditing ? (
                             <div className={styles.editorWrapper}>
                                 <div className={styles.editorToolbar}>
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         className={styles.toolbarBtn}
                                         onClick={() => fileInputRef.current?.click()}
                                         disabled={isUploading}
                                     >
                                         {isUploading ? "📤 Caricamento..." : "🖼️ Inserisci Immagine"}
                                     </button>
-                                    <input 
-                                        type="file" 
-                                        ref={fileInputRef} 
-                                        className={styles.hiddenInput} 
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        className={styles.hiddenInput}
                                         accept="image/*"
                                         onChange={(e) => handleImageUpload(e, 'edit')}
                                     />

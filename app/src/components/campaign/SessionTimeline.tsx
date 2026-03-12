@@ -28,6 +28,38 @@ export function SessionTimeline({ campaignId, isMaster }: SessionTimelineProps) 
     const [newTitle, setNewTitle] = useState("");
     const [newNotes, setNewNotes] = useState("");
     const [newDate, setNewDate] = useState("");
+    const [isDraftLoaded, setIsDraftLoaded] = useState(false);
+
+    // Persistence logic
+    useEffect(() => {
+        if (!campaignId) return;
+        const saved = localStorage.getItem(`magehand-session-draft-${campaignId}`);
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                if (data.isCreating) setIsCreating(data.isCreating);
+                if (data.newNumber) setNewNumber(data.newNumber);
+                if (data.newTitle) setNewTitle(data.newTitle);
+                if (data.newNotes) setNewNotes(data.newNotes);
+                if (data.newDate) setNewDate(data.newDate);
+            } catch (e) {
+                console.error("Failed to load session draft", e);
+            }
+        }
+        setIsDraftLoaded(true);
+    }, [campaignId]);
+
+    useEffect(() => {
+        if (!isDraftLoaded || !campaignId) return;
+        const draft = {
+            isCreating,
+            newNumber,
+            newTitle,
+            newNotes,
+            newDate
+        };
+        localStorage.setItem(`magehand-session-draft-${campaignId}`, JSON.stringify(draft));
+    }, [isDraftLoaded, campaignId, isCreating, newNumber, newTitle, newNotes, newDate]);
 
     useEffect(() => {
         fetchSessions();
@@ -81,6 +113,7 @@ export function SessionTimeline({ campaignId, isMaster }: SessionTimelineProps) 
             setIsCreating(false);
             setNewTitle("");
             setNewNotes("");
+            localStorage.removeItem(`magehand-session-draft-${campaignId}`);
             setNewNumber(newNumber + 1);
         }
     }

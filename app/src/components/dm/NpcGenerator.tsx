@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import styles from "./NpcGenerator.module.css";
 
@@ -34,7 +34,7 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
     const [generated, setGenerated] = useState<GeneratedEntity | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
+    const [isDraftLoaded, setIsDraftLoaded] = useState(false);
     // Manual mode state
     const [manualData, setManualData] = useState<GeneratedEntity>({
         name: "", race: "", role: "", alignment: "Neutrale",
@@ -43,6 +43,50 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
         traits: [], actions: [], equipment: [], notes: "", challenge_rating: "1",
         is_party_member: false,
     });
+
+    // Persistence logic
+    useEffect(() => {
+        if (!campaignId) return;
+        const saved = localStorage.getItem(`magehand-npc-gen-${campaignId}`);
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                if (data.mode) setMode(data.mode);
+                if (data.entityType) setEntityType(data.entityType);
+                if (data.prompt) setPrompt(data.prompt);
+                if (data.manualData) setManualData(data.manualData);
+                if (data.generated) setGenerated(data.generated);
+            } catch (e) {
+                console.error("Failed to load NPC generator draft", e);
+            }
+        }
+        setIsDraftLoaded(true);
+    }, [campaignId]);
+
+    useEffect(() => {
+        if (!isDraftLoaded || !campaignId) return;
+        const draft = {
+            mode,
+            entityType,
+            prompt,
+            manualData,
+            generated
+        };
+        localStorage.setItem(`magehand-npc-gen-${campaignId}`, JSON.stringify(draft));
+    }, [isDraftLoaded, campaignId, mode, entityType, prompt, manualData, generated]);
+
+    // Beforeunload warning
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            const hasUnsavedContent = prompt.trim() !== "" || generated !== null || (mode === "manual" && manualData.name.trim() !== "");
+            if (hasUnsavedContent && !isSaving) {
+                e.preventDefault();
+                e.returnValue = "Hai delle modifiche non salvate nel generatore NPC. Sei sicuro di voler uscire?";
+            }
+        };
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    }, [prompt, generated, mode, manualData, isSaving]);
 
     const [portraitFile, setPortraitFile] = useState<File | null>(null);
     const [portraitPreview, setPortraitPreview] = useState<string | null>(null);
@@ -146,6 +190,7 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
 
             console.log("NPC/Monster saved successfully!");
             if (onSaved) onSaved();
+            localStorage.removeItem(`magehand-npc-gen-${campaignId}`);
             setGenerated(null);
             setPrompt("");
             setPortraitFile(null);
