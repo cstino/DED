@@ -225,7 +225,7 @@ export function SessionTimeline({ campaignId, isMaster }: SessionTimelineProps) 
 
                                 {session.notes ? (
                                     <div className={styles.sessionNotes}>
-                                        {session.notes.split('\n').map((paragraph, i) => (
+                                        {session.notes.split('\n').map((paragraph: string, i: number) => (
                                             <p key={i}>{paragraph}</p>
                                         ))}
                                     </div>

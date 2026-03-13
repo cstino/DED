@@ -42,7 +42,7 @@ export default function NpcList({ campaignId, refreshTrigger }: NpcListProps) {
                 .order('created_at', { ascending: false });
 
             if (!error && data) {
-                const mapped: SavedNpc[] = data.map(n => ({
+                const mapped: SavedNpc[] = data.map((n: any) => ({
                     id: n.id,
                     name: n.name,
                     race: n.race || "",

@@ -172,7 +172,7 @@ export default function NpcGenerator({ campaignId, onSaved }: NpcGeneratorProps)
                 traits: [
                     ...entity.traits,
                     { name: "Equipaggiamento", description: entity.equipment.join(", ") },
-                    ...entity.actions.map(a => ({ name: `Azione: ${a.name}`, description: a.description }))
+                    ...entity.actions.map((a: any) => ({ name: `Azione: ${a.name}`, description: a.description }))
                 ],
                 notes: entity.notes,
                 is_party_member: entity.is_party_member || false,

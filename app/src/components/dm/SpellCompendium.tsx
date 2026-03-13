@@ -155,12 +155,12 @@ export default function SpellCompendium() {
                 <div className={styles.filterRow}>
                     <select className={`input ${styles.filterSelect}`} value={schoolFilter} onChange={(e) => setSchoolFilter(e.target.value)}>
                         <option value="">Tutte le scuole</option>
-                        {SCHOOLS.map((s) => <option key={s} value={s}>{SCHOOL_IT[s]}</option>)}
+                        {SCHOOLS.map((s: string) => <option key={s} value={s}>{SCHOOL_IT[s]}</option>)}
                     </select>
 
                     <select className={`input ${styles.filterSelect}`} value={classFilter} onChange={(e) => setClassFilter(e.target.value)}>
                         <option value="">Tutte le classi</option>
-                        {CASTER_CLASSES.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+                        {CASTER_CLASSES.map((c: string) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
                     </select>
 
                     <button
@@ -192,7 +192,7 @@ export default function SpellCompendium() {
 
             {/* Spell List */}
             <div className={styles.spellList} style={{ maxHeight: '600px' }}>
-                {allSpells.map((spell) => {
+                {allSpells.map((spell: any) => {
                     const isExpanded = expandedId === spell.id;
                     return (
                         <div key={spell.id} className={styles.spellCard}>
