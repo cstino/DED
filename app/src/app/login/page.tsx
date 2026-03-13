@@ -33,7 +33,7 @@ function LoginForm() {
         }
 
         // Auto-redirect if already logged in
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        supabase?.auth.getSession().then(({ data: { session } }: any) => {
             if (session) {
                 router.push("/dashboard");
             }
