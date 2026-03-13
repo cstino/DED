@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Stage, Environment, ContactShadows, PerspectiveCamera } from "@react-three/drei";
 import { ModelViewer } from "@/components/campaign/ModelViewer";
+import { ArrowLeft, Plus, X, Menu } from "lucide-react";
 import styles from "./3d-test.module.css";
 import { useRouter, useParams } from "next/navigation";
 
@@ -20,26 +21,40 @@ const ANIMATIONS = [
 
 export default function ThreeDTestPage() {
     const [currentAnim, setCurrentAnim] = useState(0);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const router = useRouter();
     const params = useParams();
 
     return (
         <div className={styles.container}>
             <div className={styles.ui}>
-                <button className={styles.backBtn} onClick={() => router.back()}>← Torna Indietro</button>
+                <button className={styles.backBtn} onClick={() => router.back()}>
+                    <ArrowLeft size={28} />
+                </button>
                 <div className={styles.header}>
                     <h1>Camp 3D Preview</h1>
                     <p>Test delle animazioni del Forgiato</p>
                 </div>
+            </div>
 
-                <div className={styles.controls}>
-                    {ANIMATIONS.map((anim, i) => (
+            <div className={styles.menuContainer}>
+                <div className={`${styles.menuWrapper} ${isMenuOpen ? styles.isOpen : ""}`}>
+                    <button 
+                        className={styles.mainCircle}
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    >
+                        <Plus size={30} />
+                    </button>
+                    
+                    {ANIMATIONS.slice(0, 5).map((anim, i) => (
                         <button
                             key={i}
-                            className={`${styles.animBtn} ${currentAnim === i ? styles.active : ""}`}
-                            onClick={() => setCurrentAnim(i)}
+                            className={`${styles.subCircle} ${currentAnim === i ? styles.subCircleActive : ""}`}
+                            onClick={() => {
+                                setCurrentAnim(i);
+                            }}
                         >
-                            {anim.name}
+                            {i + 1}
                         </button>
                     ))}
                 </div>

@@ -26,7 +26,7 @@ export function ModelViewer({ url, animationIndex = 0 }: ModelViewerProps) {
 
     return (
         <group ref={group} dispose={null}>
-            <primitive object={scene} scale={1.75} position={[0, -2, 0]} />
+            <primitive object={scene} scale={1.3} position={[0, -1.2, 0]} />
         </group>
     );
 }

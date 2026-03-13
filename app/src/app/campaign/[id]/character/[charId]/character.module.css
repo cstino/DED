@@ -32,6 +32,7 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: var(--space-lg);
+    padding-top: 20px;
 }
 
 .backBtn {
@@ -235,7 +236,7 @@
     /* Force content to bottom */
     gap: 0;
     margin-bottom: var(--space-xl);
-    padding: var(--space-xl) var(--space-lg) 15px;
+    padding: calc(var(--space-xl) + 20px) var(--space-lg) 15px;
     height: 460px;
     background: #0a0b10;
     border: 1px solid var(--border-card);
