@@ -75,7 +75,7 @@ export default function CampaignPage() {
     const [loading, setLoading] = useState(true);
     const [slowLoading, setSlowLoading] = useState(false);
     const [copied, setCopied] = useState(false);
-    const [activeTab, setActiveTab] = useState<"party" | "sessions" | "lore" | "npcs" | "spells">("party");
+    const [activeTab, setActiveTab] = useState<"party" | "sessions" | "lore" | "npcs" | "spells" | "camp">("party");
     const [npcRefreshTrigger, setNpcRefreshTrigger] = useState(0);
 
     // Settings Drawer state
@@ -403,6 +403,12 @@ export default function CampaignPage() {
                         </button>
                     </>
                 )}
+                <button
+                    className={`${styles.tabBtn} ${activeTab === 'camp' ? styles.tabBtnActive : ''}`}
+                    onClick={() => setActiveTab('camp')}
+                >
+                    Accampamento
+                </button>
             </div>
 
             {activeTab === "party" && (
@@ -730,6 +736,22 @@ export default function CampaignPage() {
                     <SpellCompendium />
                 )
             }
+
+            {activeTab === "camp" && (
+                <div className={styles.campHero}>
+                    <div className={styles.campBadge}>✨ Feature in Anteprima</div>
+                    <h2>L'Accampamento 3D</h2>
+                    <p>Osserva i tuoi eroi in un ambiente tridimensionale interattivo. Carica modelli, visualizza animazioni e gestisci il party.</p>
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => router.push(`/campaign/${campaignId}/3d-test`)}
+                        style={{ padding: '12px 24px', fontSize: '1.1rem' }}
+                    >
+                        Entra nell'Accampamento
+                    </button>
+                    <div className={styles.campHint}>Supporto attuale: Modelli GLB Animati (Warforged Ready)</div>
+                </div>
+            )}
 
             {
                 activeTab === "npcs" && isMaster && (

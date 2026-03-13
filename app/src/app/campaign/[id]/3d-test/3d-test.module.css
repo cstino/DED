@@ -1,0 +1,110 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #1a1c2c 0%, #0a0b10 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    padding: var(--space-lg);
+    pointer-events: none;
+}
+
+.ui * {
+    pointer-events: auto;
+}
+
+.backBtn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-muted);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: var(--space-xl);
+}
+
+.backBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0.5));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header p {
+    color: var(--accent-teal);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.controls {
+    position: absolute;
+    bottom: var(--space-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 90%;
+    max-width: 600px;
+}
+
+.animBtn {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.animBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.animBtn.active {
+    background: var(--accent-teal-dim);
+    border-color: var(--accent-teal);
+    color: var(--accent-teal);
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.4rem;
+    }
+
+    .controls {
+        bottom: var(--space-lg);
+    }
+}
