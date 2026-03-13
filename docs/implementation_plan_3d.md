@@ -18,6 +18,22 @@ Sfrutteremo le librerie già presenti nel progetto:
 
 ---
 
+## 📊 Stato Attuale e Checkpoint
+- [x] **Setup Branch**: Creato branch dedicato `feature-3d-camp`.
+- [x] **Pianificazione**: Documento di implementazione redatto e condiviso.
+- [>] **Gestione Asset**: Caricati primi modelli `.glb` (Warforged) con diverse animazioni in `public/models/warforged`.
+- [ ] **Database**: Da eseguire comando SQL per colonna `model_3d_url`.
+- [ ] **Frontend**: Da creare componente Canvas e Viewer di base.
+
+---
+
+## 🚀 Azioni Compiute
+1. Creato branch `feature-3d-camp` per isolare lo sviluppo 3D.
+2. Predisposta cartella `app/public/models/warforged` per ospitare gli asset.
+3. Caricati 7 set di animazioni `.glb` in formato 8k (ottimizzati tramite Remesh).
+
+---
+
 ## 📋 Roadmap di Lavoro
 
 ### Fase 1: Aggiornamento Database (Supabase)
@@ -59,8 +75,8 @@ Per evitare rallentamenti:
 
 ## ⏭️ Prossimi Passi
 1. **Eseguire il comando SQL** su Supabase per aggiungere la colonna `model_3d_url`.
-2. **Generare un modello di test** su Meshy.ai in formato GLB.
-3. **Creare la pagina `/campaign/[id]/camp`** per iniziare i test di rendering.
+2. **Setup Canvas**: Creare una pagina di test (`/campaign/[id]/3d-test`) per renderizzare il primo modello animato.
+3. **Integrazione**: Implementare la navigazione tra i personaggi nella scena 3D.
 
 ---
 > [!TIP]
