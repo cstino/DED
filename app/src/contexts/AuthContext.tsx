@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         // 1. Get initial session
-        supabase.auth.getSession().then(async ({ data: { session } }) => {
+        supabase?.auth.getSession().then(async ({ data: { session } }: any) => {
             if (session?.user) {
                 setUser(session.user);
                 setSession(session);
@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     .catch(err => console.error("Error fetching initial profile:", err));
             }
             setLoading(false);
-        }).catch(err => {
+        }).catch((err: any) => {
             console.error("Critical error in getSession:", err);
             setLoading(false);
         });
@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // 2. Listen for auth changes
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+        } = supabase.auth.onAuthStateChange(async (event: any, currentSession: any) => {
             if (currentSession?.user) {
                 setUser(currentSession.user);
                 setSession(currentSession);
