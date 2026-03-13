@@ -7,22 +7,49 @@ import * as THREE from "three";
 interface ModelViewerProps {
     url: string;
     animationIndex?: number;
+    isDefault?: boolean;
+    onFinished?: () => void;
 }
 
-export function ModelViewer({ url, animationIndex = 0 }: ModelViewerProps) {
+export function ModelViewer({ url, animationIndex = 0, isDefault = false, onFinished }: ModelViewerProps) {
     const group = useRef<THREE.Group>(null);
     const { scene, animations } = useGLTF(url);
-    const { actions, names } = useAnimations(animations, group);
+    const { actions, names, mixer } = useAnimations(animations, group);
 
     useEffect(() => {
-        if (names.length > 0) {
-            const animationName = names[animationIndex] || names[0];
-            actions[animationName]?.reset().fadeIn(0.5).play();
+        if (!actions || names.length === 0) return;
+
+        const animationName = names[animationIndex] || names[0];
+        const action = actions[animationName];
+
+        if (action) {
+            Object.values(actions).forEach(a => a?.fadeOut(0.2));
+            
+            action.reset().fadeIn(0.4);
+            
+            if (!isDefault) {
+                action.setLoop(THREE.LoopOnce, 1);
+                action.clampWhenFinished = true;
+            } else {
+                action.setLoop(THREE.LoopRepeat, Infinity);
+            }
+
+            action.play();
+            
+            const handleFinished = (e: any) => {
+                if (e.action === action && onFinished) {
+                    onFinished();
+                }
+            };
+
+            mixer.addEventListener('finished', handleFinished);
+            
             return () => {
-                actions[animationName]?.fadeOut(0.5);
+                action.fadeOut(0.4);
+                mixer.removeEventListener('finished', handleFinished);
             };
         }
-    }, [actions, names, animationIndex]);
+    }, [actions, names, animationIndex, url, isDefault, onFinished, mixer]);
 
     return (
         <group ref={group} dispose={null}>

@@ -31,31 +31,38 @@ Sfrutteremo le librerie già presenti nel progetto:
 1. Creato branch `feature-3d-camp` per isolare lo sviluppo 3D.
 2. Predisposta cartella `app/public/model/warforged` per ospitare gli asset.
 3. Caricato set di 8 animazioni (Walking, Running, Boxing, Crouch, etc.) in formato `.glb`.
-4. Implementato componente `ModelViewer.tsx` con supporto a `useAnimations`.
 5. Creata pagina di test `3d-test/page.tsx` con selettore di animazioni UI.
-6. Affinata la posizione del modello e bloccato lo zoom nel viewer per una visualizzazione più stabile.
-7. Ridotta leggermente la scala del modello (da 2.0 a 1.75) per un miglior fit sugli schermi mobile.
+6. Implementato menu a ventaglio (radial menu) per le animazioni con stile premium.
+7. Affinata la posizione del modello e bloccato lo zoom nel viewer per una visualizzazione più stabile.
+8. Ottimizzata la scala (1.3) e la posizione verticale (-1.2) per un bilanciamento ideale su mobile.
+9. Ridisegnato il tasto "Torna Indietro" come una freccia (ArrowLeft) minimale, abbassandolo (+20px offset) per evitare l'area notch/status bar.
+10. Aggiunto tasto menu (hamburger) in alto a destra per accedere alla gestione animazioni.
+11. Implementato Side Menu "Equipaggiamento" per selezionare fino a 5 animazioni attive.
 
 ---
 
 ## 📋 Roadmap di Lavoro
 
 ### Fase 1: Aggiornamento Database (Supabase)
-Dobbiamo aggiungere un campo per salvare il link al modello 3D generato.
-- **Azione**: Aggiungere la colonna `model_3d_url` (tipo `TEXT`) alla tabella `characters`.
-- **Comando SQL**:
-  ```sql
-  ALTER TABLE characters ADD COLUMN model_3d_url TEXT;
-  ```
+Dobbiamo aggiungere un campo per salvare il link al modello 3D generato e le preferenze delle animazioni.
+- [ ] **Azione**: Aggiungere la colonna `model_3d_url` (tipo `TEXT`) alla tabella `characters`.
+- [ ] **Azione**: Aggiungere la colonna `selected_animations` (tipo `JSONB` o `INT[]`) per salvare i 5 slot scelti.
 
-### Fase 2: Gestione Asset (Meshy.ai)
-I modelli dovranno essere esportati in formato **.GLB** (il formato standard per il web, che include mesh, texture e animazioni in un unico file).
-- **Consiglio**: Usare modelli a bassa densità poligonale (Low Poly) o ottimizzati per mantenere l'app veloce.
+### Fase 2: Integrazione "Camp" Principale
+- [ ] **Sostituzione**: Sostituire l'immagine statica del personaggio nel Camp con il componente `ModelViewer`.
+- [ ] **Navigazione**: Implementare lo swipe tra i personaggi del party (se presenti).
 
-### Fase 3: Architettura Frontend
+### Fase 3: Logica di Equipaggiamento Animazioni
+- [x] **UI**: Creare il menu laterale per la scelta delle 5 animazioni.
+- [x] **Logica**: Aggiornare il menu a ventaglio per mostrare solo le animazioni "equipaggiate".
+- [ ] **Persistenza**: Salvare la selezione su Supabase.
+
+### Fase 4: Architettura Frontend
 1. **Componente `Camp3D`**: Un nuovo modulo che ospiterà il `Canvas` di Three.js.
 2. **Componente `ModelViewer`**: Gestirà il caricamento del file `.glb` usando `useGLTF`.
-3. **Navigazione**: Sistema di swipe (simile alla galleria portrait) per cambiare il personaggio visualizzato nel Canvas.
+3. **Menu Radiale**: Interfaccia a ventaglio per attivare le 5 animazioni "equipaggiate".
+4. **Gestione Animazioni**: Sezione nel menu laterale (side menu) per scegliere quali 5 animazioni visualizzare nel menu rapido.
+5. **Navigazione**: Sistema di swipe per cambiare il personaggio visualizzato nel Canvas.
 
 ### Fase 4: Esperienza Utente (UX)
 - **Sfondo**: Un gradiente scuro o un effetto "Nebbia" per dare profondità senza appesantire il rendering.

@@ -67,6 +67,9 @@
 
   /* Bottom nav height */
   --bottom-nav-height: 72px;
+
+  /* Safe Area Offsets */
+  --safe-top: calc(env(safe-area-inset-top, 0px) + 32px);
 }
 
 /* ---------- Reset & Base ---------- */

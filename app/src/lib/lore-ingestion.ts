@@ -1,11 +1,14 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const geminiKeys = (process.env.GOOGLE_GENERATIVE_AI_API_KEY || "").split(',').map(k => k.trim()).filter(Boolean);
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const getSupabase = () => {
+    return createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+};
 
 const CHUNK_SIZE = 3000;
 const CHUNK_OVERLAP = 300;
@@ -47,6 +50,7 @@ export async function reindexFile(relativePath: string, content: string) {
     const cleanText = content.replace(/\n+/g, '\n').replace(/\s+/g, ' ').trim();
     if (!cleanText) {
         // If empty, just remove existing chunks
+        const supabase = getSupabase();
         await supabase.from('document_chunks').delete().eq('document_name', relativePath);
         return;
     }
@@ -70,6 +74,7 @@ export async function reindexFile(relativePath: string, content: string) {
 
     // 3. Update database (Delete old chunks and insert new ones in a pseudo-transaction)
     // We do delete first
+    const supabase = getSupabase();
     const { error: deleteError } = await supabase
         .from('document_chunks')
         .delete()

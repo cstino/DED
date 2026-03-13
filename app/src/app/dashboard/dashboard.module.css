@@ -126,8 +126,13 @@
     position: relative;
     z-index: 3;
     padding: var(--space-md);
-    transform: translateY(12px);
     transition: transform 0.4s ease;
+}
+
+@media (hover: hover) {
+    .cardContent {
+        transform: translateY(12px);
+    }
 }
 
 @media (hover: hover) {
@@ -153,8 +158,13 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-bottom: var(--space-sm);
-    opacity: 0;
     transition: opacity 0.3s ease 0.1s;
+}
+
+@media (hover: hover) {
+    .cardDesc {
+        opacity: 0;
+    }
 }
 
 @media (hover: hover) {

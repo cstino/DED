@@ -120,7 +120,7 @@ export default function CampaignPage() {
                         .select("user_id, role, profiles(username, avatar_url)")
                         .eq("campaign_id", campaignId),
                     supabase.from("npcs").select("*").eq("campaign_id", campaignId).eq("is_party_member", true).then(
-                        (res) => res,
+                        (res: any) => res,
                         (err: any) => ({ data: [], error: err })
                     ),
                 ]);
@@ -401,14 +401,14 @@ export default function CampaignPage() {
                         >
                             NPCs
                         </button>
+                        <button
+                            className={`${styles.tabBtn} ${activeTab === 'camp' ? styles.tabBtnActive : ''}`}
+                            onClick={() => setActiveTab('camp')}
+                        >
+                            Accampamento
+                        </button>
                     </>
                 )}
-                <button
-                    className={`${styles.tabBtn} ${activeTab === 'camp' ? styles.tabBtnActive : ''}`}
-                    onClick={() => setActiveTab('camp')}
-                >
-                    Accampamento
-                </button>
             </div>
 
             {activeTab === "party" && (
@@ -737,7 +737,7 @@ export default function CampaignPage() {
                 )
             }
 
-            {activeTab === "camp" && (
+            {activeTab === "camp" && isMaster && (
                 <div className={styles.campHero}>
                     <div className={styles.campBadge}>✨ Feature in Anteprima</div>
                     <h2>L'Accampamento 3D</h2>

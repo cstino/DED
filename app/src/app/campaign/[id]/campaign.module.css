@@ -60,7 +60,7 @@
 .heroHeader {
     position: relative;
     margin: calc(var(--space-lg) * -1) calc(var(--space-lg) * -1) var(--space-xl);
-    padding: calc(var(--space-xl) + 20px) var(--space-lg) var(--space-lg);
+    padding: var(--safe-top) var(--space-lg) var(--space-lg);
     min-height: 240px;
     display: flex;
     flex-direction: column;
@@ -102,7 +102,7 @@
 
 .editCoverBtn {
     position: absolute;
-    top: calc(var(--space-lg) + 20px);
+    top: var(--safe-top);
     right: var(--space-lg);
     z-index: 10;
     background: rgba(0, 0, 0, 0.5);
@@ -637,7 +637,7 @@
 }
 
 .drawerHeader {
-    padding: var(--space-xl) var(--space-lg) var(--space-md);
+    padding: var(--safe-top) var(--space-lg) var(--space-md);
     display: flex;
     align-items: center;
     justify-content: space-between;

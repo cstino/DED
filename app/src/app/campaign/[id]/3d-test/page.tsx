@@ -8,32 +8,92 @@ import { ArrowLeft, Plus, X, Menu } from "lucide-react";
 import styles from "./3d-test.module.css";
 import { useRouter, useParams } from "next/navigation";
 
-const ANIMATIONS = [
-    { name: "Respiro", file: "/model/warforged/Meshy_AI_Animation_Short_Breathe_and_Look_Around_withSkin.glb" },
-    { name: "Cammina", file: "/model/warforged/Meshy_AI_Animation_Walking_withSkin.glb" },
-    { name: "Corsa", file: "/model/warforged/Meshy_AI_Animation_Running_withSkin.glb" },
-    { name: "Salto", file: "/model/warforged/Meshy_AI_Animation_Basic_Jump_withSkin.glb" },
-    { name: "Boxe", file: "/model/warforged/Meshy_AI_Animation_Boxing_Practice_withSkin.glb" },
-    { name: "Crouch", file: "/model/warforged/Meshy_AI_Animation_CrouchLookAroundBow_withSkin.glb" },
-    { name: "Swing", file: "/model/warforged/Meshy_AI_Animation_Indoor_Swing_withSkin.glb" },
-    { name: "Skill", file: "/model/warforged/Meshy_AI_Animation_Skill_03_withSkin.glb" },
+const CHARACTERS = [
+    {
+        id: "warforged",
+        name: "Forgiato",
+        animations: [
+            { name: "Respiro", file: "/model/warforged/Meshy_AI_Animation_Short_Breathe_and_Look_Around_withSkin.glb" },
+            { name: "Cammina", file: "/model/warforged/Meshy_AI_Animation_Walking_withSkin.glb" },
+            { name: "Corsa", file: "/model/warforged/Meshy_AI_Animation_Running_withSkin.glb" },
+            { name: "Salto", file: "/model/warforged/Meshy_AI_Animation_Basic_Jump_withSkin.glb" },
+            { name: "Boxe", file: "/model/warforged/Meshy_AI_Animation_Boxing_Practice_withSkin.glb" },
+            { name: "Crouch", file: "/model/warforged/Meshy_AI_Animation_CrouchLookAroundBow_withSkin.glb" },
+            { name: "Swing", file: "/model/warforged/Meshy_AI_Animation_Indoor_Swing_withSkin.glb" },
+            { name: "Skill", file: "/model/warforged/Meshy_AI_Animation_Skill_03_withSkin.glb" },
+        ]
+    },
+    {
+        id: "vaelion",
+        name: "Vaelion",
+        animations: [
+            { name: "Respiro", file: "/model/Vaelion/Meshy_AI_Animation_Short_Breathe_and_Look_Around_withSkin.glb" },
+            { name: "Idle", file: "/model/Vaelion/Meshy_AI_Animation_Female_Walk_Pick_Put_In_Pocket_withSkin.glb" },
+            { name: "Cammina", file: "/model/Vaelion/Meshy_AI_Animation_Walking_withSkin.glb" },
+            { name: "Corsa", file: "/model/Vaelion/Meshy_AI_Animation_Running_withSkin.glb" },
+            { name: "Punch", file: "/model/Vaelion/Meshy_AI_Animation_Punch_Combo_withSkin.glb" },
+            { name: "Dance", file: "/model/Vaelion/Meshy_AI_Animation_Denim_Pop_Dance_withSkin.glb" },
+            { name: "Depressed", file: "/model/Vaelion/Meshy_AI_Animation_Depressed_Full_Turn_Left_withSkin.glb" },
+        ]
+    }
 ];
 
 export default function ThreeDTestPage() {
-    const [currentAnim, setCurrentAnim] = useState(0);
+    const [currentCharIdx, setCurrentCharIdx] = useState(0);
+    const [currentAnim, setCurrentAnim] = useState(0); 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+    
+    // Manteniamo le selezioni per ogni personaggio
+    const [selections, setSelections] = useState<Record<string, number[]>>({
+        warforged: [1, 2, 3, 4, 5],
+        vaelion: [1, 2, 3, 4, 5]
+    });
+
+    const activeChar = CHARACTERS[currentCharIdx];
+    const selectedAnims = selections[activeChar.id] || [];
     const router = useRouter();
-    const params = useParams();
+
+    const toggleAnimInSelection = (index: number) => {
+        const currentSelection = selections[activeChar.id];
+        if (currentSelection.includes(index)) {
+            if (currentSelection.length > 1) {
+                setSelections({
+                    ...selections,
+                    [activeChar.id]: currentSelection.filter(i => i !== index)
+                });
+            }
+        } else {
+            if (currentSelection.length < 5) {
+                setSelections({
+                    ...selections,
+                    [activeChar.id]: [...currentSelection, index].sort((a, b) => a - b)
+                });
+            }
+        }
+    };
 
     return (
         <div className={styles.container}>
             <div className={styles.ui}>
-                <button className={styles.backBtn} onClick={() => router.back()}>
-                    <ArrowLeft size={28} />
-                </button>
+                <div className={styles.topRow}>
+                    <button className={styles.backBtn} onClick={() => router.back()}>
+                        <ArrowLeft size={28} />
+                    </button>
+                    <button className={styles.settingsBtn} onClick={() => setIsSideMenuOpen(true)}>
+                        <Menu size={28} />
+                    </button>
+                </div>
                 <div className={styles.header}>
-                    <h1>Camp 3D Preview</h1>
-                    <p>Test delle animazioni del Forgiato</p>
+                    <div className={styles.logoWrapper}>
+                        <span className={styles.mageText}>
+                            MAGEHAN
+                            <span className={styles.letterD}>
+                                D
+                                <span className={styles.labBadge}>3D LAB</span>
+                            </span>
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -46,12 +106,12 @@ export default function ThreeDTestPage() {
                         <Plus size={30} />
                     </button>
                     
-                    {ANIMATIONS.slice(0, 5).map((anim, i) => (
+                    {selectedAnims.map((animIdx, i) => (
                         <button
                             key={i}
-                            className={`${styles.subCircle} ${currentAnim === i ? styles.subCircleActive : ""}`}
+                            className={`${styles.subCircle} ${currentAnim === animIdx ? styles.subCircleActive : ""}`}
                             onClick={() => {
-                                setCurrentAnim(i);
+                                setCurrentAnim(animIdx);
                             }}
                         >
                             {i + 1}
@@ -67,7 +127,12 @@ export default function ThreeDTestPage() {
                 <pointLight position={[-10, -10, -10]} intensity={1} color="#4455ff" />
 
                 <Suspense fallback={null}>
-                    <ModelViewer url={ANIMATIONS[currentAnim].file} />
+                    <ModelViewer 
+                        key={`${activeChar.id}-${currentAnim}`} 
+                        url={activeChar.animations[currentAnim].file} 
+                        isDefault={currentAnim === 0}
+                        onFinished={() => setCurrentAnim(0)}
+                    />
                     <ContactShadows opacity={0.6} scale={10} blur={2.5} far={10} resolution={256} color="#000000" />
                     <Environment preset="night" />
                 </Suspense>
@@ -80,6 +145,77 @@ export default function ThreeDTestPage() {
                     makeDefault
                 />
             </Canvas>
+
+            {/* Side Menu per selezione animazioni */}
+            {isSideMenuOpen && (
+                <div className={styles.drawerOverlay} onClick={() => setIsSideMenuOpen(false)}>
+                    <div className={styles.drawer} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.drawerHeader}>
+                            <h2>Equipaggiamento</h2>
+                            <button className={styles.closeBtn} onClick={() => setIsSideMenuOpen(false)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div className={styles.drawerContent}>
+                            <section className={styles.drawerSection}>
+                                <h3>Cambia Personaggio</h3>
+                                <div className={styles.charSwitchGrid}>
+                                    {CHARACTERS.map((char, idx) => (
+                                        <button 
+                                            key={char.id}
+                                            className={`${styles.charTab} ${currentCharIdx === idx ? styles.charTabActive : ""}`}
+                                            onClick={() => {
+                                                setCurrentCharIdx(idx);
+                                                setCurrentAnim(0);
+                                                setIsMenuOpen(false);
+                                            }}
+                                        >
+                                            {char.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <section className={styles.drawerSection}>
+                                <h3>Equipaggiamento Animazioni</h3>
+                                <p className={styles.drawerInfo}>
+                                    Seleziona fino a 5 animazioni per {activeChar.name}.
+                                </p>
+                                <div className={styles.animList}>
+                                    {activeChar.animations.map((anim, idx) => {
+                                        if (idx === 0) return null;
+
+                                        const slotIndex = selectedAnims.indexOf(idx);
+                                        const isSelected = slotIndex !== -1;
+                                        return (
+                                            <button 
+                                                key={idx}
+                                                className={`${styles.animItem} ${isSelected ? styles.animItemSelected : ""}`}
+                                                onClick={() => toggleAnimInSelection(idx)}
+                                                disabled={!isSelected && selectedAnims.length >= 5}
+                                            >
+                                                <div className={styles.animItemLeft}>
+                                                    <div className={styles.animName}>{anim.name}</div>
+                                                    {!isSelected && (
+                                                        <div className={styles.animStatus}>
+                                                            Disponibile
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                {isSelected && (
+                                                    <div className={styles.slotBadge}>
+                                                        {slotIndex + 1}
+                                                    </div>
+                                                )}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className={styles.overlay} />
         </div>
