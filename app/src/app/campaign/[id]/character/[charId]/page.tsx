@@ -11,6 +11,13 @@ import EquipmentManager, {
     type EquipmentItem,
 } from "@/components/character/EquipmentManager";
 import SpellBrowser from "@/components/character/SpellBrowser";
+import {
+    ChevronLeft,
+    ChevronRight,
+    Star,
+    Upload,
+    X,
+} from "lucide-react";
 import styles from "./character.module.css";
 
 interface AbilityScores {
@@ -64,6 +71,7 @@ interface Character {
     hit_die: number;
     proficiency_bonus: number;
     is_party_member: boolean;
+    gallery: string[];
 }
 
 const ABILITIES = [
@@ -245,6 +253,151 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
                 );
             })}
         </div>
+    );
+}
+
+function PortraitGallery({
+    isOpen,
+    onClose,
+    gallery,
+    currentUrl,
+    onSetPrimary,
+    onDelete,
+    onUpload,
+    isUploading,
+    canEdit
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    gallery: string[];
+    currentUrl: string | null;
+    onSetPrimary: (url: string) => void;
+    onDelete: (url: string) => void;
+    onUpload: (file: File) => void;
+    isUploading: boolean;
+    canEdit: boolean;
+}) {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+
+    const images = gallery && gallery.length > 0 ? gallery : (currentUrl ? [currentUrl] : []);
+
+    useEffect(() => {
+        if (isOpen) {
+            const idx = images.indexOf(currentUrl || "");
+            setCurrentIndex(idx >= 0 ? idx : 0);
+        }
+    }, [isOpen, currentUrl, images]);
+
+    if (!isOpen) return null;
+
+    const next = (e?: React.MouseEvent) => {
+        e?.stopPropagation();
+        setCurrentIndex((p) => (p + 1) % images.length);
+    };
+    const prev = (e?: React.MouseEvent) => {
+        e?.stopPropagation();
+        setCurrentIndex((p) => (p - 1 + images.length) % images.length);
+    };
+
+    const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.targetTouches[0].clientX);
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (touchStart === null) return;
+        const delta = e.changedTouches[0].clientX - touchStart;
+        if (delta > 50) prev();
+        else if (delta < -50) next();
+        setTouchStart(null);
+    };
+
+    const currentImage = images[currentIndex];
+    const isPrimary = currentImage === currentUrl;
+
+    return createPortal(
+        <div className={styles.portraitFullOverlay} onClick={onClose}>
+            <button className={styles.portraitFullClose} onClick={(e) => { e.stopPropagation(); onClose(); }}>
+                <X size={24} />
+            </button>
+
+            <div className={styles.galleryContainer} onClick={(e) => e.stopPropagation()}>
+                {/* Controls Overlay */}
+                <div className={styles.galleryControls}>
+                    {currentImage && (
+                        <button
+                            className={`${styles.primaryCheck} ${isPrimary ? styles.primaryCheckActive : ""}`}
+                            onClick={() => onSetPrimary(currentImage)}
+                            disabled={!canEdit || isPrimary}
+                        >
+                            <Star size={18} fill={isPrimary ? "currentColor" : "none"} />
+                            {isPrimary ? "Immagine Principale" : "Imposta come Principale"}
+                        </button>
+                    )}
+
+                    <div className={styles.galleryActions}>
+                        {canEdit && images.length < 5 && (
+                            <label className={styles.galleryActionBtn}>
+                                <Upload size={18} />
+                                {isUploading ? "Caricamento..." : "Aggiungi Foto"}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    style={{ display: "none" }}
+                                    onChange={(e) => {
+                                        if (e.target.files?.[0]) onUpload(e.target.files[0]);
+                                    }}
+                                    disabled={isUploading}
+                                />
+                            </label>
+                        )}
+                        {canEdit && currentImage && !isPrimary && (
+                            <button
+                                className={`${styles.galleryActionBtn} ${styles.galleryActionDelete}`}
+                                onClick={() => onDelete(currentImage)}
+                            >
+                                <X size={18} /> Elimina
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* Slides */}
+                <div className={styles.gallerySlidesWrapper}>
+                    {images.map((img, i) => (
+                        <div
+                            key={img + i}
+                            className={`${styles.gallerySlide} ${i === currentIndex ? styles.gallerySlideActive : ""}`}
+                            style={{ transform: `translateX(${(i - currentIndex) * 100}%)` }}
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
+                        >
+                            <img src={img} alt="" className={styles.galleryImage} />
+                        </div>
+                    ))}
+                </div>
+
+                {/* Navigation */}
+                {images.length > 1 && (
+                    <>
+                        <button className={`${styles.galleryNav} ${styles.galleryPrev}`} onClick={prev}>
+                            <ChevronLeft size={32} />
+                        </button>
+                        <button className={`${styles.galleryNav} ${styles.galleryNext}`} onClick={next}>
+                            <ChevronRight size={32} />
+                        </button>
+
+                        <div className={styles.galleryDots}>
+                            {images.map((_, i) => (
+                                <div
+                                    key={i}
+                                    className={`${styles.galleryDot} ${i === currentIndex ? styles.galleryDotActive : ""}`}
+                                    onClick={(e) => { e.stopPropagation(); setCurrentIndex(i); }}
+                                />
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>,
+        document.body
     );
 }
 
@@ -494,6 +647,7 @@ export default function CharacterSheetPage() {
                     languages: d.languages,
                     class_abilities: d.class_abilities,
                     portrait_url: newPortraitUrl,
+                    gallery: d.gallery || [],
                 }).eq("id", char.id).select().single()),
                 10000
             );
@@ -526,6 +680,7 @@ export default function CharacterSheetPage() {
                     class_abilities: Array.isArray(updatedChar.class_abilities) ? updatedChar.class_abilities : [],
                     hit_die: updatedChar.hit_die ?? 8,
                     proficiency_bonus: updatedChar.proficiency_bonus ?? Math.ceil((updatedChar.level || 1) / 4) + 1,
+                    gallery: updatedChar.gallery || [],
                 } as Character;
                 setChar(c);
                 setEditData(c);
@@ -901,6 +1056,55 @@ export default function CharacterSheetPage() {
                             <span className={styles.hpValue}>{char.hp_current}/{char.hp_max}</span>
                         )}
                     </div>
+                    {/* Portrait Gallery Overlay */}
+                    <PortraitGallery
+                        isOpen={showPortraitFull}
+                        onClose={() => setShowPortraitFull(false)}
+                        gallery={char.gallery || []}
+                        currentUrl={char.portrait_url}
+                        canEdit={canEdit}
+                        isUploading={saving}
+                        onSetPrimary={(url) => {
+                            setChar(p => p ? { ...p, portrait_url: url } as Character : null);
+                            quickSave("portrait_url", url);
+                        }}
+                        onDelete={(url) => {
+                            const newGallery = (char.gallery || []).filter(g => g !== url);
+                            setChar(p => p ? { ...p, gallery: newGallery } as Character : null);
+                            quickSave("gallery", newGallery);
+                            // If deleted the current primary, pick another or set null
+                            if (char.portrait_url === url) {
+                                const nextPrimary = newGallery.length > 0 ? newGallery[0] : null;
+                                quickSave("portrait_url", nextPrimary);
+                            }
+                        }}
+                        onUpload={async (file) => {
+                            if (!char) return;
+                            setSaving(true);
+                            try {
+                                const ext = file.name.split(".").pop();
+                                const ts = Date.now();
+                                const path = `portraits/${user!.id}/gallery_${ts}.${ext}`;
+                                const { error: uploadError } = await supabase.storage.from("character-portraits").upload(path, file);
+
+                                if (!uploadError) {
+                                    const { data: urlData } = supabase.storage.from("character-portraits").getPublicUrl(path);
+                                    const newUrl = urlData.publicUrl;
+                                    const newGallery = [...(char.gallery || []), newUrl];
+                                    setChar(p => p ? { ...p, gallery: newGallery } as Character : null);
+                                    quickSave("gallery", newGallery);
+
+                                    // If no primary yet, set this as primary
+                                    if (!char.portrait_url) {
+                                        quickSave("portrait_url", newUrl);
+                                        setChar(p => p ? { ...p, portrait_url: newUrl } as Character : null);
+                                    }
+                                }
+                            } finally {
+                                setSaving(false);
+                            }
+                        }}
+                    />
                     <div className="hp-bar-container" style={{ height: 8 }}>
                         <div className="hp-bar" style={{
                             width: `${hpPercent}%`,

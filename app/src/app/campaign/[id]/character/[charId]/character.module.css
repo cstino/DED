@@ -237,7 +237,7 @@
     margin-bottom: var(--space-xl);
     padding: var(--space-xl) var(--space-lg) 15px;
     /* 15px bottom padding */
-    height: 420px;
+    height: 460px;
     /* Fixed height to ensure art is visible and info stays bottom */
     background: #0a0b10;
     border: 1px solid var(--border-card);
@@ -259,7 +259,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: top;
+    object-position: center 15%;
     opacity: 0.6;
     z-index: 1;
     transition: transform 0.8s ease;
@@ -499,6 +499,190 @@
     height: auto !important;
     object-fit: contain;
     border-radius: var(--radius-lg);
+}
+
+/* Gallery Styles */
+.galleryContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: default;
+}
+
+.gallerySlidesWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallerySlide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.gallerySlideActive {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.galleryImage {
+    max-width: 90vw;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+    pointer-events: auto;
+}
+
+.galleryNav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.2s;
+}
+
+@media (max-width: 768px) {
+    .galleryNav {
+        display: none; /* Hide arrows on mobile, use swipe */
+    }
+}
+
+.galleryNav:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.galleryPrev {
+    left: 20px;
+}
+
+.galleryNext {
+    right: 20px;
+}
+
+.galleryDots {
+    position: absolute;
+    bottom: 30px;
+    display: flex;
+    gap: 12px;
+    z-index: 100;
+}
+
+.galleryDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.galleryDotActive {
+    background: var(--accent-teal);
+    transform: scale(1.4);
+    box-shadow: 0 0 15px var(--accent-teal);
+}
+
+.galleryControls {
+    position: absolute;
+    top: calc(20px + env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    z-index: 100;
+    width: 100%;
+}
+
+.galleryActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.primaryCheck {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(0, 229, 160, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.primaryCheckActive {
+    background: var(--accent-teal);
+    color: #111;
+    border-color: transparent;
+    box-shadow: 0 0 20px rgba(0, 229, 160, 0.4);
+}
+
+.galleryActionBtn {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.galleryActionBtn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.galleryActionDelete {
+    color: #ff4d4d;
+    border-color: rgba(255, 77, 77, 0.2);
+}
+
+.galleryActionDelete:hover {
+    background: rgba(255, 77, 77, 0.2);
+    border-color: #ff4d4d;
 }
 
 .charInfo {
