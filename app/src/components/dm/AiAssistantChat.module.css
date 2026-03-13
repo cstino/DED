@@ -294,6 +294,10 @@
         border-radius: 0;
     }
 
+    .header {
+        padding-top: calc(var(--space-md) + env(safe-area-inset-top, 0px));
+    }
+
     .fab {
         bottom: 5rem;
         /* Above bottom nav */

@@ -32,36 +32,28 @@
 }
 
 .backBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs);
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: none;
+    border: none;
     color: rgba(255, 255, 255, 0.8);
-    font-family: inherit;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
     cursor: pointer;
-    padding: 4px 12px;
-    border-radius: var(--radius-md);
+    padding: 8px;
     margin-bottom: var(--space-md);
     transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (hover: hover) {
     .backBtn:hover {
-        background: rgba(0, 0, 0, 0.5);
         color: #fff;
-        border-color: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
     }
 }
 
 @media (max-width: 768px) {
     .backBtn {
-        display: none;
+        padding: 4px;
     }
 }
 
@@ -390,7 +382,7 @@
 .hpLabel {
     font-size: 0.7rem;
     font-weight: 800;
-    color: var(--text-muted);
+    color: var(--accent-teal);
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
@@ -445,7 +437,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--text-muted);
+    color: var(--accent-teal);
     margin-bottom: 2px;
 }
 
@@ -738,24 +730,20 @@
 }
 
 .settingsTrigger {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
 }
 
 @media (hover: hover) {
     .settingsTrigger:hover {
-        background: var(--accent-teal-dim);
-        border-color: var(--accent-teal);
-        transform: scale(1.05);
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 8px var(--accent-teal));
     }
 }
 

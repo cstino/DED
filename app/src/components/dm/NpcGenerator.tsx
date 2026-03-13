@@ -584,11 +584,11 @@ function ManualForm({
             <div className={styles.manualRow}>
                 <div className={styles.manualField} style={{ maxWidth: 100 }}>
                     <label>HP</label>
-                    <input type="number" value={data.hp} onChange={(e) => setData({ ...data, hp: parseInt(e.target.value) || 0 })} />
+                    <input type="text" value={data.hp} onChange={(e) => setData({ ...data, hp: parseInt(e.target.value) || 0 })} />
                 </div>
                 <div className={styles.manualField} style={{ maxWidth: 100 }}>
                     <label>AC</label>
-                    <input type="number" value={data.ac} onChange={(e) => setData({ ...data, ac: parseInt(e.target.value) || 0 })} />
+                    <input type="text" value={data.ac} onChange={(e) => setData({ ...data, ac: parseInt(e.target.value) || 0 })} />
                 </div>
                 {entityType === 'npc' && (
                     <div className={styles.manualField} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '24px' }}>
@@ -613,8 +613,7 @@ function ManualForm({
                     <div key={stat} className={styles.manualStatItem}>
                         <label>{stat.toUpperCase()}</label>
                         <input
-                            type="number"
-                            min={1} max={30}
+                            type="text"
                             value={data.stats[stat]}
                             onChange={(e) => updateStat(stat, parseInt(e.target.value) || 10)}
                         />

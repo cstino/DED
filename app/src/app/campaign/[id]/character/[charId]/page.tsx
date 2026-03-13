@@ -884,13 +884,13 @@ export default function CharacterSheetPage() {
                         <span className={styles.statLabel}>HP</span>
                         {editing ? (
                             <div className={styles.hpEditRow}>
-                                <input type="text" inputMode="decimal" className={styles.smallInput} value={editData.hp_current ?? ""} onChange={(e) => upd("hp_current", parsePartialInt(e.target.value, editData.hp_current ?? 0) as number)} />
+                                <input type="text" inputMode="text" className={styles.smallInput} value={editData.hp_current ?? ""} onChange={(e) => upd("hp_current", parsePartialInt(e.target.value, editData.hp_current ?? 0) as number)} />
                                 <span>/</span>
-                                <input type="text" inputMode="decimal" className={styles.smallInput} value={editData.hp_max ?? ""} onChange={(e) => upd("hp_max", parsePartialInt(e.target.value, editData.hp_max ?? 1) as number)} />
+                                <input type="text" inputMode="text" className={styles.smallInput} value={editData.hp_max ?? ""} onChange={(e) => upd("hp_max", parsePartialInt(e.target.value, editData.hp_max ?? 1) as number)} />
                             </div>
                         ) : canEdit ? (
                             <div className={styles.hpEditRow}>
-                                <input type="text" inputMode="decimal" className={styles.smallInput} value={char.hp_current} onChange={(e) => setChar((p) => p ? { ...p, hp_current: parsePartialInt(e.target.value, p.hp_current) as number } as Character : null)} onBlur={(e) => {
+                                <input type="text" inputMode="text" className={styles.smallInput} value={char.hp_current} onChange={(e) => setChar((p) => p ? { ...p, hp_current: parsePartialInt(e.target.value, p.hp_current) as number } as Character : null)} onBlur={(e) => {
                                     const val = finalizeInt(char.hp_current, 0);
                                     setChar(p => p ? { ...p, hp_current: val } as Character : null);
                                     quickSave("hp_current", val);
@@ -911,7 +911,7 @@ export default function CharacterSheetPage() {
                         <div className={styles.hpTemp}>
                             <span>HP Temp:</span>
                             {(editing || canEdit) ? (
-                                <input type="text" inputMode="decimal" className={styles.tinyInput}
+                                <input type="text" inputMode="text" className={styles.tinyInput}
                                     value={editing ? (editData.hp_temp ?? "") : char.hp_temp}
                                     onChange={(e) => {
                                         const v = parsePartialInt(e.target.value, editing ? (editData.hp_temp ?? 0) : char.hp_temp);
@@ -970,7 +970,7 @@ export default function CharacterSheetPage() {
                                     <div key={key} className={styles.abilityCard}>
                                         <span className={styles.abilityLabel}>{short}</span>
                                         {editing ? (
-                                            <input type="text" inputMode="decimal" className={styles.abilityInput} value={abs[key as keyof AbilityScores]} onChange={(e) => updAbility(key, parseInt(e.target.value) || 10)} />
+                                            <input type="text" inputMode="text" className={styles.abilityInput} value={abs[key as keyof AbilityScores]} onChange={(e) => updAbility(key, parseInt(e.target.value) || 10)} />
                                         ) : (
                                             <span className={styles.abilityScore}>{score}</span>
                                         )}
@@ -1140,7 +1140,7 @@ export default function CharacterSheetPage() {
                                                         Usi max:
                                                         <input
                                                             type="text"
-                                                            inputMode="decimal"
+                                                            inputMode="text"
                                                             className={`input ${styles.tinyInput}`}
                                                             value={ability.max_uses ?? ""}
                                                             placeholder="∞"
@@ -1261,7 +1261,7 @@ export default function CharacterSheetPage() {
                                         <div className={styles.hitDiceInputWrap}>
                                             <input
                                                 type="text"
-                                                inputMode="decimal"
+                                                inputMode="text"
                                                 className={styles.smallInput}
                                                 value={editData.hit_dice_current ?? ""}
                                                 onChange={(e) => upd("hit_dice_current", parsePartialInt(e.target.value, editData.hit_dice_current ?? 0) as number)}
@@ -1270,7 +1270,7 @@ export default function CharacterSheetPage() {
                                             <span className={styles.hitDiceSeparator}>/</span>
                                             <input
                                                 type="text"
-                                                inputMode="decimal"
+                                                inputMode="text"
                                                 className={styles.smallInput}
                                                 value={editData.hit_dice_total ?? 1}
                                                 onChange={(e) => upd("hit_dice_total", Math.max(1, parseInt(e.target.value) || 1))}
@@ -1427,9 +1427,9 @@ export default function CharacterSheetPage() {
                                         <div key={key} className={styles.moneyItem}>
                                             <span className={styles.moneyLabel}>{label}</span>
                                             {editing ? (
-                                                <input type="text" inputMode="decimal" className={styles.moneyInput} value={money[key as keyof typeof money] ?? ""} onChange={(e) => upd("money", { ...money, [key]: parsePartialInt(e.target.value, money[key as keyof typeof money] ?? 0) as number })} />
+                                                <input type="text" inputMode="text" className={styles.moneyInput} value={money[key as keyof typeof money] ?? ""} onChange={(e) => upd("money", { ...money, [key]: parsePartialInt(e.target.value, money[key as keyof typeof money] ?? 0) as number })} />
                                             ) : canEdit ? (
-                                                <input type="text" inputMode="decimal" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => {
+                                                <input type="text" inputMode="text" className={styles.moneyInput} value={money[key as keyof typeof money]} onChange={(e) => {
                                                     const val = parsePartialInt(e.target.value, money[key as keyof typeof money] ?? 0);
                                                     const newMoney = { ...money, [key]: val as number };
                                                     setChar((p) => p ? { ...p, money: newMoney } as unknown as Character : null);

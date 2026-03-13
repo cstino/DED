@@ -12,6 +12,7 @@ import NpcList from "@/components/dm/NpcList";
 import SpellCompendium from "@/components/dm/SpellCompendium";
 import MageHandLogo from "@/components/ui/MageHandLogo";
 import { calculateEquipmentBonuses, type EquipmentItem } from "@/components/character/EquipmentManager";
+import { ArrowLeft, Menu } from "lucide-react";
 import styles from "./campaign.module.css";
 
 interface Campaign {
@@ -332,17 +333,18 @@ export default function CampaignPage() {
                             className={styles.backBtn}
                             onClick={() => router.push("/dashboard")}
                             style={{ color: effectiveHero ? '#fff' : 'var(--text-muted)' }}
+                            title="Torna alla Dashboard"
                         >
-                            ← Dashboard
+                            <ArrowLeft size={28} />
                         </button>
                         {isMaster && (
                             <button
                                 className={styles.settingsTrigger}
                                 onClick={() => setIsDrawerOpen(true)}
                                 title="Impostazioni Campagna"
-                                style={{ marginLeft: 'auto' }}
+                                style={{ marginLeft: 'auto', color: effectiveHero ? '#fff' : 'var(--text-muted)' }}
                             >
-                                ⚙️
+                                <Menu size={28} />
                             </button>
                         )}
                     </div>
