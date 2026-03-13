@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
@@ -19,6 +19,8 @@ import {
     X,
 } from "lucide-react";
 import styles from "./character.module.css";
+
+import { motion, AnimatePresence } from "framer-motion";
 
 interface AbilityScores {
     str: number; dex: number; con: number; int: number; wis: number; cha: number;
@@ -278,9 +280,12 @@ function PortraitGallery({
     canEdit: boolean;
 }) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [touchStart, setTouchStart] = useState<number | null>(null);
 
-    const images = gallery && gallery.length > 0 ? gallery : (currentUrl ? [currentUrl] : []);
+    const images = useMemo(() => {
+        const unique = new Set(gallery || []);
+        if (currentUrl) unique.add(currentUrl);
+        return Array.from(unique);
+    }, [gallery, currentUrl]);
 
     useEffect(() => {
         if (isOpen) {
@@ -300,20 +305,29 @@ function PortraitGallery({
         setCurrentIndex((p) => (p - 1 + images.length) % images.length);
     };
 
-    const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.targetTouches[0].clientX);
-    const handleTouchEnd = (e: React.TouchEvent) => {
-        if (touchStart === null) return;
-        const delta = e.changedTouches[0].clientX - touchStart;
-        if (delta > 50) prev();
-        else if (delta < -50) next();
-        setTouchStart(null);
+    const handleDragEnd = (_: any, info: any) => {
+        const { offset, velocity } = info;
+        const swipeThreshold = 50;
+        const velocityThreshold = 500;
+
+        if (offset.x < -swipeThreshold || velocity.x < -velocityThreshold) {
+            if (currentIndex < images.length - 1) setCurrentIndex(c => c + 1);
+        } else if (offset.x > swipeThreshold || velocity.x > velocityThreshold) {
+            if (currentIndex > 0) setCurrentIndex(c => c - 1);
+        }
     };
 
     const currentImage = images[currentIndex];
     const isPrimary = currentImage === currentUrl;
 
     return createPortal(
-        <div className={styles.portraitFullOverlay} onClick={onClose}>
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={styles.portraitFullOverlay} 
+            onClick={onClose}
+        >
             <button className={styles.portraitFullClose} onClick={(e) => { e.stopPropagation(); onClose(); }}>
                 <X size={24} />
             </button>
@@ -328,7 +342,7 @@ function PortraitGallery({
                             disabled={!canEdit || isPrimary}
                         >
                             <Star size={18} fill={isPrimary ? "currentColor" : "none"} />
-                            {isPrimary ? "Immagine Principale" : "Imposta come Principale"}
+                            {isPrimary ? "Foto Principale" : "Usa come Principale"}
                         </button>
                     )}
 
@@ -336,7 +350,7 @@ function PortraitGallery({
                         {canEdit && images.length < 5 && (
                             <label className={styles.galleryActionBtn}>
                                 <Upload size={18} />
-                                {isUploading ? "Caricamento..." : "Aggiungi Foto"}
+                                {isUploading ? "..." : "Aggiungi"}
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -353,25 +367,28 @@ function PortraitGallery({
                                 className={`${styles.galleryActionBtn} ${styles.galleryActionDelete}`}
                                 onClick={() => onDelete(currentImage)}
                             >
-                                <X size={18} /> Elimina
+                                <X size={18} />
                             </button>
                         )}
                     </div>
                 </div>
 
-                {/* Slides */}
+                {/* Slides Track */}
                 <div className={styles.gallerySlidesWrapper}>
-                    {images.map((img, i) => (
-                        <div
-                            key={img + i}
-                            className={`${styles.gallerySlide} ${i === currentIndex ? styles.gallerySlideActive : ""}`}
-                            style={{ transform: `translateX(${(i - currentIndex) * 100}%)` }}
-                            onTouchStart={handleTouchStart}
-                            onTouchEnd={handleTouchEnd}
-                        >
-                            <img src={img} alt="" className={styles.galleryImage} />
-                        </div>
-                    ))}
+                    <motion.div 
+                        className={styles.galleryTrack}
+                        drag="x"
+                        dragConstraints={{ left: 0, right: 0 }}
+                        onDragEnd={handleDragEnd}
+                        animate={{ x: `-${currentIndex * 100}%` }}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    >
+                        {images.map((img: string, i: number) => (
+                            <div key={img + i} className={styles.gallerySlide}>
+                                <img src={img} alt="" className={styles.galleryImage} draggable={false} />
+                            </div>
+                        ))}
+                    </motion.div>
                 </div>
 
                 {/* Navigation */}
@@ -385,7 +402,7 @@ function PortraitGallery({
                         </button>
 
                         <div className={styles.galleryDots}>
-                            {images.map((_, i) => (
+                            {images.map((_: string, i: number) => (
                                 <div
                                     key={i}
                                     className={`${styles.galleryDot} ${i === currentIndex ? styles.galleryDotActive : ""}`}
@@ -396,7 +413,7 @@ function PortraitGallery({
                     </>
                 )}
             </div>
-        </div>,
+        </motion.div>,
         document.body
     );
 }
@@ -1064,19 +1081,23 @@ export default function CharacterSheetPage() {
                         currentUrl={char.portrait_url}
                         canEdit={canEdit}
                         isUploading={saving}
-                        onSetPrimary={(url) => {
+                        onSetPrimary={(url: string) => {
                             setChar(p => p ? { ...p, portrait_url: url } as Character : null);
                             quickSave("portrait_url", url);
                         }}
-                        onDelete={(url) => {
-                            const newGallery = (char.gallery || []).filter(g => g !== url);
-                            setChar(p => p ? { ...p, gallery: newGallery } as Character : null);
-                            quickSave("gallery", newGallery);
-                            // If deleted the current primary, pick another or set null
-                            if (char.portrait_url === url) {
-                                const nextPrimary = newGallery.length > 0 ? newGallery[0] : null;
-                                quickSave("portrait_url", nextPrimary);
-                            }
+                        onDelete={(url: string) => {
+                            setChar(prev => {
+                                if (!prev) return null;
+                                const newGallery = (prev.gallery || []).filter(g => g !== url);
+                                quickSave("gallery", newGallery);
+                                
+                                let nextPrimary = prev.portrait_url;
+                                if (prev.portrait_url === url) {
+                                    nextPrimary = newGallery.length > 0 ? newGallery[0] : null;
+                                    quickSave("portrait_url", nextPrimary);
+                                }
+                                return { ...prev, gallery: newGallery, portrait_url: nextPrimary } as Character;
+                            });
                         }}
                         onUpload={async (file) => {
                             if (!char) return;
@@ -1090,16 +1111,21 @@ export default function CharacterSheetPage() {
                                 if (!uploadError) {
                                     const { data: urlData } = supabase.storage.from("character-portraits").getPublicUrl(path);
                                     const newUrl = urlData.publicUrl;
-                                    const newGallery = [...(char.gallery || []), newUrl];
-                                    setChar(p => p ? { ...p, gallery: newGallery } as Character : null);
-                                    quickSave("gallery", newGallery);
-
-                                    // If no primary yet, set this as primary
-                                    if (!char.portrait_url) {
-                                        quickSave("portrait_url", newUrl);
-                                        setChar(p => p ? { ...p, portrait_url: newUrl } as Character : null);
-                                    }
+                                    
+                                    setChar(prev => {
+                                        if (!prev) return null;
+                                        const updatedGallery = Array.from(new Set([...(prev.gallery || []), newUrl]));
+                                        quickSave("gallery", updatedGallery);
+                                        
+                                        if (!prev.portrait_url) {
+                                            quickSave("portrait_url", newUrl);
+                                            return { ...prev, gallery: updatedGallery, portrait_url: newUrl } as Character;
+                                        }
+                                        return { ...prev, gallery: updatedGallery } as Character;
+                                    });
                                 }
+                            } catch (err) {
+                                console.error("Upload error:", err);
                             } finally {
                                 setSaving(false);
                             }

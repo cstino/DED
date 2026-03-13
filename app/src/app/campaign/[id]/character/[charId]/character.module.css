@@ -517,28 +517,27 @@
     position: relative;
     width: 100%;
     height: 100%;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+.galleryTrack {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
 .gallerySlide {
-    position: absolute;
+    flex-shrink: 0;
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    opacity: 0;
-    pointer-events: none;
     user-select: none;
-}
-
-.gallerySlideActive {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
 }
 
 .galleryImage {
