@@ -17,6 +17,8 @@ import {
     Star,
     Upload,
     X,
+    Plus,
+    Trash2
 } from "lucide-react";
 import styles from "./character.module.css";
 
@@ -469,8 +471,6 @@ export default function CharacterSheetPage() {
     const [expandedSpell, setExpandedSpell] = useState<string | null>(null);
     const [expandedAbility, setExpandedAbility] = useState<number | null>(null);
     const [noteToDelete, setNoteToDelete] = useState<number | null>(null);
-    const [portraitFile, setPortraitFile] = useState<File | null>(null);
-    const [portraitPreview, setPortraitPreview] = useState<string | null>(null);
     const [showPortraitFull, setShowPortraitFull] = useState(false);
     const [slowLoading, setSlowLoading] = useState(false);
 
@@ -518,6 +518,7 @@ export default function CharacterSheetPage() {
                     hit_die: data.hit_die ?? 8,
                     proficiency_bonus: data.proficiency_bonus ?? Math.ceil((data.level || 1) / 4) + 1,
                     is_party_member: !!data.is_party_member,
+                    gallery: data.gallery ?? [],
                 } as Character;
                 setChar(c);
                 if (!editing) setEditData(c);
@@ -609,31 +610,6 @@ export default function CharacterSheetPage() {
         try {
             const d = editData;
 
-            // Upload portrait if changed
-            let newPortraitUrl = char.portrait_url;
-            if (portraitFile) {
-                const ext = portraitFile.name.split(".").pop();
-                const ts = Date.now();
-                const path = `portraits/${user!.id}/${ts}.${ext}`;
-                try {
-                    const { error: uploadError } = await withTimeout(
-                        Promise.resolve(supabase.storage.from("character-portraits").upload(path, portraitFile)),
-                        10000
-                    );
-                    if (!uploadError) {
-                        const { data: urlData } = supabase.storage
-                            .from("character-portraits")
-                            .getPublicUrl(path);
-                        newPortraitUrl = urlData.publicUrl;
-                    } else {
-                        console.error("Portrait upload error:", uploadError);
-                    }
-                } catch (uploadErr) {
-                    console.error("Portrait upload timed out or failed:", uploadErr);
-                    // Continue saving without the new portrait
-                }
-            }
-
             const { data: updatedChar, error } = await withTimeout(
                 Promise.resolve(supabase.from("characters").update({
                     name: d.name,
@@ -663,7 +639,7 @@ export default function CharacterSheetPage() {
                     spell_slots_used: d.spell_slots_used,
                     languages: d.languages,
                     class_abilities: d.class_abilities,
-                    portrait_url: newPortraitUrl,
+                    portrait_url: d.portrait_url,
                     gallery: d.gallery || [],
                 }).eq("id", char.id).select().single()),
                 10000
@@ -701,8 +677,6 @@ export default function CharacterSheetPage() {
                 } as Character;
                 setChar(c);
                 setEditData(c);
-                setPortraitFile(null);
-                setPortraitPreview(null);
                 setSaveError(null);
                 localStorage.removeItem(`magehand-char-edit-${char.id}`);
                 setEditing(false);
@@ -935,8 +909,8 @@ export default function CharacterSheetPage() {
             )}
 
             {/* Character Header */}
-            <div
-                className={styles.charHeader}
+            <div 
+                className={`${styles.charHeader} ${editing ? styles.charHeaderEditing : ""}`}
                 onClick={() => !editing && char.portrait_url && setShowPortraitFull(true)}
             >
                 {/* Background Image & Overlay */}
@@ -956,25 +930,82 @@ export default function CharacterSheetPage() {
                 )}
 
                 {(editing || !char.portrait_url) && (
-                    <div className={styles.portraitWrap}>
+                    <div className={editing ? styles.galleryEditGrid : styles.portraitWrap}>
                         {editing ? (
-                            <label className={styles.portraitEditLabel}>
-                                {portraitPreview ? (
-                                    <Image src={portraitPreview} alt="Preview" width={100} height={100} className={styles.portrait} />
-                                ) : char.portrait_url ? (
-                                    <Image src={char.portrait_url} alt={char.name} width={100} height={100} className={styles.portrait} />
-                                ) : (
-                                    <div className={styles.portraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
+                            <>
+                                {(editData.gallery && editData.gallery.length > 0 ? editData.gallery : (editData.portrait_url ? [editData.portrait_url] : [])).map((img, i) => {
+                                    const isPrimary = img === editData.portrait_url;
+                                    const galleryLength = (editData.gallery?.length || (editData.portrait_url ? 1 : 0));
+                                    return (
+                                        <div key={img + i} className={`${styles.galleryEditItem} ${isPrimary ? styles.galleryEditItemPrimary : ""}`}>
+                                            <img src={img} alt="" className={styles.galleryEditImage} />
+                                            <div className={styles.galleryItemActions}>
+                                                <button
+                                                    type="button"
+                                                    className={`${styles.galleryItemBtn} ${styles.galleryItemBtnPrimary}`}
+                                                    onClick={() => upd("portrait_url", img)}
+                                                    title="Imposta come principale"
+                                                >
+                                                    <Star size={14} fill={isPrimary ? "currentColor" : "none"} />
+                                                </button>
+                                                {galleryLength > 1 && (
+                                                    <button
+                                                        type="button"
+                                                        className={`${styles.galleryItemBtn} ${styles.galleryItemBtnDelete}`}
+                                                        onClick={() => {
+                                                            const currentGallery = editData.gallery && editData.gallery.length > 0 ? editData.gallery : [editData.portrait_url!];
+                                                            const newGallery = currentGallery.filter(g => g !== img);
+                                                            upd("gallery", newGallery);
+                                                            if (isPrimary) {
+                                                                upd("portrait_url", newGallery[0]);
+                                                            }
+                                                        }}
+                                                        title="Elimina"
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                            {isPrimary && <div className={styles.primaryBadge}><Star size={10} fill="currentColor" /></div>}
+                                        </div>
+                                    );
+                                })}
+                                {(editData.gallery?.length || 0) < 5 && (
+                                    <label className={styles.galleryAddCard}>
+                                        <div className={styles.galleryAddIcon}><Plus size={20} /></div>
+                                        <span className={styles.galleryAddText}>Aggiungi</span>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            style={{ display: "none" }}
+                                            onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (!file) return;
+                                                setSaving(true);
+                                                try {
+                                                    const ext = file.name.split(".").pop();
+                                                    const ts = Date.now();
+                                                    const path = `portraits/${char.id}/${ts}.${ext}`;
+                                                    const { error: uploadError } = await supabase.storage.from("character-portraits").upload(path, file);
+                                                    if (!uploadError) {
+                                                        const { data: urlData } = supabase.storage.from("character-portraits").getPublicUrl(path);
+                                                        const currentGallery = editData.gallery && editData.gallery.length > 0 ? editData.gallery : (editData.portrait_url ? [editData.portrait_url] : []);
+                                                        const newGallery = [...currentGallery, urlData.publicUrl];
+                                                        upd("gallery", newGallery);
+                                                        if (!editData.portrait_url) {
+                                                            upd("portrait_url", urlData.publicUrl);
+                                                        }
+                                                    }
+                                                } catch (err) {
+                                                    console.error("Edit mode upload error:", err);
+                                                } finally {
+                                                    setSaving(false);
+                                                }
+                                            }}
+                                        />
+                                    </label>
                                 )}
-                                <div className={styles.portraitEditOverlay}>📷</div>
-                                <input type="file" accept="image/*" className={styles.portraitFileInput} onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                        setPortraitFile(file);
-                                        setPortraitPreview(URL.createObjectURL(file));
-                                    }
-                                }} />
-                            </label>
+                            </>
                         ) : (
                             <div className={styles.portraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
                         )}
