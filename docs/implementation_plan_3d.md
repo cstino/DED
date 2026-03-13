@@ -21,16 +21,20 @@ Sfrutteremo le librerie già presenti nel progetto:
 ## 📊 Stato Attuale e Checkpoint
 - [x] **Setup Branch**: Creato branch dedicato `feature-3d-camp`.
 - [x] **Pianificazione**: Documento di implementazione redatto e condiviso.
-- [>] **Gestione Asset**: Caricati primi modelli `.glb` (Warforged) con diverse animazioni in `public/models/warforged`.
+- [x] **Gestione Asset**: Caricati modelli `.glb` (Warforged) con set completo di animazioni in `public/model/warforged`.
 - [ ] **Database**: Da eseguire comando SQL per colonna `model_3d_url`.
-- [ ] **Frontend**: Da creare componente Canvas e Viewer di base.
+- [x] **Frontend**: Creato componente `ModelViewer` e pagina di test `/campaign/[id]/3d-test`.
 
 ---
 
 ## 🚀 Azioni Compiute
 1. Creato branch `feature-3d-camp` per isolare lo sviluppo 3D.
-2. Predisposta cartella `app/public/models/warforged` per ospitare gli asset.
-3. Caricati 7 set di animazioni `.glb` in formato 8k (ottimizzati tramite Remesh).
+2. Predisposta cartella `app/public/model/warforged` per ospitare gli asset.
+3. Caricato set di 8 animazioni (Walking, Running, Boxing, Crouch, etc.) in formato `.glb`.
+4. Implementato componente `ModelViewer.tsx` con supporto a `useAnimations`.
+5. Creata pagina di test `3d-test/page.tsx` con selettore di animazioni UI.
+6. Affinata la posizione del modello e bloccato lo zoom nel viewer per una visualizzazione più stabile.
+7. Ridotta leggermente la scala del modello (da 2.0 a 1.75) per un miglior fit sugli schermi mobile.
 
 ---
 
