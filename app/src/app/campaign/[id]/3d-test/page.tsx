@@ -10,44 +10,55 @@ import { useRouter, useParams } from "next/navigation";
 
 const CHARACTERS = [
     {
-        id: "warforged",
-        name: "Forgiato",
+        id: "corwin",
+        name: "Corwin",
+        scale: 2.6,
+        position: [0, -0.8, 0],
         animations: [
-            { name: "Respiro", file: "/model/warforged/Meshy_AI_Animation_Short_Breathe_and_Look_Around_withSkin.glb" },
-            { name: "Cammina", file: "/model/warforged/Meshy_AI_Animation_Walking_withSkin.glb" },
-            { name: "Corsa", file: "/model/warforged/Meshy_AI_Animation_Running_withSkin.glb" },
-            { name: "Salto", file: "/model/warforged/Meshy_AI_Animation_Basic_Jump_withSkin.glb" },
-            { name: "Boxe", file: "/model/warforged/Meshy_AI_Animation_Boxing_Practice_withSkin.glb" },
-            { name: "Crouch", file: "/model/warforged/Meshy_AI_Animation_CrouchLookAroundBow_withSkin.glb" },
-            { name: "Swing", file: "/model/warforged/Meshy_AI_Animation_Indoor_Swing_withSkin.glb" },
-            { name: "Skill", file: "/model/warforged/Meshy_AI_Animation_Skill_03_withSkin.glb" },
+            { name: "Respiro", file: "/model/Corwin/corwin.glb" },
         ]
     },
     {
         id: "vaelion",
         name: "Vaelion",
+        scale: 2.6,
+        position: [0, -0.8, 0],
         animations: [
-            { name: "Respiro", file: "/model/Vaelion/Meshy_AI_Animation_Short_Breathe_and_Look_Around_withSkin.glb" },
-            { name: "Idle", file: "/model/Vaelion/Meshy_AI_Animation_Female_Walk_Pick_Put_In_Pocket_withSkin.glb" },
-            { name: "Cammina", file: "/model/Vaelion/Meshy_AI_Animation_Walking_withSkin.glb" },
-            { name: "Corsa", file: "/model/Vaelion/Meshy_AI_Animation_Running_withSkin.glb" },
-            { name: "Punch", file: "/model/Vaelion/Meshy_AI_Animation_Punch_Combo_withSkin.glb" },
-            { name: "Dance", file: "/model/Vaelion/Meshy_AI_Animation_Denim_Pop_Dance_withSkin.glb" },
-            { name: "Depressed", file: "/model/Vaelion/Meshy_AI_Animation_Depressed_Full_Turn_Left_withSkin.glb" },
+            { name: "Respiro", file: "/model/Vaelion/vaelion (3).glb" },
+        ]
+    },
+    {
+        id: "lou",
+        name: "Lou",
+        scale: 2.6,
+        position: [0, -0.8, 0],
+        animations: [
+            { name: "Respiro", file: "/model/Lou/Lou (1).glb" },
+        ]
+    },
+    {
+        id: "warforged",
+        name: "Forgiato",
+        scale: 2.6,
+        position: [0, -0.8, 0],
+        animations: [
+            { name: "Respiro", file: "/model/warforged/mk cartoon.glb" },
         ]
     }
 ];
 
 export default function ThreeDTestPage() {
     const [currentCharIdx, setCurrentCharIdx] = useState(0);
-    const [currentAnim, setCurrentAnim] = useState(0); 
+    const [currentAnim, setCurrentAnim] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
-    
+
     // Manteniamo le selezioni per ogni personaggio
     const [selections, setSelections] = useState<Record<string, number[]>>({
-        warforged: [1, 2, 3, 4, 5],
-        vaelion: [1, 2, 3, 4, 5]
+        corwin: [0],
+        vaelion: [0],
+        lou: [0],
+        warforged: [0]
     });
 
     const activeChar = CHARACTERS[currentCharIdx];
@@ -99,13 +110,13 @@ export default function ThreeDTestPage() {
 
             <div className={styles.menuContainer}>
                 <div className={`${styles.menuWrapper} ${isMenuOpen ? styles.isOpen : ""}`}>
-                    <button 
+                    <button
                         className={styles.mainCircle}
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                     >
                         <Plus size={30} />
                     </button>
-                    
+
                     {selectedAnims.map((animIdx, i) => (
                         <button
                             key={i}
@@ -127,11 +138,13 @@ export default function ThreeDTestPage() {
                 <pointLight position={[-10, -10, -10]} intensity={1} color="#4455ff" />
 
                 <Suspense fallback={null}>
-                    <ModelViewer 
-                        key={`${activeChar.id}-${currentAnim}`} 
-                        url={activeChar.animations[currentAnim].file} 
+                    <ModelViewer
+                        key={`${activeChar.id}-${currentAnim}`}
+                        url={activeChar.animations[currentAnim]?.file || ""}
                         isDefault={currentAnim === 0}
                         onFinished={() => setCurrentAnim(0)}
+                        scale={(activeChar as any).scale}
+                        position={(activeChar as any).position}
                     />
                     <ContactShadows opacity={0.6} scale={10} blur={2.5} far={10} resolution={256} color="#000000" />
                     <Environment preset="night" />
@@ -161,7 +174,7 @@ export default function ThreeDTestPage() {
                                 <h3>Cambia Personaggio</h3>
                                 <div className={styles.charSwitchGrid}>
                                     {CHARACTERS.map((char, idx) => (
-                                        <button 
+                                        <button
                                             key={char.id}
                                             className={`${styles.charTab} ${currentCharIdx === idx ? styles.charTabActive : ""}`}
                                             onClick={() => {
@@ -188,7 +201,7 @@ export default function ThreeDTestPage() {
                                         const slotIndex = selectedAnims.indexOf(idx);
                                         const isSelected = slotIndex !== -1;
                                         return (
-                                            <button 
+                                            <button
                                                 key={idx}
                                                 className={`${styles.animItem} ${isSelected ? styles.animItemSelected : ""}`}
                                                 onClick={() => toggleAnimInSelection(idx)}

@@ -447,11 +447,12 @@ export default function CampaignPage() {
                                                 className={`card card-glow-teal ${styles.characterCard}`}
                                                 onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
                                             >
+                                                {char.portrait_url && <img src={char.portrait_url} alt="" className={styles.charCardBackground} />}
+                                                <div className={styles.charCardOverlay} />
+
                                                 <div className={styles.charHeader}>
                                                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                                        {char.portrait_url ? (
-                                                            <img src={char.portrait_url} alt={char.name} className={styles.cardPortrait} />
-                                                        ) : (
+                                                        {!char.portrait_url && (
                                                             <div className={styles.cardPortraitFallback}>{char.name.charAt(0).toUpperCase()}</div>
                                                         )}
                                                         <h3>{char.name}</h3>

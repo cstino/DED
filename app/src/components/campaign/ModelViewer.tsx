@@ -9,9 +9,18 @@ interface ModelViewerProps {
     animationIndex?: number;
     isDefault?: boolean;
     onFinished?: () => void;
+    scale?: number;
+    position?: [number, number, number];
 }
 
-export function ModelViewer({ url, animationIndex = 0, isDefault = false, onFinished }: ModelViewerProps) {
+export function ModelViewer({
+    url,
+    animationIndex = 0,
+    isDefault = false,
+    onFinished,
+    scale = 1.3,
+    position = [0, -1.2, 0]
+}: ModelViewerProps) {
     const group = useRef<THREE.Group>(null);
     const { scene, animations } = useGLTF(url);
     const { actions, names, mixer } = useAnimations(animations, group);
@@ -24,9 +33,9 @@ export function ModelViewer({ url, animationIndex = 0, isDefault = false, onFini
 
         if (action) {
             Object.values(actions).forEach(a => a?.fadeOut(0.2));
-            
+
             action.reset().fadeIn(0.4);
-            
+
             if (!isDefault) {
                 action.setLoop(THREE.LoopOnce, 1);
                 action.clampWhenFinished = true;
@@ -35,7 +44,7 @@ export function ModelViewer({ url, animationIndex = 0, isDefault = false, onFini
             }
 
             action.play();
-            
+
             const handleFinished = (e: any) => {
                 if (e.action === action && onFinished) {
                     onFinished();
@@ -43,7 +52,7 @@ export function ModelViewer({ url, animationIndex = 0, isDefault = false, onFini
             };
 
             mixer.addEventListener('finished', handleFinished);
-            
+
             return () => {
                 action.fadeOut(0.4);
                 mixer.removeEventListener('finished', handleFinished);
@@ -53,10 +62,7 @@ export function ModelViewer({ url, animationIndex = 0, isDefault = false, onFini
 
     return (
         <group ref={group} dispose={null}>
-            <primitive object={scene} scale={1.3} position={[0, -1.2, 0]} />
+            <primitive object={scene} scale={scale} position={position} />
         </group>
     );
 }
-
-// Pre-load common models to avoid flashing
-// useGLTF.preload("/model/warforged/Meshy_AI_Animation_Short_Breathe_and_Look_Around_withSkin.glb");
