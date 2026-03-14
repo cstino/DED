@@ -11,6 +11,7 @@ interface ModelViewerProps {
     onFinished?: () => void;
     scale?: number;
     position?: [number, number, number];
+    rotation?: [number, number, number];
 }
 
 export function ModelViewer({
@@ -19,7 +20,8 @@ export function ModelViewer({
     isDefault = false,
     onFinished,
     scale = 1.3,
-    position = [0, -1.2, 0]
+    position = [0, -1.2, 0],
+    rotation = [0, 0, 0]
 }: ModelViewerProps) {
     const group = useRef<THREE.Group>(null);
     const { scene, animations } = useGLTF(url);
@@ -62,7 +64,7 @@ export function ModelViewer({
 
     return (
         <group ref={group} dispose={null}>
-            <primitive object={scene} scale={scale} position={position} />
+            <primitive object={scene} scale={scale} position={position} rotation={rotation} />
         </group>
     );
 }
