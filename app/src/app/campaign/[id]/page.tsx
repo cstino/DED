@@ -401,14 +401,14 @@ export default function CampaignPage() {
                         >
                             NPCs
                         </button>
-                        <button
-                            className={`${styles.tabBtn} ${activeTab === 'camp' ? styles.tabBtnActive : ''}`}
-                            onClick={() => setActiveTab('camp')}
-                        >
-                            Accampamento
-                        </button>
                     </>
                 )}
+                <button
+                    className={`${styles.tabBtn} ${activeTab === 'camp' ? styles.tabBtnActive : ''}`}
+                    onClick={() => setActiveTab('camp')}
+                >
+                    Accampamento
+                </button>
             </div>
 
             {activeTab === "party" && (
@@ -738,7 +738,7 @@ export default function CampaignPage() {
                 )
             }
 
-            {activeTab === "camp" && isMaster && (
+            {activeTab === "camp" && (
                 <div className={styles.campHero}>
                     <div className={styles.campBadge}>✨ Feature in Anteprima</div>
                     <h2>L'Accampamento 3D</h2>
