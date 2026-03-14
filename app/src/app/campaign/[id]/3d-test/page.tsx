@@ -54,7 +54,6 @@ export default function ThreeDTestPage() {
     const [currentCharIdx, setCurrentCharIdx] = useState(0);
     const [currentAnim, setCurrentAnim] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
     const [charPortraits, setCharPortraits] = useState<Record<string, string>>({});
 
     useEffect(() => {
@@ -119,9 +118,6 @@ export default function ThreeDTestPage() {
                 <div className={styles.topRow}>
                     <button className={styles.backBtn} onClick={() => router.back()}>
                         <ArrowLeft size={28} />
-                    </button>
-                    <button className={styles.settingsBtn} onClick={() => setIsSideMenuOpen(true)}>
-                        <Menu size={28} />
                     </button>
                 </div>
                 <div className={styles.header}>
@@ -209,40 +205,6 @@ export default function ThreeDTestPage() {
                 />
             </Canvas>
 
-            {/* Side Menu per selezione animazioni */}
-            {isSideMenuOpen && (
-                <div className={styles.drawerOverlay} onClick={() => setIsSideMenuOpen(false)}>
-                    <div className={styles.drawer} onClick={(e) => e.stopPropagation()}>
-                        <div className={styles.drawerHeader}>
-                            <h2>Equipaggiamento</h2>
-                            <button className={styles.closeBtn} onClick={() => setIsSideMenuOpen(false)}>
-                                <X size={24} />
-                            </button>
-                        </div>
-                        <div className={styles.drawerContent}>
-                            <section className={styles.drawerSection}>
-                                <h3>Cambia Personaggio</h3>
-                                <div className={styles.charSwitchGrid}>
-                                    {CHARACTERS.map((char, idx) => (
-                                        <button
-                                            key={char.id}
-                                            className={`${styles.charTab} ${currentCharIdx === idx ? styles.charTabActive : ""}`}
-                                            onClick={() => {
-                                                setCurrentCharIdx(idx);
-                                                setCurrentAnim(0);
-                                                setIsMenuOpen(false);
-                                            }}
-                                        >
-                                            {char.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            </section>
-
-                        </div>
-                    </div>
-                </div>
-            )}
 
             <div className={styles.overlay} />
         </div>
