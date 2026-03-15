@@ -281,7 +281,7 @@ function PortraitGallery({
     isUploading: boolean;
     canEdit: boolean;
 }) {
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [[page, direction], setPage] = useState([0, 0]);
 
     const images = useMemo(() => {
         const unique = new Set(gallery || []);
@@ -292,42 +292,51 @@ function PortraitGallery({
     useEffect(() => {
         if (isOpen) {
             const idx = images.indexOf(currentUrl || "");
-            setCurrentIndex(idx >= 0 ? idx : 0);
+            setPage([idx >= 0 ? idx : 0, 0]);
         }
     }, [isOpen, currentUrl, images]);
 
     if (!isOpen) return null;
 
-    const next = (e?: React.MouseEvent) => {
-        e?.stopPropagation();
-        setCurrentIndex((p) => (p + 1) % images.length);
-    };
-    const prev = (e?: React.MouseEvent) => {
-        e?.stopPropagation();
-        setCurrentIndex((p) => (p - 1 + images.length) % images.length);
+    const paginate = (newDirection: number) => {
+        setPage([page + newDirection, newDirection]);
     };
 
-    const handleDragEnd = (_: any, info: any) => {
-        const { offset, velocity } = info;
-        const swipeThreshold = 50;
-        const velocityThreshold = 500;
-
-        if (offset.x < -swipeThreshold || velocity.x < -velocityThreshold) {
-            if (currentIndex < images.length - 1) setCurrentIndex(c => c + 1);
-        } else if (offset.x > swipeThreshold || velocity.x > velocityThreshold) {
-            if (currentIndex > 0) setCurrentIndex(c => c - 1);
-        }
-    };
-
-    const currentImage = images[currentIndex];
+    const imageIndex = ((page % images.length) + images.length) % images.length;
+    const currentImage = images[imageIndex];
     const isPrimary = currentImage === currentUrl;
 
+    const variants = {
+        enter: (direction: number) => ({
+            x: direction > 0 ? 300 : -300,
+            opacity: 0,
+            scale: 0.9
+        }),
+        center: {
+            zIndex: 1,
+            x: 0,
+            opacity: 1,
+            scale: 1
+        },
+        exit: (direction: number) => ({
+            zIndex: 0,
+            x: direction < 0 ? 300 : -300,
+            opacity: 0,
+            scale: 0.9
+        })
+    };
+
+    const swipeConfidenceThreshold = 10000;
+    const swipePower = (offset: number, velocity: number) => {
+        return Math.abs(offset) * velocity;
+    };
+
     return createPortal(
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={styles.portraitFullOverlay} 
+            className={styles.portraitFullOverlay}
             onClick={onClose}
         >
             <button className={styles.portraitFullClose} onClick={(e) => { e.stopPropagation(); onClose(); }}>
@@ -375,31 +384,44 @@ function PortraitGallery({
                     </div>
                 </div>
 
-                {/* Slides Track */}
                 <div className={styles.gallerySlidesWrapper}>
-                    <motion.div 
-                        className={styles.galleryTrack}
-                        drag="x"
-                        dragConstraints={{ left: 0, right: 0 }}
-                        onDragEnd={handleDragEnd}
-                        animate={{ x: `-${currentIndex * 100}%` }}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    >
-                        {images.map((img: string, i: number) => (
-                            <div key={img + i} className={styles.gallerySlide}>
-                                <img src={img} alt="" className={styles.galleryImage} draggable={false} />
-                            </div>
-                        ))}
-                    </motion.div>
+                    <AnimatePresence initial={false} custom={direction}>
+                        <motion.img
+                            key={page}
+                            src={currentImage}
+                            custom={direction}
+                            variants={variants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{
+                                x: { type: "spring", stiffness: 300, damping: 30 },
+                                opacity: { duration: 0.2 }
+                            }}
+                            drag="x"
+                            dragConstraints={{ left: 0, right: 0 }}
+                            dragElastic={1}
+                            onDragEnd={(e, { offset, velocity }) => {
+                                const swipe = swipePower(offset.x, velocity.x);
+                                if (swipe < -swipeConfidenceThreshold) {
+                                    paginate(1);
+                                } else if (swipe > swipeConfidenceThreshold) {
+                                    paginate(-1);
+                                }
+                            }}
+                            className={styles.galleryImage}
+                            draggable={false}
+                        />
+                    </AnimatePresence>
                 </div>
 
-                {/* Navigation */}
+                {/* Navigation Arrows */}
                 {images.length > 1 && (
                     <>
-                        <button className={`${styles.galleryNav} ${styles.galleryPrev}`} onClick={prev}>
+                        <button className={`${styles.galleryNav} ${styles.galleryPrev}`} onClick={(e) => { e.stopPropagation(); paginate(-1); }}>
                             <ChevronLeft size={32} />
                         </button>
-                        <button className={`${styles.galleryNav} ${styles.galleryNext}`} onClick={next}>
+                        <button className={`${styles.galleryNav} ${styles.galleryNext}`} onClick={(e) => { e.stopPropagation(); paginate(1); }}>
                             <ChevronRight size={32} />
                         </button>
 
@@ -407,8 +429,8 @@ function PortraitGallery({
                             {images.map((_: string, i: number) => (
                                 <div
                                     key={i}
-                                    className={`${styles.galleryDot} ${i === currentIndex ? styles.galleryDotActive : ""}`}
-                                    onClick={(e) => { e.stopPropagation(); setCurrentIndex(i); }}
+                                    className={`${styles.galleryDot} ${i === imageIndex ? styles.galleryDotActive : ""}`}
+                                    onClick={(e) => { e.stopPropagation(); setPage([i, i > imageIndex ? 1 : -1]); }}
                                 />
                             ))}
                         </div>
@@ -834,7 +856,8 @@ export default function CharacterSheetPage() {
             {/* Top Bar */}
             <div className={styles.topBar}>
                 <button className={styles.backBtn} onClick={() => router.push(`/campaign/${campaignId}`)}>
-                    ← Campagna
+                    <ChevronLeft size={24} />
+                    <span>Campagna</span>
                 </button>
                 {canEdit && (
                     <div className={styles.topActions}>
@@ -909,7 +932,7 @@ export default function CharacterSheetPage() {
             )}
 
             {/* Character Header */}
-            <div 
+            <div
                 className={`${styles.charHeader} ${editing ? styles.charHeaderEditing : ""}`}
                 onClick={() => !editing && char.portrait_url && setShowPortraitFull(true)}
             >
@@ -1121,7 +1144,7 @@ export default function CharacterSheetPage() {
                                 if (!prev) return null;
                                 const newGallery = (prev.gallery || []).filter(g => g !== url);
                                 quickSave("gallery", newGallery);
-                                
+
                                 let nextPrimary = prev.portrait_url;
                                 if (prev.portrait_url === url) {
                                     nextPrimary = newGallery.length > 0 ? newGallery[0] : null;
@@ -1142,12 +1165,12 @@ export default function CharacterSheetPage() {
                                 if (!uploadError) {
                                     const { data: urlData } = supabase.storage.from("character-portraits").getPublicUrl(path);
                                     const newUrl = urlData.publicUrl;
-                                    
+
                                     setChar(prev => {
                                         if (!prev) return null;
                                         const updatedGallery = Array.from(new Set([...(prev.gallery || []), newUrl]));
                                         quickSave("gallery", updatedGallery);
-                                        
+
                                         if (!prev.portrait_url) {
                                             quickSave("portrait_url", newUrl);
                                             return { ...prev, gallery: updatedGallery, portrait_url: newUrl } as Character;
