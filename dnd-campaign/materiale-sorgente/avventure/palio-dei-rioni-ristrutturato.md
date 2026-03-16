@@ -1,52 +1,59 @@
-# Il Palio dei Rioni: Una Corsa tra i Cieli e l'Abisso
+## FASE 1: INDAGINE PROFONDA (DEEP INVESTIGATION)
 
-Questa versione dell'avventura è stata ristrutturata per integrare la minaccia del **Daask** e il coinvolgimento di un **Mind Flayer** nella produzione del Sangue di Drago.
+Prima di scendere nei Cogs, i PG devono raccogliere prove. Il tempo è loro nemico: il Palio inizia tra 24 ore.
 
-## Introduzione
-La famiglia Boromar è sotto assedio. Non solo Rorik è caduto nelle fogne, ma la ciurma di punta di Alara Boromar è scomparsa dopo una notte alla *Brumargentea*. Alara è stata aggredita dai suoi stessi compagni, i quali sembravano posseduti da una furia bestiale e guidati da una figura incappucciata.
+### 1.1 Il Club Brumargentea
+Il club è nel distretto di Lower Dura. L'aria è densa di fumo e vapori alchemici di scarto.
+- **Il Barista (Joe)**: Se corrotto (10 mo) o intimidito (CD 14), rivela che Zorath "non cammina, scivola" e che la ciurma di Alara sembrava in uno stato di estasi mentre lo seguiva.
+- **Indizio Fisico**: Sotto un tavolo dove sedeva la ciurma, i PG trovano una fiala rotta con residui di un liquido **rosso granata**. Una prova di Intelligenza (Arcana) CD 15 rivela che non è semplice droga, ma contiene tracce di *Ectoplasma* solidificato.
+- **Testimonianza**: Un senzatetto fuori dal locale vaneggia di "occhi nei muri che ti leggono il cuore". Zorath ha usato i suoi poteri psichici per cancellare la memoria dei passanti, ma ha lasciato "cicatrici mentali".
 
-## I Protagonisti: La Ciurma di Alara
-La ciurma è composta da quattro esperti, ora dispersi e sotto l'effetto della droga:
+### 1.2 La Scia del Sangue
+Seguendo le tracce di ectoplasma (Saggezza - Sopravvivenza CD 15), i PG giungono a una grata di ventilazione sigillata magicamente che porta direttamente all'Area 9 dei Cogs.
 
-| Nome | Razza/Classe | Ruolo | Tratti/Segreto |
-| :--- | :--- | :--- | :--- |
-| **Runa "Occhio-Lungo"** | Umano Ranger | Navigatrice | Pragmatica, superstiziosa. Ha un debito con il Daask. |
-| **Jassil Trotter** | **Umano** Ladro | Primo Timoniere | Competitivo, vuole superare Alara in abilità. |
-| **Toric Ferrospina** | **Elfo** Artigiano | Meccanico | Elabora modifiche arcane non autorizzate alla nave. |
-| **Nym Foglia-d'Argento** | Elfo Mago | Arcanista | Calma, curiosa. Segretamente legata al Casato Phiarlan. |
+---
 
-## Atto 1: Discesa negli Ingranaggi (The Cogs)
-I PG devono scendere nei Cogs per ritrovare la ciurma. La mappa rimane quella originale, ma con una differenza fondamentale: l'**Area 9 (Laboratorio Daask)** non è più il centro della produzione, ma un **Punto di Accesso a Khyber**.
+## FASE 2: IL LABORATORIO IN KHYBER (THE KHYBER LAB)
 
-### 1.1 Indagini alla Brumargentea
-- Interrogando il personale (CD 14), i PG scoprono che la figura incappucciata ha condotto la ciurma verso un tunnel di manutenzione che scende "più in basso di quanto la legge permetta". Il nome che circola tra i più timorosi è **Zorath**, un emissario venuto da Droaam.
+L'accesso avviene tramite l'Area 9 dei Cogs. Un montacarichi industriale è stato modificato con piastre d'ottone incise con rune di protezione contro il teletrasporto.
 
-### 1.2 Eventi nei Cogs
-- **Pattuglia Daask (Area 6)**: Incontrano un gruppo di Gnoll che protegge l'accesso.
-- **L'Accesso Segreto (Area 9)**: Invece di un laboratorio, i PG trovano una camera di raffinazione preliminare difesa da un subordinato di Zorath. 
-- **Il Portale per Khyber**: Al centro dell'officina si trova un montacarichi arcano o una crepa nella roccia che conduce a una "tasca" di Khyber.
+### Stanza 1: L'Ascensore Velato (The Veiled Elevator)
+Questo enorme montacarichi scende per centinaia di metri. 
+- **Incontro**: 2 **Ombre** (Shadows) emergono dalle pareti durante la discesa, attratte dal calore vitale dei PG. 
+- **Meccanica**: Il montacarichi trema violentemente. I PG devono superare un TS Forza (Atletica) o Destrezza (Acrobazia) CD 12 ogni round per non cadere proni.
 
-## Atto 2: Il Laboratorio in Khyber
-Questa zona è pervasa da un'aura inquietante. Le pareti sembrano fatte di roccia pulsante e l'aria sa di ozono e decadimento.
+### Stanza 2: Le Vasche degli Incubi (The Nightmare Vats)
+Una caverna naturale in Khyber dove stalattiti di cristallo drago (Dragonshard) nero pendono dal soffitto.
+- **Descrizione**: Grandi vasche di vetro contengono il "Sangue di Drago" in fermentazione. All'interno si vedono sagome evanescenti che gridano in silenzio.
+- **Meccanica**: Zorath distilla la droga catturando gli incubi dei cittadini di Sharn tramite un'antenna psichica collegata a Droaam. 
+- **Sabotaggio**: Distruggere le vasche interrompe la produzione ma rilascia un'ondata di energia psichica: tutti i presenti devono superare un TS Intelligenza CD 14 o subire 3d6 danni psichici.
 
-- **Le Celle**: Qui i PG trovano i 4 membri della ciurma in uno stato di trance violenta.
-- **La Stat "Cultista Delirante"**: Usa le statistiche del PDF originale, ma descrivili come se avessero tratti mostruosi temporanei (vene nere, occhi da rettile).
+### Stanza 3: Le Celle Sognanti (The Dreaming Cells)
+Qui la ciurma di Alara è sospesa in bozzoli di una sostanza traslucida e gommosa.
+- **Stato dei PNG**: Sono collegati a tubicini che pompano la droga nelle loro vene. 
+- **Salvataggio**: Liberarli richiede un'azione e una prova di Destrezza (Sleight of Hand) o Forza (Athletics) CD 15. Una volta liberi, sono confusi (condizione *Stunned*) finché non ricevono l'Antidoto o un incantesimo *Lesser Restoration*.
 
-## Atto 3: Scontro con Zorath, il Tessitore di Incubi (Mind Flayer)
-Zorath non è un semplice mercante, ma un membro d'élite del Daask e una pedina fondamentale delle **Megere (Figlie di Sora Kell)**. È incaricato di "perfezionare" il Sangue di Drago filtrando le visioni dei sogni attraverso le energie di Khyber.
+### Stanza 4: Il Sanctum di Zorath (The Dream Weaver's Sanctum)
+Una piattaforma circolare sospesa su un abisso apparentemente senza fondo. Al centro, un trono d'osso dove siede Zorath.
+- **Incontro Finale**: Zorath non combatte da solo. È protetto da 2 **Grimlock** mutati (usa le stat dei Berserker ma con visione cieca 18m).
+- **L'Ambiente**: Zorath può manipolare l'oscurità della stanza. All'inizio di ogni suo turno, può spegnere una fonte di luce non magica in un raggio di 18m.
 
-### Statistiche: Zorath (Mind Flayer - Grado di Sfida 8)
-- **PF**: 110
-- **CA**: 16 (armatura psichica superiore)
-- **Salvaguardia**: Int +8, Sag +6, Car +7.
-- **Resistenze**: Danni psichici.
-- **Attacco**: Tentacoli +8 (2d10+5 danni psichici + afferrato CD 15). Se la creatura è afferrata alla fine del suo turno, Zorath può tentare di Estrarre il Cervello (10d10 danni perforanti).
-- **Esplosione Psichica (Ricarica 5-6)**: Cono di 18m, TS Intelligenza CD 16 o 5d8+5 danni psichici e stordito per 1 minuto.
-- **Tessitore di Incubi**: Come azione bonus, Zorath può far apparire dei miraggi agli occhi di un PG stordito, costringendolo a subire 2d6 danni psichici extra ogni round.
-- **Connessione con le Megere**: Zorath comunica telepaticamente con Droaam. Se muore, le sue ultime parole sono un avvertimento: "Le madri hanno visto il vostro futuro... ed è polvere."
+---
 
-## Conclusione e Il Palio
-Dopo aver liberato la ciurma e distrutto il laboratorio:
-- I PG tornano in superficie appena in tempo per l'inizio del Palio.
-- Se la ciurma è troppo ferita, i PG devono sostituirli sulla *Thavik's Arrow*.
-- **Ricompensa**: Saidan Boromar offre 2000 mo totali e il favore della famiglia.
+## SCHEDE PNG: LA CIURMA
+Se curati, i membri della ciurma possono agire nel round dei PG con statistiche semplificate:
+
+- **Runa**: CA 14, PF 30. Attacco: Arco Lungo +5 (1d8+3).
+- **Jassil**: CA 15, PF 25. Attacco: Stocco +6 (1d8+4 + 2d6 Furtivo se ha vantaggio).
+- **Toric**: CA 16, PF 35. Può usare un'azione per riparare oggetti o fornire +2 alla CA a un alleato adiacente (Scudo di Fortuna).
+- **Nym**: CA 12, PF 22. Incantesimi: *Dardi Incantati* (3/giorno), *Scudo* (2/giorno), *Raggio di Gelo* (+5 a colpire).
+
+---
+
+## TATTICHE DI ZORATH & CONNESSIONI
+**Zorath il Tessitore di Incubi** usa il terrore come arma:
+1.  **Priorità**: Cerca di stordire il curatore o il mago del gruppo con l'Esplosione Psichica.
+2.  **Miraggi**: Usa l'azione bonus "Tessitore di Incubi" sul bersaglio stordito per infliggere danni costanti senza usare azioni principali.
+3.  **Fuga**: Se ridotto a meno di 15 PF, Zorath tenta di usare *Invisibilità* per fuggire verso un portale planare che porta a Droaam. Riuscirci o meno può cambiare drasticamente l'Atto 2 della campagna.
+
+**Messaggio delle Megere**: Zorath porta un amuleto con il simbolo delle Figlie di Sora Kell. Se esaminato, l'amuleto permette a **Sora Katra** di parlare brevemente ai PG attraverso il cadavere di Zorath o telepaticamente prima che muoia: *"Siete curiosi, piccoli eroi. Ma sapete cosa succede a chi infila la testa nella tana della lupa?"*
