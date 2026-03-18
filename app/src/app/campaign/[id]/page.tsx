@@ -10,6 +10,7 @@ import AiAssistantChat from "@/components/dm/AiAssistantChat";
 import NpcGenerator from "@/components/dm/NpcGenerator";
 import NpcList from "@/components/dm/NpcList";
 import SpellCompendium from "@/components/dm/SpellCompendium";
+import CombatTracker from "@/components/dm/CombatTracker";
 import MageHandLogo from "@/components/ui/MageHandLogo";
 import { calculateEquipmentBonuses, type EquipmentItem } from "@/components/character/EquipmentManager";
 import { ArrowLeft, Menu } from "lucide-react";
@@ -75,7 +76,7 @@ export default function CampaignPage() {
     const [loading, setLoading] = useState(true);
     const [slowLoading, setSlowLoading] = useState(false);
     const [copied, setCopied] = useState(false);
-    const [activeTab, setActiveTab] = useState<"party" | "sessions" | "lore" | "npcs" | "spells" | "camp">("party");
+    const [activeTab, setActiveTab] = useState<"party" | "combat" | "sessions" | "lore" | "npcs" | "spells" | "camp">("party");
     const [npcRefreshTrigger, setNpcRefreshTrigger] = useState(0);
 
     // Settings Drawer state
@@ -374,6 +375,12 @@ export default function CampaignPage() {
                     onClick={() => setActiveTab('party')}
                 >
                     Party
+                </button>
+                <button
+                    className={`${styles.tabBtn} ${activeTab === 'combat' ? styles.tabBtnActive : ''}`}
+                    onClick={() => setActiveTab('combat')}
+                >
+                    Combattimento
                 </button>
                 {isMaster && (
                     <>
@@ -718,6 +725,10 @@ export default function CampaignPage() {
                         </div>
                     </section>
                 </>
+            )}
+
+            {activeTab === "combat" && (
+                <CombatTracker campaignId={campaignId} isMaster={isMaster} />
             )}
 
             {
