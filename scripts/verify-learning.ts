@@ -12,12 +12,17 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function verify() {
-    console.log('🔍 Checking Supabase for latest chunks of "materiale-sorgente/appunti-campagna.txt"...');
+    console.log('🔍 Checking Supabase for latest chunks of the core rulebooks...');
 
     const { data, error } = await supabase
         .from('document_chunks')
         .select('chunk_content, document_name')
-        .eq('document_name', 'materiale-sorgente/appunti-campagna.txt')
+        .in('document_name', [
+            'materiale-sorgente/appunti-campagna.txt',
+            'materiale-sorgente/players_handbook.txt',
+            'materiale-sorgente/Tashas_Cauldron_of_Everything.txt',
+            'materiale-sorgente/tcoe.txt',
+        ])
         .order('id', { ascending: false });
 
     if (error) {
@@ -27,8 +32,9 @@ async function verify() {
 
     if (data && data.length > 0) {
         console.log(`✅ Found ${data.length} chunks.`);
-        const hasSession3 = data.some(chunk => chunk.chunk_content.includes('Sessione 3'));
-        const hasTheCage = data.some(chunk => chunk.chunk_content.includes('The Cage'));
+        const hasSession3 = data.some(chunk => chunk.document_name === 'materiale-sorgente/appunti-campagna.txt' && chunk.chunk_content.includes('Sessione 3'));
+        const hasPlayersHandbook = data.some(chunk => chunk.document_name === 'materiale-sorgente/players_handbook.txt');
+        const hasTasha = data.some(chunk => chunk.document_name === 'materiale-sorgente/tcoe.txt');
 
         if (hasSession3) {
             console.log('✨ "Sessione 3" is INDEXED!');
@@ -36,10 +42,16 @@ async function verify() {
             console.log('⚠️ "Sessione 3" is NOT found in the index.');
         }
 
-        if (hasTheCage) {
-            console.log('✨ "The Cage" is INDEXED!');
+        if (hasPlayersHandbook) {
+            console.log('✨ "players_handbook.txt" is INDEXED!');
         } else {
-            console.log('⚠️ "The Cage" is NOT found in the index.');
+            console.log('⚠️ "players_handbook.txt" is NOT found in the index.');
+        }
+
+        if (hasTasha) {
+            console.log('✨ "tcoe.txt" is INDEXED!');
+        } else {
+            console.log('⚠️ "tcoe.txt" is NOT found in the index.');
         }
 
         console.log('\n--- SAMPLE CONTENT FROM LATEST CHUNKS ---');

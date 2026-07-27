@@ -14,7 +14,9 @@ export interface LoreFile {
 
 const SHARED_FILE_PATHS = new Set([
     'materiale-sorgente/Dungeon and Dragons Manuale del giocatore (1).txt',
+    'materiale-sorgente/players_handbook.txt',
     'materiale-sorgente/Tashas_Cauldron_of_Everything.txt',
+    'materiale-sorgente/tcoe.txt',
     'materiale-sorgente/eberron rinascita dopo l\'ultima guerra.txt',
     'materiale-sorgente/esplorando eberron.txt',
     'materiale-sorgente/profezia-eterna-notte.txt',
