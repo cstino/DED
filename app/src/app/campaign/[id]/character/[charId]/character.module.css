@@ -32,7 +32,7 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: var(--space-lg);
-    padding-top: var(--safe-top);
+    padding-top: var(--campaign-top-offset);
 }
 
 .backBtn {

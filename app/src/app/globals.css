@@ -70,6 +70,7 @@
 
   /* Safe Area Offsets */
   --safe-top: calc(env(safe-area-inset-top, 0px) + 32px);
+  --campaign-top-offset: calc(env(safe-area-inset-top, 0px) + 40px);
 }
 
 /* ---------- Reset & Base ---------- */

@@ -28,6 +28,7 @@
 
 /* Header */
 .header {
+    padding-top: var(--campaign-top-offset);
     margin-bottom: var(--space-xl);
 }
 
@@ -60,7 +61,7 @@
 .heroHeader {
     position: relative;
     margin: calc(var(--space-lg) * -1) calc(var(--space-lg) * -1) var(--space-xl);
-    padding: var(--safe-top) var(--space-lg) var(--space-lg);
+    padding: var(--campaign-top-offset) var(--space-lg) var(--space-lg);
     min-height: 240px;
     display: flex;
     flex-direction: column;

@@ -47,6 +47,7 @@
 .formContainer {
     max-width: 600px;
     margin: 0 auto;
+    padding-top: var(--campaign-top-offset);
 }
 
 .title {

@@ -12,7 +12,7 @@
     left: 0;
     width: 100%;
     z-index: 10;
-    padding: var(--safe-top) var(--space-lg) var(--space-lg);
+    padding: var(--campaign-top-offset) var(--space-lg) var(--space-lg);
     pointer-events: none;
 }
 
