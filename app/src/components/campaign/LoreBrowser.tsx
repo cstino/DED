@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -25,9 +25,10 @@ function collectFolders(items: LoreFile[], prefix = ''): { path: string; name: s
 
 interface LoreBrowserProps {
     isMaster?: boolean;
+    campaignSlug?: string;
 }
 
-export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
+export function LoreBrowser({ isMaster = false, campaignSlug = "" }: LoreBrowserProps) {
     const [tree, setTree] = useState<LoreFile[]>([]);
     const [selectedPath, setSelectedPath] = useState<string | null>(null);
     const [content, setContent] = useState<string>("");
@@ -51,10 +52,42 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const createTextareaRef = useRef<HTMLTextAreaElement>(null);
     const editTextareaRef = useRef<HTMLTextAreaElement>(null);
+    const campaignQuery = campaignSlug ? `&campaign=${encodeURIComponent(campaignSlug)}` : "";
+
+    const fetchTree = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/lore?campaign=${encodeURIComponent(campaignSlug)}`);
+            if (res.ok) {
+                const data = await res.json();
+                setTree(data.tree || []);
+            }
+        } catch (error) {
+            console.error("Failed to fetch lore tree:", error);
+        }
+        setLoading(false);
+    }, [campaignSlug]);
+
+    const fetchContent = useCallback(async (pathStr: string) => {
+        setLoadingContent(true);
+        try {
+            const res = await fetch(`/api/lore?path=${encodeURIComponent(pathStr)}${campaignQuery}`);
+            if (res.ok) {
+                const data = await res.json();
+                setContent(data.content || "");
+            } else {
+                setContent("Errore durante il caricamento del file.");
+            }
+        } catch (error) {
+            console.error("Failed to fetch lore content:", error);
+            setContent("Errore di rete.");
+        }
+        setLoadingContent(false);
+    }, [campaignQuery]);
 
     useEffect(() => {
         fetchTree();
-    }, []);
+    }, [fetchTree]);
 
     // Persistence logic
     useEffect(() => {
@@ -93,43 +126,12 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
         if (selectedPath) {
             fetchContent(selectedPath);
         }
-    }, [selectedPath]);
-
-    async function fetchTree() {
-        setLoading(true);
-        try {
-            const res = await fetch("/api/lore");
-            if (res.ok) {
-                const data = await res.json();
-                setTree(data.tree || []);
-            }
-        } catch (error) {
-            console.error("Failed to fetch lore tree:", error);
-        }
-        setLoading(false);
-    }
-
-    async function fetchContent(pathStr: string) {
-        setLoadingContent(true);
-        try {
-            const res = await fetch(`/api/lore?path=${encodeURIComponent(pathStr)}`);
-            if (res.ok) {
-                const data = await res.json();
-                setContent(data.content || "");
-            } else {
-                setContent("Errore durante il caricamento del file.");
-            }
-        } catch (error) {
-            console.error("Failed to fetch lore content:", error);
-            setContent("Errore di rete.");
-        }
-        setLoadingContent(false);
-    }
+    }, [selectedPath, fetchContent]);
 
     async function handleCreateFile(e: React.FormEvent) {
         e.preventDefault();
         try {
-            const res = await fetch("/api/lore", {
+            const res = await fetch(`/api/lore?campaign=${encodeURIComponent(campaignSlug)}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name: newName, content: newContent }),
@@ -154,7 +156,7 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
         if (!selectedPath) return;
         setIsSyncing(true);
         try {
-            const res = await fetch("/api/lore", {
+            const res = await fetch(`/api/lore?campaign=${encodeURIComponent(campaignSlug)}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ path: selectedPath, content: editContent }),
@@ -179,7 +181,7 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
         if (!confirm(`Sei sicuro di voler eliminare il file "${pathStr}"?`)) return;
 
         try {
-            const res = await fetch(`/api/lore?path=${encodeURIComponent(pathStr)}`, {
+            const res = await fetch(`/api/lore?path=${encodeURIComponent(pathStr)}${campaignQuery}`, {
                 method: "DELETE",
             });
 
@@ -202,7 +204,7 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
     async function handleMoveFile(targetFolder: string) {
         if (!movingPath) return;
         try {
-            const res = await fetch("/api/lore", {
+            const res = await fetch(`/api/lore?campaign=${encodeURIComponent(campaignSlug)}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ from: movingPath, to: targetFolder }),
@@ -229,7 +231,7 @@ export function LoreBrowser({ isMaster = false }: LoreBrowserProps) {
         e.preventDefault();
         if (!newFolderName.trim()) return;
         try {
-            const res = await fetch("/api/lore", {
+            const res = await fetch(`/api/lore?campaign=${encodeURIComponent(campaignSlug)}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ action: "create-folder", folderPath: newFolderName.trim() }),

@@ -728,7 +728,7 @@ export default function CampaignPage() {
 
             {
                 activeTab === "lore" && (
-                    <LoreBrowser isMaster={isMaster} />
+                    <LoreBrowser isMaster={isMaster} campaignSlug={campaign.name} />
                 )
             }
 

@@ -33,7 +33,7 @@
     justify-content: space-between;
     margin-bottom: var(--space-lg);
     min-height: 48px;
-    /* Altezza minima per cliccabilità */
+    padding-top: var(--campaign-top-offset);
 }
 
 .backBtn {
@@ -2374,3 +2374,4 @@
 .saveErrorClose:hover {
     opacity: 1;
 }
+

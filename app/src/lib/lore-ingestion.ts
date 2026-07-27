@@ -4,9 +4,11 @@ import { createClient } from '@supabase/supabase-js';
 const geminiKeys = (process.env.GOOGLE_GENERATIVE_AI_API_KEY || "").split(',').map(k => k.trim()).filter(Boolean);
 
 const getSupabase = () => {
+    // Priority to Service Role Key for administrative tasks (like reindexing via script)
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
     return createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        key
     );
 };
 
