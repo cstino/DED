@@ -3,6 +3,61 @@ import { streamText } from 'ai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@supabase/supabase-js';
 
+const CHAT_MODEL_FALLBACKS = [
+    'gemini-3.5-flash',
+    'gemini-3.1-flash-lite',
+] as const;
+
+function isQuotaError(err: any) {
+    const errorMessage = (err?.message || '').toLowerCase();
+    const lastErrorMessage = (err?.lastError?.message || '').toLowerCase();
+    const statusCode = err?.status || err?.statusCode || err?.lastError?.statusCode;
+
+    return (
+        statusCode === 429 ||
+        errorMessage.includes('429') ||
+        errorMessage.includes('quota') ||
+        lastErrorMessage.includes('429') ||
+        lastErrorMessage.includes('quota')
+    );
+}
+
+async function streamChatWithFallback({
+    geminiKeys,
+    systemPrompt,
+    messages,
+}: {
+    geminiKeys: string[];
+    systemPrompt: string;
+    messages: any[];
+}) {
+    let lastQuotaError: any;
+
+    for (const modelId of CHAT_MODEL_FALLBACKS) {
+        for (const key of geminiKeys) {
+            try {
+                const google = createGoogleGenerativeAI({ apiKey: key });
+                const result = await streamText({
+                    model: google(modelId) as any,
+                    system: systemPrompt,
+                    messages,
+                    maxRetries: 0,
+                });
+                return result.toDataStreamResponse();
+            } catch (err: any) {
+                if (isQuotaError(err)) {
+                    console.log(`🔄 Chat quota exceeded for ${modelId} on one key, trying next fallback...`);
+                    lastQuotaError = err;
+                    continue;
+                }
+                throw err;
+            }
+        }
+    }
+
+    throw lastQuotaError || new Error("Tutte le chiavi API e i modelli disponibili hanno esaurito la quota.");
+}
+
 // Initialize Supabase client for vector similarity search
 export async function POST(req: Request) {
     // Initialize Supabase inside the handler to avoid build-time errors if env vars are missing
@@ -87,40 +142,11 @@ export async function POST(req: Request) {
         6. Rispondi in italiano. Sii conciso e diretto, sei al tavolo da gioco e il Master ha bisogno di informazioni rapide.`;
 
         // 5. Stream the response with Rotation
-        let lastChatError;
-        for (const key of geminiKeys) {
-            try {
-                const google = createGoogleGenerativeAI({ apiKey: key });
-                const result = await streamText({
-                    model: google('gemini-3.1-flash-lite-preview') as any,
-                    system: systemPrompt,
-                    messages,
-                    maxRetries: 0, // Disable internal retries to let our rotation take over
-                });
-                return result.toDataStreamResponse();
-            } catch (err: any) {
-                // Check status code or message for quota errors across ai-sdk wrappers
-                const errorMessage = (err.message || '').toLowerCase();
-                const lastErrorMessage = (err.lastError?.message || '').toLowerCase();
-                const statusCode = err.status || err.statusCode || err.lastError?.statusCode;
-
-                const isQuotaError =
-                    statusCode === 429 ||
-                    errorMessage.includes('429') ||
-                    errorMessage.includes('quota') ||
-                    lastErrorMessage.includes('429') ||
-                    lastErrorMessage.includes('quota');
-
-                if (isQuotaError) {
-                    console.log(`🔄 Chat quota exceeded for a key, trying next...`);
-                    lastChatError = err;
-                    continue; // Prova con la chiave successiva
-                }
-                throw err;
-            }
-        }
-
-        throw lastChatError || new Error("Tutte le chiavi API hanno esaurito la quota giornaliera.");
+        return await streamChatWithFallback({
+            geminiKeys,
+            systemPrompt,
+            messages,
+        });
 
     } catch (error: any) {
         console.error('API Chat Error:', error);

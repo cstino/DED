@@ -3,6 +3,24 @@ import { generateObject } from 'ai';
 import { z } from 'zod';
 
 export const maxDuration = 60; // Allow up to 60s for generation
+const GENERATION_MODEL_FALLBACKS = [
+    'gemini-3.5-flash',
+    'gemini-3.1-flash-lite',
+] as const;
+
+function isQuotaError(err: any) {
+    const errorMessage = (err?.message || '').toLowerCase();
+    const lastErrorMessage = (err?.lastError?.message || '').toLowerCase();
+    const statusCode = err?.status || err?.statusCode || err?.lastError?.statusCode;
+
+    return (
+        statusCode === 429 ||
+        errorMessage.includes('429') ||
+        errorMessage.includes('quota') ||
+        lastErrorMessage.includes('429') ||
+        lastErrorMessage.includes('quota')
+    );
+}
 
 const npcSchema = z.object({
     name: z.string().describe("Nome completo dell'NPC, coerente con la razza scelta"),
@@ -88,33 +106,33 @@ Le azioni devono includere danni esatti in notazione D&D (es. "1d8+3 danni perfo
 Rispondi in italiano.`;
 
         let lastError;
-        for (const key of geminiKeys) {
-            try {
-                const google = createGoogleGenerativeAI({ apiKey: key });
-                const result = await generateObject({
-                    model: google('gemini-3.1-flash-lite-preview'),
-                    schema,
-                    system: systemPrompt,
-                    prompt: `Genera: ${prompt}`,
-                    maxRetries: 0,
-                });
+        for (const modelId of GENERATION_MODEL_FALLBACKS) {
+            for (const key of geminiKeys) {
+                try {
+                    const google = createGoogleGenerativeAI({ apiKey: key });
+                    const result = await generateObject({
+                        model: google(modelId),
+                        schema,
+                        system: systemPrompt,
+                        prompt: `Genera: ${prompt}`,
+                        maxRetries: 0,
+                    });
 
-                return new Response(
-                    JSON.stringify({ result: result.object, type: isMonster ? 'monster' : 'npc' }),
-                    { status: 200, headers: { 'Content-Type': 'application/json' } }
-                );
-            } catch (err: any) {
-                const errorMessage = (err.message || '').toLowerCase();
-                const isQuotaError = errorMessage.includes('429') || errorMessage.includes('quota');
-                if (isQuotaError) {
-                    lastError = err;
-                    continue;
+                    return new Response(
+                        JSON.stringify({ result: result.object, type: isMonster ? 'monster' : 'npc' }),
+                        { status: 200, headers: { 'Content-Type': 'application/json' } }
+                    );
+                } catch (err: any) {
+                    if (isQuotaError(err)) {
+                        lastError = err;
+                        continue;
+                    }
+                    throw err;
                 }
-                throw err;
             }
         }
 
-        throw lastError || new Error("Tutte le chiavi API hanno esaurito la quota.");
+        throw lastError || new Error("Tutte le chiavi API e i modelli disponibili hanno esaurito la quota.");
 
     } catch (error: any) {
         console.error('API Generate Error:', error);

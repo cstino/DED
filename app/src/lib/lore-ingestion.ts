@@ -14,6 +14,13 @@ const getSupabase = () => {
 
 const CHUNK_SIZE = 3000;
 const CHUNK_OVERLAP = 300;
+const EMBEDDING_DELAY_MS = 700;
+const QUOTA_BACKOFF_MS = 35000;
+const MAX_EMBEDDING_RETRIES = 5;
+
+function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function chunkText(text: string, chunkSize: number, overlap: number): string[] {
     const chunks: string[] = [];
@@ -59,10 +66,31 @@ export async function reindexFile(relativePath: string, content: string) {
 
     const chunks = chunkText(cleanText, CHUNK_SIZE, CHUNK_OVERLAP);
 
-    // 2. Generate embeddings for each chunk
-    const newChunks = await Promise.all(chunks.map(async (chunk, index) => {
-        const embedding = await getEmbedding(chunk);
-        return {
+    // 2. Generate embeddings for each chunk, one at a time, to stay under Gemini rate limits
+    const newChunks = [];
+    for (let index = 0; index < chunks.length; index++) {
+        const chunk = chunks[index];
+        let embedding: number[] | undefined;
+
+        for (let attempt = 0; attempt < MAX_EMBEDDING_RETRIES; attempt++) {
+            try {
+                embedding = await getEmbedding(chunk);
+                break;
+            } catch (err: any) {
+                const isQuotaError = err?.message?.includes('429') || err?.message?.toLowerCase?.().includes('quota');
+                if (!isQuotaError || attempt === MAX_EMBEDDING_RETRIES - 1) {
+                    throw err;
+                }
+                console.log(`Rate limit hit for ${relativePath} [${index + 1}/${chunks.length}], waiting ${QUOTA_BACKOFF_MS / 1000}s before retry...`);
+                await sleep(QUOTA_BACKOFF_MS);
+            }
+        }
+
+        if (!embedding) {
+            throw new Error(`Failed to generate embedding for ${relativePath} chunk ${index}`);
+        }
+
+        newChunks.push({
             document_name: relativePath,
             chunk_content: chunk,
             embedding: embedding,
@@ -71,8 +99,12 @@ export async function reindexFile(relativePath: string, content: string) {
                 total_chunks: chunks.length,
                 file_type: relativePath.endsWith('.md') ? '.md' : '.txt'
             }
-        };
-    }));
+        });
+
+        if (index < chunks.length - 1) {
+            await sleep(EMBEDDING_DELAY_MS);
+        }
+    }
 
     // 3. Update database (Delete old chunks and insert new ones in a pseudo-transaction)
     // We do delete first
