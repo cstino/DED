@@ -8,17 +8,30 @@ const CHAT_MODEL_FALLBACKS = [
     'gemini-3.1-flash-lite',
 ] as const;
 
-function isQuotaError(err: any) {
+function isRetryableModelError(err: any) {
     const errorMessage = (err?.message || '').toLowerCase();
     const lastErrorMessage = (err?.lastError?.message || '').toLowerCase();
     const statusCode = err?.status || err?.statusCode || err?.lastError?.statusCode;
 
     return (
         statusCode === 429 ||
+        statusCode === 503 ||
         errorMessage.includes('429') ||
+        errorMessage.includes('503') ||
         errorMessage.includes('quota') ||
+        errorMessage.includes('high demand') ||
+        errorMessage.includes('temporarily unavailable') ||
+        errorMessage.includes('service unavailable') ||
+        errorMessage.includes('overload') ||
+        errorMessage.includes('please try again later') ||
         lastErrorMessage.includes('429') ||
-        lastErrorMessage.includes('quota')
+        lastErrorMessage.includes('503') ||
+        lastErrorMessage.includes('quota') ||
+        lastErrorMessage.includes('high demand') ||
+        lastErrorMessage.includes('temporarily unavailable') ||
+        lastErrorMessage.includes('service unavailable') ||
+        lastErrorMessage.includes('overload') ||
+        lastErrorMessage.includes('please try again later')
     );
 }
 
@@ -45,7 +58,7 @@ async function streamChatWithFallback({
                 });
                 return result.toDataStreamResponse();
             } catch (err: any) {
-                if (isQuotaError(err)) {
+                if (isRetryableModelError(err)) {
                     console.log(`🔄 Chat quota exceeded for ${modelId} on one key, trying next fallback...`);
                     lastQuotaError = err;
                     continue;
