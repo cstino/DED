@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { formatSpellDisplayName, getSpellLocalization } from "@/lib/spell-localization";
 import styles from "./SpellBrowser.module.css";
 
 interface Spell {
@@ -204,6 +205,7 @@ export default function SpellBrowser({ knownSpells, onConfirm, onClose }: Props)
                 {/* Spell List */}
                 <div className={styles.spellList}>
                     {allSpells.map((spell: any) => {
+                        const localized = getSpellLocalization(spell.name);
                         const isKnown = selected.includes(spell.name);
                         const isExpanded = expandedId === spell.id;
                         return (
@@ -213,7 +215,7 @@ export default function SpellBrowser({ knownSpells, onConfirm, onClose }: Props)
                                         {spell.level === 0 ? "C" : spell.level}
                                     </span>
                                     <div className={styles.spellInfo}>
-                                        <span className={styles.spellName}>{spell.name}</span>
+                                        <span className={styles.spellName}>{formatSpellDisplayName(spell.name)}</span>
                                         <span className={styles.spellMeta}>
                                             {SCHOOL_IT[spell.school] || spell.school}
                                             {spell.is_concentration && " • 🎯"}
@@ -250,6 +252,9 @@ export default function SpellBrowser({ knownSpells, onConfirm, onClose }: Props)
                                             <span>{spell.duration}</span>
                                         </div>
                                         <p className={styles.spellDesc}>{spell.description}</p>
+                                        {localized?.descriptionIt && (
+                                            <p className={styles.spellDescTranslated}>{localized.descriptionIt}</p>
+                                        )}
                                     </div>
                                 )}
                             </div>

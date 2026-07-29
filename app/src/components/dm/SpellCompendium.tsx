@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { formatSpellDisplayName, getSpellLocalization } from "@/lib/spell-localization";
 import styles from "../character/SpellBrowser.module.css";
 
 interface Spell {
@@ -193,6 +194,7 @@ export default function SpellCompendium() {
             {/* Spell List */}
             <div className={styles.spellList} style={{ maxHeight: '600px' }}>
                 {allSpells.map((spell: any) => {
+                    const localized = getSpellLocalization(spell.name);
                     const isExpanded = expandedId === spell.id;
                     return (
                         <div key={spell.id} className={styles.spellCard}>
@@ -201,7 +203,7 @@ export default function SpellCompendium() {
                                     {spell.level === 0 ? "C" : spell.level}
                                 </span>
                                 <div className={styles.spellInfo}>
-                                    <span className={styles.spellName}>{spell.name}</span>
+                                    <span className={styles.spellName}>{formatSpellDisplayName(spell.name)}</span>
                                     <span className={styles.spellMeta}>
                                         {SCHOOL_IT[spell.school] || spell.school}
                                         {spell.is_concentration && " • 🎯"}
@@ -229,6 +231,9 @@ export default function SpellCompendium() {
                                         <span>{spell.duration}</span>
                                     </div>
                                     <p className={styles.spellDesc}>{spell.description}</p>
+                                    {localized?.descriptionIt && (
+                                        <p className={styles.spellDescTranslated}>{localized.descriptionIt}</p>
+                                    )}
                                 </div>
                             )}
                         </div>

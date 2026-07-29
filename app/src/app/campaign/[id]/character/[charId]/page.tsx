@@ -11,6 +11,7 @@ import EquipmentManager, {
     type EquipmentItem,
 } from "@/components/character/EquipmentManager";
 import SpellBrowser from "@/components/character/SpellBrowser";
+import { formatSpellDisplayName, getSpellLocalization } from "@/lib/spell-localization";
 import {
     ChevronLeft,
     ChevronRight,
@@ -217,7 +218,7 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
                                                             title={preparedSpells?.includes(name) ? "Incantesimo preparato" : "Prepara incantesimo"}
                                                         />
                                                     )}
-                                                    <span className={styles.knownSpellName}>{detail?.name || name}</span>
+                                                    <span className={styles.knownSpellName}>{formatSpellDisplayName(detail?.name || name)}</span>
                                                 </div>
                                                 <div className={styles.knownSpellMeta}>
                                                     {SCHOOL_IT[detail?.school] || (detail?.school ? detail.school : "Sconosciuta")}
@@ -238,17 +239,22 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
                                                 <span className={styles.expandArrow}>{isExpanded ? "▾" : "▸"}</span>
                                             </div>
                                         </div>
-                                        {isExpanded && detail && (
-                                            <div className={styles.spellDetailCard}>
-                                                <div className={styles.spellDetailGrid}>
-                                                    <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Lancio</span><span>{detail.casting_time}</span></div>
-                                                    <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Gittata</span><span>{detail.range}</span></div>
-                                                    <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Componenti</span><span>{detail.components}</span></div>
-                                                    <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Durata</span><span>{detail.duration}</span></div>
-                                                </div>
+                                                {isExpanded && detail && (
+                                                    <div className={styles.spellDetailCard}>
+                                                        <div className={styles.spellDetailGrid}>
+                                                            <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Lancio</span><span>{detail.casting_time}</span></div>
+                                                            <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Gittata</span><span>{detail.range}</span></div>
+                                                            <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Componenti</span><span>{detail.components}</span></div>
+                                                            <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Durata</span><span>{detail.duration}</span></div>
+                                                        </div>
                                                 {detail.description && <p className={styles.spellDetailDesc}>{detail.description}</p>}
-                                            </div>
-                                        )}
+                                                {getSpellLocalization(detail?.name)?.descriptionIt && (
+                                                    <p className={styles.spellDetailDescTranslated}>
+                                                        {getSpellLocalization(detail?.name)?.descriptionIt}
+                                                    </p>
+                                                )}
+                                                    </div>
+                                                )}
                                     </div>
                                 );
                             })}
