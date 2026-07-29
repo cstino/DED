@@ -1,3 +1,5 @@
+import { GENERATED_SPELL_LOCALIZATIONS } from "./spell-localization.generated";
+
 export interface SpellLocalization {
     nameIt?: string;
     descriptionIt?: string;
@@ -305,12 +307,17 @@ const SPELL_LOCALIZATIONS: Record<string, SpellLocalization> = {
 };
 
 function normalizeSpellName(name: string) {
-    return name.trim().replace(/[’']/g, "'").replace(/\s+/g, " ").toLowerCase();
+    return name
+        .trim()
+        .replace(/[\u2018\u2019']/g, "'")
+        .replace(/\s+/g, " ")
+        .toLowerCase();
 }
 
 export function getSpellLocalization(name: string | null | undefined) {
     if (!name) return undefined;
-    return SPELL_LOCALIZATIONS[normalizeSpellName(name)];
+    const normalized = normalizeSpellName(name);
+    return SPELL_LOCALIZATIONS[normalized] || GENERATED_SPELL_LOCALIZATIONS[normalized];
 }
 
 export function formatSpellDisplayName(name: string | null | undefined) {
