@@ -2,10 +2,10 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { streamText } from 'ai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@supabase/supabase-js';
+import { getGeminiKeys } from '@/lib/gemini-keys';
 
 const CHAT_MODEL_FALLBACKS = [
-    'gemini-3.5-flash',
-    'gemini-3.1-flash-lite',
+    'gemini-3.5-flash-lite',
 ] as const;
 
 function isRetryableModelError(err: any) {
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
-    const geminiKeys = (process.env.GOOGLE_GENERATIVE_AI_API_KEY || "").split(',').map(k => k.trim()).filter(Boolean);
+    const geminiKeys = getGeminiKeys();
 
     try {
         const { messages, isPro } = await req.json();

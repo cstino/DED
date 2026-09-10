@@ -19,7 +19,8 @@ import {
     Upload,
     X,
     Plus,
-    Trash2
+    Trash2,
+    Settings2, Shield, Footprints, Zap, Award, Heart, Swords, Backpack, Sparkles, BookOpen, Hexagon
 } from "lucide-react";
 import styles from "./character.module.css";
 
@@ -93,20 +94,20 @@ const SKILLS = [
     { name: "animal_handling", ability: "wis" as const, label: "Addestrare Animali" },
     { name: "arcana", ability: "int" as const, label: "Arcano" },
     { name: "athletics", ability: "str" as const, label: "Atletica" },
+    { name: "stealth", ability: "dex" as const, label: "Furtività" },
+    { name: "investigation", ability: "int" as const, label: "Indagare" },
     { name: "deception", ability: "cha" as const, label: "Inganno" },
-    { name: "history", ability: "int" as const, label: "Storia" },
-    { name: "insight", ability: "wis" as const, label: "Intuizione" },
     { name: "intimidation", ability: "cha" as const, label: "Intimidire" },
-    { name: "investigation", ability: "int" as const, label: "Investigare" },
+    { name: "performance", ability: "cha" as const, label: "Intrattenere" },
+    { name: "insight", ability: "wis" as const, label: "Intuizione" },
     { name: "medicine", ability: "wis" as const, label: "Medicina" },
     { name: "nature", ability: "int" as const, label: "Natura" },
     { name: "perception", ability: "wis" as const, label: "Percezione" },
-    { name: "performance", ability: "cha" as const, label: "Intrattenere" },
     { name: "persuasion", ability: "cha" as const, label: "Persuasione" },
-    { name: "religion", ability: "int" as const, label: "Religione" },
     { name: "sleight_of_hand", ability: "dex" as const, label: "Rapidità di Mano" },
-    { name: "stealth", ability: "dex" as const, label: "Furtività" },
+    { name: "religion", ability: "int" as const, label: "Religione" },
     { name: "survival", ability: "wis" as const, label: "Sopravvivenza" },
+    { name: "history", ability: "int" as const, label: "Storia" },
 ];
 
 function getMod(score: number): number { return Math.floor((score - 10) / 2); }
@@ -852,19 +853,22 @@ export default function CharacterSheetPage() {
     const saveProfs = (editing ? editData.saving_throw_prof : char.saving_throw_prof) as string[];
     const skillProfs = (editing ? editData.skill_proficiencies : char.skill_proficiencies) as string[];
 
-    // Effective values with equipment bonuses
-    const effectiveAc = (editing ? editData.ac ?? char.ac : char.ac) + (equipBonuses["ac"] ?? 0);
+    // Unarmored base AC is always 10 + the current Dexterity modifier.
+    // Stored `ac` values from older characters are deliberately ignored here.
+    const effectiveDexterity = abs.dex + (equipBonuses["dex"] ?? 0);
+    const effectiveAc = 10 + getMod(effectiveDexterity) + (equipBonuses["ac"] ?? 0);
     const effectiveSpeed = (editing ? editData.speed ?? char.speed : char.speed) + (equipBonuses["speed"] ?? 0);
-    const hpPercent = Math.max(0, Math.min(100, ((char.hp_current + char.hp_max) / (2 * char.hp_max)) * 100));
+    const hpPercent = char.hp_max > 0 ? Math.max(0, Math.min(100, (char.hp_current / char.hp_max) * 100)) : 0;
 
     return (
-        <div className="page">
+        <div className={`page ${styles.sheetPage}`}>
             {/* Top Bar */}
             <div className={styles.topBar}>
                 <button className={styles.backBtn} onClick={() => router.push(`/campaign/${campaignId}`)}>
                     <ChevronLeft size={24} />
                     <span>Campagna</span>
                 </button>
+                <span className={styles.sheetLabel}><Hexagon size={16} /> Scheda personaggio</span>
                 {canEdit && (
                     <div className={styles.topActions}>
                         {editing ? (
@@ -877,9 +881,10 @@ export default function CharacterSheetPage() {
                         ) : (
                             <button
                                 className={styles.settingsBtn}
+                                aria-label="Opzioni personaggio"
                                 onClick={() => setShowSettingsMenu(true)}
                             >
-                                <span className={styles.settingsIcon}>⚙</span>
+                                <Settings2 size={20} />
                             </button>
                         )}
                     </div>
@@ -937,11 +942,13 @@ export default function CharacterSheetPage() {
                 </div>
             )}
 
+            <div className={styles.sheetLayout}>
+            <aside className={styles.identityPanel}>
             {/* Character Header */}
             <div
                 className={`${styles.charHeader} ${editing ? styles.charHeaderEditing : ""}`}
-                onClick={() => !editing && char.portrait_url && setShowPortraitFull(true)}
             >
+                {!editing && char.portrait_url && <button className={styles.portraitGalleryBtn} onClick={() => setShowPortraitFull(true)} aria-label="Apri galleria ritratti">Galleria <ChevronRight size={16} /></button>}
                 {/* Background Image & Overlay */}
                 {!editing && (
                     <>
@@ -952,13 +959,13 @@ export default function CharacterSheetPage() {
                                 className={styles.charHeaderBackground}
                             />
                         ) : (
-                            <div className={styles.charHeaderBackground} style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #000 100%)' }} />
+                            <img src="/art/ember-adventurer.webp" alt="" className={styles.charHeaderBackground} />
                         )}
                         <div className={styles.charHeaderOverlay} />
                     </>
                 )}
 
-                {(editing || !char.portrait_url) && (
+                {editing && (
                     <div className={editing ? styles.galleryEditGrid : styles.portraitWrap}>
                         {editing ? (
                             <>
@@ -1041,6 +1048,7 @@ export default function CharacterSheetPage() {
                     </div>
                 )}
                 <div className={styles.charInfo}>
+                    <span className={styles.heroEyebrow}>{char.is_party_member ? 'Membro del party' : 'Avventuriero'}</span>
                     <div className={styles.nameRow}>
                         {editing ? (
                             <input type="text" className={`input ${styles.nameInput}`} value={editData.name ?? ""} onChange={(e) => upd("name", e.target.value)} />
@@ -1113,7 +1121,7 @@ export default function CharacterSheetPage() {
             <div className={styles.combatBar}>
                 <div className={styles.hpBox}>
                     <div className={styles.hpHeader}>
-                        <span className={styles.statLabel}>HP</span>
+                        <span className={styles.statLabel}><Heart size={15} /> Punti ferita</span>
                         {editing ? (
                             <div className={styles.hpEditRow}>
                                 <input type="text" inputMode="text" className={styles.smallInput} value={editData.hp_current ?? ""} onChange={(e) => upd("hp_current", parsePartialInt(e.target.value, editData.hp_current ?? 0) as number)} />
@@ -1122,7 +1130,7 @@ export default function CharacterSheetPage() {
                             </div>
                         ) : canEdit ? (
                             <div className={styles.hpEditRow}>
-                                <input type="text" inputMode="text" className={styles.smallInput} value={char.hp_current} onChange={(e) => setChar((p) => p ? { ...p, hp_current: parsePartialInt(e.target.value, p.hp_current) as number } as Character : null)} onBlur={(e) => {
+                                <input aria-label="Punti ferita attuali" type="text" inputMode="numeric" className={styles.smallInput} value={char.hp_current} onChange={(e) => setChar((p) => p ? { ...p, hp_current: parsePartialInt(e.target.value, p.hp_current) as number } as Character : null)} onBlur={(e) => {
                                     const val = finalizeInt(char.hp_current, 0);
                                     setChar(p => p ? { ...p, hp_current: val } as Character : null);
                                     quickSave("hp_current", val);
@@ -1194,7 +1202,7 @@ export default function CharacterSheetPage() {
                     <div className="hp-bar-container" style={{ height: 8 }}>
                         <div className="hp-bar" style={{
                             width: `${hpPercent}%`,
-                            background: hpPercent > 75 ? "var(--hp-green)" : hpPercent > 50 ? "var(--hp-yellow)" : "var(--hp-red)"
+                            background: hpPercent > 50 ? "var(--hp-green)" : hpPercent > 25 ? "var(--hp-yellow)" : "var(--hp-red)"
                         }} />
                     </div>
                     {(char.hp_temp > 0 || canEdit) && (
@@ -1222,31 +1230,35 @@ export default function CharacterSheetPage() {
                         </div>
                     )}
                 </div>
-                <div className={styles.statBox}><span className={styles.statLabel}>AC</span><span className={styles.statValue}>{effectiveAc}{equipBonuses["ac"] ? <small className={styles.bonusNote}>({fmtMod(equipBonuses["ac"])})</small> : null}</span></div>
-                <div className={styles.statBox}><span className={styles.statLabel}>VEL</span><span className={styles.statValue}>{effectiveSpeed}</span></div>
-                <div className={styles.statBox}><span className={styles.statLabel}>INIT</span><span className={styles.statValue}>{fmtMod(getMod(abs.dex))}</span></div>
+                <div className={styles.statBox}><Shield size={20} /><span className={styles.statLabel}>Armatura</span><span className={styles.statValue}>{effectiveAc}{equipBonuses["ac"] ? <small className={styles.bonusNote}>({fmtMod(equipBonuses["ac"])})</small> : null}</span></div>
+                <div className={styles.statBox}><Footprints size={20} /><span className={styles.statLabel}>Velocità</span><span className={styles.statValue}>{effectiveSpeed}</span></div>
+                <div className={styles.statBox}><Zap size={20} /><span className={styles.statLabel}>Iniziativa</span><span className={styles.statValue}>{fmtMod(getMod(abs.dex))}</span></div>
                 <div className={styles.statBox}>
-                    <span className={styles.statLabel}>BC</span>
+                    <Award size={20} /><span className={styles.statLabel}>Competenza</span>
                     <span className={styles.statValue}>+{pb}</span>
                 </div>
             </div>
+            {!char.portrait_url && <p className={styles.artCaption}>Ritratto illustrativo · Personalizzalo dalle opzioni</p>}
+            </aside>
 
             {/* Tabs */}
-            <div className={styles.tabs}>
+            <main className={styles.dossier}>
+            <nav className={styles.tabs} aria-label="Sezioni della scheda">
                 {([
-                    { id: "stats", label: "Statistiche" },
-                    { id: "combat", label: "Combattimento" },
-                    { id: "equipment", label: "Zaino" },
-                    { id: "spells", label: "Magia" },
-                    { id: "notes", label: "Note" },
+                    { id: "stats", label: "Statistiche", icon: Hexagon },
+                    { id: "combat", label: "Battaglia", icon: Swords },
+                    { id: "equipment", label: "Zaino", icon: Backpack },
+                    { id: "spells", label: "Magia", icon: Sparkles },
+                    { id: "notes", label: "Note", icon: BookOpen },
                 ] as const).map((tab) => (
-                    <button key={tab.id} className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ""}`} onClick={() => setActiveTab(tab.id)}>
+                    <button key={tab.id} aria-current={activeTab === tab.id ? 'page' : undefined} aria-controls="character-section" className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ""}`} onClick={() => setActiveTab(tab.id)}>
+                        <tab.icon size={20} strokeWidth={1.7} />
                         {tab.label}
                     </button>
                 ))}
-            </div>
+            </nav>
 
-            <div className={styles.tabContent}>
+            <div id="character-section" className={styles.tabContent}>
                 {/* ====== STATS TAB ====== */}
                 {activeTab === "stats" && (
                     <>
@@ -1980,6 +1992,8 @@ export default function CharacterSheetPage() {
                 })()}
             </div>
 
+            </main>
+            </div>
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
                 <div className={styles.modalOverlay}>

@@ -800,3 +800,59 @@
     color: var(--text-muted);
     font-weight: 500;
 }
+
+/* Ember campaign: portrait-led party roster, in the user's hero-selection world. */
+.campaignPage { max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
+.heroHeader { min-height: 340px; margin: 0 -32px 24px; padding: 28px 32px 32px; border-radius: 0 0 28px 28px; }
+.heroBackground { object-position: center; }
+.heroOverlay { background: linear-gradient(90deg, #100e0dd9, #100e0d33), linear-gradient(0deg, #100e0d, transparent 90%); }
+.headerInfo :global(.page-title) { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; letter-spacing: -.035em; max-width: 800px; overflow-wrap: anywhere; }
+.headerInfo :global(.page-subtitle) { max-width: 65ch; }
+.campaignEyebrow { color: #eeb283; font-size: .8rem; margin: 20px 0 10px; }
+.tabsContainer { position: sticky; top: 8px; z-index: 20; border: 1px solid #443225; background: #211a16f5; border-radius: 14px; padding: 6px; gap: 4px; margin: 0 0 32px; }
+.tabBtn { min-height: 44px; padding: 10px 18px; color: #c6b8a9; border-radius: 9px; font-size: .85rem; }
+.tabBtnActive { color: #ffc29d; background: #42291c; box-shadow: none; }
+.section { margin-bottom: 40px; }
+.sectionHeader { margin-bottom: 20px; gap: 12px; }
+.sectionHeader h2 { font-size: 1.3rem; color: #f7e8d9; }
+.characterGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.characterCard { min-height: 390px; justify-content: flex-end; border: 1px solid #503726; padding: 24px; border-radius: 24px; background: #17120f url('/art/ember-adventurer.webp') center 15% / cover; box-shadow: none; backdrop-filter: none; }
+.charCardBackground { opacity: 1; object-position: center 20%; }
+.charCardOverlay { background: linear-gradient(180deg, transparent 0%, #130e0966 22%, #130e09ed 57%, #130e09 100%); }
+.characterCard:hover .charCardBackground { opacity: 1; transform: scale(1.035); }
+.characterCard:focus-visible { outline: 2px solid #ffb28e; outline-offset: 4px; }
+.charHeader { gap: 10px; }
+.charHeader h3 { font-weight: 750; font-size: 1.6rem; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.levelBadge { background: #4c2b19; border-color: #956540; color: #ffd0a7; white-space: nowrap; letter-spacing: 0; padding: 4px 8px; }
+.cardPortraitFallback { display: none; }
+.charInfo { font-size: .8rem; color: #e7cdb6; margin-bottom: 20px; }
+.hpLabel { color: #eac09a; }
+.hpBarOuter { height: 5px; border: none; background: #514034; }
+.hpNumbers { font-size: .9rem; }
+.statBadge { background: transparent; border: 0; border-right: 1px solid #594132; border-radius: 0; padding: 4px; }
+.statBadge:last-child { border-right: 0; }
+.statLabel { color: #c5a78e; font-size: .65rem; }
+.statValue { color: #fff1e0; }
+.charOwner { color: #c6b8a9; font-size: .75rem; margin-top: 16px; }
+.inviteBtn { min-height: 44px; background: #2e2017; border-color: #64462f; color: #f4c296; }
+.emptyCard { background: #1d1713; border-color: #493325; padding: 40px 24px; }
+.campHero { background: #1c1612; border-color: #493325; }
+@media (max-width: 1000px) { .characterGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) {
+    .campaignPage { padding-inline: 20px; }
+    .heroHeader { margin-inline: -20px; min-height: 310px; padding: 20px 20px 24px; }
+    .characterGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .characterCard { min-height: 330px; padding: 14px 12px; border-radius: 20px; }
+    .charHeader { flex-wrap: wrap; gap: 6px; }
+    .charHeader h3 { font-size: 1.2rem; }
+    .charInfo { font-size: .75rem; margin-bottom: 12px; }
+    .charStats { gap: 12px; }
+    .badgesSection { gap: 2px; }
+    .statValue { font-size: 1rem; }
+    .statLabel { font-size: .55rem; }
+    .charOwner { font-size: .7rem; }
+    .tabsContainer { margin-bottom: 24px; }
+    .tabBtn { padding-inline: 14px; }
+    .levelBadge { font-size: .65rem; }
+}
+@media (max-width: 350px) { .characterGrid { grid-template-columns: 1fr; } }

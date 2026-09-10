@@ -2383,3 +2383,136 @@
     opacity: 1;
 }
 
+/* Ember redesign. THESIS: the character is the focal point; the sheet is a
+   practical game instrument. OWN-WORLD: charcoal, bronze, ivory, ember accents.
+   STORY: identify the hero, read health, reach an action. FIRST VIEWPORT:
+   cinematic portrait plus health and defenses; desktop dossier alongside.
+   FORM: hero selection interface, explicitly pinned by the user's reference. */
+.sheetPage {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 20px 32px 48px;
+}
+.topBar { padding-top: env(safe-area-inset-top, 0px); margin-bottom: 24px; gap: 16px; }
+.sheetLabel { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: .8rem; }
+.settingsBtn { width: 44px; height: 44px; background: #231b16; color: #edba8e; border-color: #493629; border-radius: 50%; }
+.backBtn { min-height: 44px; color: var(--text-secondary); }
+.sheetLayout { display: grid; grid-template-columns: minmax(300px, .9fr) minmax(0, 1.3fr); gap: 40px; align-items: start; }
+.identityPanel { min-width: 0; position: sticky; top: 24px; }
+.dossier { min-width: 0; padding-top: 4px; }
+.charHeader {
+    height: clamp(400px, 48vw, 570px);
+    margin: 0;
+    padding: 32px;
+    border: 0;
+    border-radius: 28px 28px 0 0;
+    background: #17120f;
+}
+.charHeaderBackground { opacity: 1; object-position: center 24%; }
+.charHeader { cursor: default; }
+.portraitGalleryBtn { position: absolute; right: 20px; top: 20px; z-index: 4; display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 14px; border-radius: 30px; border: 1px solid #987251; background: #1b120deb; color: #ffe5cf; font: inherit; font-size: .75rem; cursor: pointer; }
+.charHeaderOverlay { background: linear-gradient(180deg, transparent 30%, #100e0d80 60%, #100e0d 100%); }
+.charHeader:hover .charHeaderBackground { opacity: 1; transform: none; }
+.charHeaderEditing { height: auto; min-height: 300px; padding: 24px; border: 1px dashed #6b4c34; border-radius: 20px; margin-bottom: 20px; }
+.heroEyebrow { display: block; margin-bottom: 12px; font-size: .75rem; font-weight: 600; color: #ffd2b7; }
+.charInfo { text-align: left; }
+.charTags { justify-content: flex-start; }
+.heroEyebrow::before { content: ''; display: inline-block; width: 6px; height: 6px; background: #ff9566; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+.charName { font-size: clamp(2.3rem, 4vw, 4rem); letter-spacing: -.035em; line-height: 1.02; font-weight: 800; overflow-wrap: anywhere; text-shadow: 0 3px 16px #100e0d; }
+.nameRow { gap: 4px; flex-wrap: wrap; }
+.charMeta { color: #e0c9b6; font-size: 1rem; font-weight: 500; margin: 14px 0; letter-spacing: 0; }
+.charTags { gap: 6px; }
+.levelTag, .alignTag, .bgTag { font-size: .7rem; padding: 5px 10px; letter-spacing: 0; text-transform: none; border-color: #65503e; background: #241b15; color: #eed7bb; }
+.levelTag { background: #c85028; color: white; border-color: transparent; }
+.combatBar { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0 0 16px; padding: 0 16px 20px; background: #100e0d; border-radius: 0 0 24px 24px; }
+.hpBox { grid-column: 1 / -1; border: 0; border-bottom: 1px solid #3c3027; border-radius: 0; background: none; padding: 16px 8px 24px; margin-bottom: 20px; }
+.hpHeader { margin-bottom: 14px; gap: 12px; }
+.hpBox .statLabel { font-size: .8rem; color: #e5c5ab; text-transform: none; letter-spacing: 0; display: flex; gap: 8px; align-items: center; }
+.hpBox .statLabel svg { color: #f38c65; }
+.hpEditRow { gap: 8px; font-size: 1rem; }
+.hpEditRow .smallInput { min-height: 44px; width: 68px; font-size: 1.5rem; font-weight: 700; border: 1px solid #514031; background: #251c16; }
+.hpValue { font-size: 1.65rem; }
+.hpTemp { margin-top: 12px; color: var(--text-secondary); font-size: .75rem; }
+.hpTemp .tinyInput { min-height: 32px; }
+.statBox { border: 0; border-right: 1px solid #3c3027; border-radius: 0; background: transparent; gap: 8px; min-width: 0; padding: 0 4px; }
+.statBox:last-child { border-right: 0; }
+.statBox > svg { color: #d99966; }
+.statBox .statLabel { font-size: .65rem; letter-spacing: 0; text-transform: none; color: #c6b8a9; }
+.statValue { font-size: 1.5rem; }
+.artCaption { margin-top: 8px; color: var(--text-muted); font-size: .7rem; text-align: center; }
+.tabs { display: flex; position: sticky; top: 12px; z-index: 20; padding: 6px; gap: 2px; border: 1px solid #3c3027; background: #201914f5; border-radius: 16px; margin: 0 0 32px; overflow: visible; }
+.tab { min-width: 0; min-height: 62px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px 6px; color: #bda995; font-size: .7rem; border-radius: 11px; }
+.tab:hover { background: #302219; color: #ffe0c8; }
+.tabActive { color: #ffb68f; background: #3b2419; }
+.tabContent { padding: 0 4px; }
+.sectionTitle { border-bottom: 0; font-size: 1.05rem; color: #f3e2d1; font-weight: 650; padding-bottom: 0; margin: 32px 0 16px; }
+.sectionTitle:first-child { margin-top: 0; }
+.abilitiesGrid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.abilityCard { position: relative; padding: 18px 4px 14px; gap: 10px; background: linear-gradient(160deg, #33231a, #1a1613 70%); border: 1px solid #563c2a; border-radius: 14px; }
+.abilityLabel { color: #eeb283; font-size: .65rem; letter-spacing: .05em; }
+.abilityScore { font-size: 1.65rem; }
+.abilityMod { color: #ffbb92; font-size: .9rem; background: #3b281d; border: 0; border-radius: 6px; padding: 2px 9px; }
+.abilityName { display: none; }
+.savesList { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px 20px; }
+.saveRow, .skillRow { min-height: 44px; padding: 10px 8px; border-bottom: 1px solid #302720; background: transparent; }
+.saveProf, .skillProf { background: #251b1355; }
+.saveName, .skillName { font-size: .85rem; }
+.saveName { color: #cebcaa; }
+.saveMod, .skillMod { color: #efc091; font-size: .95rem; }
+.profDot { border-color: #77614e; }
+.profDotActive { border-color: #ff9566; background: #ff9566; }
+.skillsList { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; }
+.skillAbility { color: #b09a84; }
+.abilityInput, .smallInput, .tinyInput, .moneyInput { color: #faf3e9; border-color: #594435; }
+.combatGroup, .statsGroup { min-width: 0; }
+.classAbilityEditCard, .noteCard, .moneyItem, .slotItem { background: #1c1815; border-color: #443225; }
+.noteText, .item, .spellHint { color: #d4c3b2; }
+.classAbilityViewCard { background: #1c1815; border-color: #443225; }
+.galleryItemActions { opacity: 1; background: transparent; }
+.savingIndicator { margin-left: 0; }
+.sheetPage :is(button, a, input, textarea):focus-visible { outline: 2px solid #ffb28e; outline-offset: 3px; }
+.sidePanel { --text-primary: #faf3e9; --text-secondary: #c6b8a9; --text-muted: #ad9e90; --accent-teal: #ff9566; }
+.sidePanelContent, .modalContent { background: #1c1815; border-color: #493629; }
+.sidePanelClose:focus-visible, .sidePanelItem:focus-visible { outline: 2px solid #ffb28e; outline-offset: 2px; }
+
+@media (min-width: 1500px) { .sheetLayout { gap: 64px; } }
+@media (max-width: 1100px) and (min-width: 901px) {
+    .sheetPage { padding-inline: 24px; }
+    .sheetLayout { gap: 24px; grid-template-columns: minmax(280px, .8fr) minmax(0, 1.2fr); }
+    .abilitiesGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .skillsList { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+    .sheetPage { max-width: 680px; padding: 12px 20px calc(112px + env(safe-area-inset-bottom, 0px)); }
+    .sheetLayout { display: block; }
+    .identityPanel { position: static; }
+    .topBar { margin-bottom: 8px; }
+    .sheetLabel { font-size: .7rem; }
+    .sheetLabel svg { display: none; }
+    .charHeader { height: 390px; padding: 24px 20px; border-radius: 24px 24px 0 0; }
+    .charHeaderEditing { height: auto; }
+    .charName { font-size: clamp(2.3rem, 9vw, 3.3rem); }
+    .charMeta { font-size: .9rem; }
+    .combatBar { padding: 0 12px 20px; margin-bottom: 24px; }
+    .dossier { padding-top: 24px; }
+    .tabs { position: fixed; top: auto; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); width: calc(100% - 24px); max-width: 600px; margin: 0; padding: 5px; background: #231b16f5; backdrop-filter: blur(16px); box-shadow: 0 10px 30px #0008; }
+    .tab { min-height: 60px; font-size: .65rem; gap: 5px; padding-inline: 2px; }
+    .abilitiesGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .abilityCard { padding: 16px 8px; display: grid; grid-template-columns: 1fr auto; gap: 8px; text-align: left; align-items: center; }
+    .abilityLabel { grid-column: 1 / -1; }
+    .abilityScore { font-size: 1.8rem; }
+    .abilityMod { padding: 2px 7px; }
+    .skillsList { grid-template-columns: 1fr; }
+    .skillRow { min-height: 48px; }
+    .savesList { column-gap: 12px; }
+    .saveName { font-size: .75rem; }
+    .artCaption { margin-top: -10px; }
+    .tabContent { padding: 0; }
+}
+@media (max-width: 360px) {
+    .sheetPage { padding-inline: 14px; }
+    .sheetLabel { display: none; }
+    .statBox .statLabel { font-size: .6rem; }
+    .savesList { grid-template-columns: 1fr; }
+    .tab { font-size: .6rem; }
+}

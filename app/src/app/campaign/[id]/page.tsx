@@ -62,6 +62,12 @@ interface NpcPartyMember {
     portrait_url?: string | null;
 }
 
+function getCharacterArmorClass(character: Character): number {
+    const equipmentBonuses = calculateEquipmentBonuses(character.equipment || []);
+    const dexterity = (character.ability_scores?.dex ?? 10) + (equipmentBonuses["dex"] ?? 0);
+    return 10 + Math.floor((dexterity - 10) / 2) + (equipmentBonuses["ac"] ?? 0);
+}
+
 export default function CampaignPage() {
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
@@ -315,10 +321,10 @@ export default function CampaignPage() {
         }
     }
 
-    const effectiveHero = campaign.hero_url || campaign.image_url;
+    const effectiveHero = campaign.hero_url || campaign.image_url || '/art/ember-sanctuary.webp';
 
     return (
-        <div className={`page ${isDrawerOpen ? styles.drawerOpen : ""}`} style={{ paddingTop: effectiveHero ? 0 : 'var(--space-lg)' }}>
+        <div className={`page ${styles.campaignPage} ${isDrawerOpen ? styles.drawerOpen : ""}`} style={{ paddingTop: effectiveHero ? 0 : 'var(--space-lg)' }}>
             <div className={effectiveHero ? styles.heroHeader : styles.header}>
                 {effectiveHero && (
                     <>
@@ -349,6 +355,7 @@ export default function CampaignPage() {
                         )}
                     </div>
                     <div className={styles.headerInfo}>
+                        <p className={styles.campaignEyebrow}>Il tuo prossimo capitolo</p>
                         <h1 className="page-title">{campaign.name}</h1>
                         {campaign.description && (
                             <p className="page-subtitle" style={{ color: effectiveHero ? 'rgba(255,255,255,0.8)' : 'var(--text-secondary)' }}>
@@ -445,6 +452,10 @@ export default function CampaignPage() {
                                             <div
                                                 key={char.id}
                                                 className={`card card-glow-teal ${styles.characterCard}`}
+                                                role="link"
+                                                tabIndex={0}
+                                                aria-label={`Apri scheda di ${char.name}`}
+                                                onKeyDown={(e) => { if (e.key === 'Enter' && e.target === e.currentTarget) router.push(`/campaign/${campaignId}/character/${char.id}`); }}
                                                 onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
                                             >
                                                 {char.portrait_url && <img src={char.portrait_url} alt="" className={styles.charCardBackground} />}
@@ -485,7 +496,7 @@ export default function CampaignPage() {
                                                         <div className={styles.statBadge}>
                                                             <span className={styles.statLabel}>AC</span>
                                                             <span className={styles.statValue}>
-                                                                {char.ac + (calculateEquipmentBonuses(char.equipment || [])["ac"] || 0)}
+                                                                {getCharacterArmorClass(char)}
                                                             </span>
                                                         </div>
                                                         <div className={styles.statBadge}>
@@ -525,6 +536,10 @@ export default function CampaignPage() {
                                         <div
                                             key={char.id}
                                             className={`card ${styles.characterCard}`}
+                                            role="link"
+                                            tabIndex={0}
+                                            aria-label={`Apri scheda di ${char.name}`}
+                                            onKeyDown={(e) => { if (e.key === 'Enter' && e.target === e.currentTarget) router.push(`/campaign/${campaignId}/character/${char.id}`); }}
                                             onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
                                         >
                                             {char.portrait_url && <img src={char.portrait_url} alt="" className={styles.charCardBackground} />}
@@ -577,7 +592,7 @@ export default function CampaignPage() {
                                                     <div className={styles.statBadge}>
                                                         <span className={styles.statLabel}>AC</span>
                                                         <span className={styles.statValue}>
-                                                            {char.ac + (calculateEquipmentBonuses(char.equipment || [])["ac"] || 0)}
+                                                            {getCharacterArmorClass(char)}
                                                         </span>
                                                     </div>
                                                     <div className={styles.statBadge}>
@@ -798,6 +813,10 @@ export default function CampaignPage() {
                                             <div
                                                 key={char.id}
                                                 className={`card card-glow-teal ${styles.characterCard}`}
+                                                role="link"
+                                                tabIndex={0}
+                                                aria-label={`Apri scheda di ${char.name}`}
+                                                onKeyDown={(e) => { if (e.key === 'Enter' && e.target === e.currentTarget) router.push(`/campaign/${campaignId}/character/${char.id}`); }}
                                                 onClick={() => router.push(`/campaign/${campaignId}/character/${char.id}`)}
                                             >
                                                 {char.portrait_url && <img src={char.portrait_url} alt="" className={styles.charCardBackground} />}
@@ -848,7 +867,7 @@ export default function CampaignPage() {
                                                         <div className={styles.statBadge}>
                                                             <span className={styles.statLabel}>AC</span>
                                                             <span className={styles.statValue}>
-                                                                {char.ac + (calculateEquipmentBonuses(char.equipment || [])["ac"] || 0)}
+                                                                {getCharacterArmorClass(char)}
                                                             </span>
                                                         </div>
                                                         <div className={styles.statBadge}>
