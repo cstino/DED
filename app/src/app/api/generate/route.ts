@@ -1,11 +1,11 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import { getGeminiKeys } from '@/lib/gemini-keys';
 
 export const maxDuration = 60; // Allow up to 60s for generation
 const GENERATION_MODEL_FALLBACKS = [
-    'gemini-3.5-flash',
-    'gemini-3.1-flash-lite',
+    'gemini-3.5-flash-lite',
 ] as const;
 
 function isRetryableModelError(err: any) {
@@ -92,7 +92,7 @@ const monsterSchema = z.object({
 });
 
 export async function POST(req: Request) {
-    const geminiKeys = (process.env.GOOGLE_GENERATIVE_AI_API_KEY || "").split(',').map(k => k.trim()).filter(Boolean);
+    const geminiKeys = getGeminiKeys();
 
     try {
         const { type, prompt } = await req.json();

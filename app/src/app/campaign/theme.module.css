@@ -1,0 +1,52 @@
+.campaignWorld {
+    --bg-primary: #100e0d;
+    --bg-secondary: #191411;
+    --bg-card: #1c1815;
+    --bg-card-hover: #251f1a;
+    --bg-input: #211c18;
+    --text-primary: #faf3e9;
+    --text-secondary: #c6b8a9;
+    --text-muted: #ad9e90;
+    --accent-teal: #ff9566;
+    --accent-cyan: #ff9566;
+    --accent-teal-dim: #362319;
+    --accent-cyan-dim: #362319;
+    --accent-amber: #efbd79;
+    --border-card: #3c3027;
+    --border-focus: #ff9566;
+    --hp-green: #8ccb9d;
+    --hp-yellow: #efbd79;
+    --hp-red: #ff7169;
+    min-height: 100dvh;
+    background: radial-gradient(ellipse at 80% 0%, #362218 0%, transparent 50%), #100e0d;
+    color: var(--text-primary);
+    color-scheme: dark;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-variant-numeric: tabular-nums;
+}
+
+.campaignWorld :global(.btn-primary) {
+    background: #c85028;
+    color: #fff9f2;
+    border-color: #c85028;
+    box-shadow: none;
+}
+
+.campaignWorld :global(.btn-primary):hover { background: #af421f; }
+.campaignWorld :global(.btn-secondary) { background: #261e19; color: #faf3e9; }
+.campaignWorld :global(.input) { background: var(--bg-input); }
+.campaignWorld :is(button, a, input, textarea, select):focus-visible {
+    outline: 2px solid #ffb28e;
+    outline-offset: 4px;
+}
+.campaignWorld :is(input, textarea, select) { accent-color: #ff9566; }
+.campaignWorld button:disabled { cursor: not-allowed; opacity: .45; }
+
+@media (prefers-reduced-motion: reduce) {
+    .campaignWorld *, .campaignWorld *::before, .campaignWorld *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

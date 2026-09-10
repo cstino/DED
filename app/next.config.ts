@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Keep the local development badge clear of the character navigation dock.
+  devIndicators: false,
   images: {
     remotePatterns: [
       {

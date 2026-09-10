@@ -1,7 +1,8 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@supabase/supabase-js';
+import { getGeminiKeys } from '@/lib/gemini-keys';
 
-const geminiKeys = (process.env.GOOGLE_GENERATIVE_AI_API_KEY || "").split(',').map(k => k.trim()).filter(Boolean);
+const geminiKeys = getGeminiKeys();
 
 const getSupabase = () => {
     // Priority to Service Role Key for administrative tasks (like reindexing via script)

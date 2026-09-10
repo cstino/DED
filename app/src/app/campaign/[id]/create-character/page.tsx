@@ -44,25 +44,29 @@ const ALL_SKILLS = [
     { name: "animal_handling", ability: "wis", label: "Addestrare Animali" },
     { name: "arcana", ability: "int", label: "Arcano" },
     { name: "athletics", ability: "str", label: "Atletica" },
+    { name: "stealth", ability: "dex", label: "Furtività" },
+    { name: "investigation", ability: "int", label: "Indagare" },
     { name: "deception", ability: "cha", label: "Inganno" },
-    { name: "history", ability: "int", label: "Storia" },
-    { name: "insight", ability: "wis", label: "Intuizione" },
     { name: "intimidation", ability: "cha", label: "Intimidire" },
-    { name: "investigation", ability: "int", label: "Investigare" },
+    { name: "performance", ability: "cha", label: "Intrattenere" },
+    { name: "insight", ability: "wis", label: "Intuizione" },
     { name: "medicine", ability: "wis", label: "Medicina" },
     { name: "nature", ability: "int", label: "Natura" },
     { name: "perception", ability: "wis", label: "Percezione" },
-    { name: "performance", ability: "cha", label: "Intrattenere" },
     { name: "persuasion", ability: "cha", label: "Persuasione" },
-    { name: "religion", ability: "int", label: "Religione" },
     { name: "sleight_of_hand", ability: "dex", label: "Rapidità di Mano" },
-    { name: "stealth", ability: "dex", label: "Furtività" },
+    { name: "religion", ability: "int", label: "Religione" },
     { name: "survival", ability: "wis", label: "Sopravvivenza" },
+    { name: "history", ability: "int", label: "Storia" },
 ];
 
 function getModifier(score: number): string {
     const mod = Math.floor((score - 10) / 2);
     return mod >= 0 ? `+${mod}` : `${mod}`;
+}
+
+function calculateBaseAc(dexterity: number): number {
+    return 10 + Math.floor((dexterity - 10) / 2);
 }
 
 export default function CreateCharacterPage() {
@@ -90,7 +94,7 @@ export default function CreateCharacterPage() {
         str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10,
     });
     const [hpMax, setHpMax] = useState(10);
-    const [ac, setAc] = useState(10);
+    const [ac, setAc] = useState(() => calculateBaseAc(10));
     const [speed, setSpeed] = useState(30);
     const [skillProfs, setSkillProfs] = useState<string[]>([]);
     const [portraitFile, setPortraitFile] = useState<File | null>(null);
@@ -216,10 +220,12 @@ export default function CreateCharacterPage() {
     }, [selectedClass, abilities.con, level, selectedClassData]);
 
     function setAbility(key: string, value: number) {
+        const nextValue = Math.max(1, Math.min(30, value));
         setAbilities((prev) => ({
             ...prev,
-            [key]: Math.max(1, Math.min(30, value)),
+            [key]: nextValue,
         }));
+        if (key === "dex") setAc(calculateBaseAc(nextValue));
     }
 
     function toggleSkillProf(skillName: string) {
@@ -279,7 +285,7 @@ export default function CreateCharacterPage() {
             hp_current: hpMax,
             hp_max: hpMax,
             hp_temp: 0,
-            ac,
+            ac: calculateBaseAc(abilities.dex),
             speed,
             initiative_bonus: Math.floor((abilities.dex - 10) / 2),
             hit_dice_total: level,
@@ -616,13 +622,13 @@ export default function CreateCharacterPage() {
                             />
                         </div>
                         <div className={styles.field} style={{ flex: 1 }}>
-                            <label className="label">AC</label>
+                            <label className="label">CA base (10 + mod DES)</label>
                             <input
                                 type="text"
                                 inputMode="decimal"
                                 className="input"
                                 value={ac}
-                                onChange={(e) => setAc(Math.max(1, parseInt(e.target.value) || 10))}
+                                onChange={(e) => setAc(Math.max(1, parseInt(e.target.value) || calculateBaseAc(abilities.dex)))}
                             />
                         </div>
                         <div className={styles.field} style={{ flex: 1 }}>
