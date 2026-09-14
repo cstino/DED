@@ -54,6 +54,8 @@ export default function RootLayout({
             shadow="0 0 10px #5de2ff,0 0 5px #5de2ff"
           />
           <SplashScreen>{children}</SplashScreen>
+          <div className="app-edge-blur app-edge-blur-top" aria-hidden="true" />
+          <div className="app-edge-blur app-edge-blur-bottom" aria-hidden="true" />
         </AuthProvider>
       </body>
     </html>
