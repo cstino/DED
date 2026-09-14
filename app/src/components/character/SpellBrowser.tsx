@@ -37,12 +37,26 @@ interface Props {
     knownSpells: string[];
     onConfirm: (spells: string[]) => void;
     onClose: () => void;
+    /** Keeps an in-progress selection safe if the browser reloads in the background. */
+    draftKey?: string;
 }
 
-export default function SpellBrowser({ knownSpells, onConfirm, onClose }: Props) {
+interface SpellBrowserDraft {
+    selected: string[];
+    search: string;
+    levelFilter: number | null;
+    schoolFilter: string;
+    classFilter: string;
+    concFilter: boolean | null;
+    ritualFilter: boolean | null;
+    expandedId: string | null;
+}
+
+export default function SpellBrowser({ knownSpells, onConfirm, onClose, draftKey }: Props) {
     const [allSpells, setAllSpells] = useState<Spell[]>([]);
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState<string[]>(knownSpells);
+    const [isDraftReady, setIsDraftReady] = useState(false);
 
     // Filters
     const [search, setSearch] = useState("");
@@ -56,6 +70,51 @@ export default function SpellBrowser({ knownSpells, onConfirm, onClose }: Props)
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
     const [totalCount, setTotalCount] = useState(0);
+
+    // Mobile browsers may discard an inactive tab. Preserve the entire browsing
+    // session so the player can resume exactly where they left off.
+    useEffect(() => {
+        if (!draftKey) {
+            setIsDraftReady(true);
+            return;
+        }
+
+        try {
+            const saved = localStorage.getItem(draftKey);
+            if (saved) {
+                const draft = JSON.parse(saved) as Partial<SpellBrowserDraft>;
+                if (Array.isArray(draft.selected)) setSelected(draft.selected);
+                if (typeof draft.search === "string") setSearch(draft.search);
+                if (typeof draft.levelFilter === "number" || draft.levelFilter === null) setLevelFilter(draft.levelFilter);
+                if (typeof draft.schoolFilter === "string") setSchoolFilter(draft.schoolFilter);
+                if (typeof draft.classFilter === "string") setClassFilter(draft.classFilter);
+                if (typeof draft.concFilter === "boolean" || draft.concFilter === null) setConcFilter(draft.concFilter);
+                if (typeof draft.ritualFilter === "boolean" || draft.ritualFilter === null) setRitualFilter(draft.ritualFilter);
+                if (typeof draft.expandedId === "string" || draft.expandedId === null) setExpandedId(draft.expandedId);
+            }
+        } catch (error) {
+            console.warn("Impossibile ripristinare la bozza degli incantesimi", error);
+            localStorage.removeItem(draftKey);
+        } finally {
+            setIsDraftReady(true);
+        }
+    }, [draftKey]);
+
+    useEffect(() => {
+        if (!draftKey || !isDraftReady) return;
+
+        const draft: SpellBrowserDraft = {
+            selected,
+            search,
+            levelFilter,
+            schoolFilter,
+            classFilter,
+            concFilter,
+            ritualFilter,
+            expandedId,
+        };
+        localStorage.setItem(draftKey, JSON.stringify(draft));
+    }, [draftKey, isDraftReady, selected, search, levelFilter, schoolFilter, classFilter, concFilter, ritualFilter, expandedId]);
 
     useEffect(() => {
         const load = async () => {
@@ -114,6 +173,12 @@ export default function SpellBrowser({ knownSpells, onConfirm, onClose }: Props)
 
     function handleConfirm() {
         onConfirm(selected);
+        if (draftKey) localStorage.removeItem(draftKey);
+        onClose();
+    }
+
+    function handleClose() {
+        if (draftKey) localStorage.removeItem(draftKey);
         onClose();
     }
 
@@ -129,7 +194,7 @@ export default function SpellBrowser({ knownSpells, onConfirm, onClose }: Props)
                 {/* Header */}
                 <div className={styles.header}>
                     <h2>📖 Browser Incantesimi</h2>
-                    <button className={styles.closeBtn} onClick={onClose}>✕</button>
+                    <button type="button" className={styles.closeBtn} onClick={handleClose} aria-label="Chiudi browser incantesimi">✕</button>
                 </div>
 
                 {/* Search */}

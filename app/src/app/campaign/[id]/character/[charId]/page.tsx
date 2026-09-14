@@ -202,6 +202,10 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
                         <div className={styles.spellLevelList}>
                             {grouped[lvl].sort((a, b) => a.name.localeCompare(b.name)).map(({ name, detail }) => {
                                 const isExpanded = expandedSpell === name;
+                                const localization = getSpellLocalization(detail?.name || name);
+                                const italianSummary = localization?.descriptionIt;
+                                const needsConcentration = Boolean(detail?.is_concentration ?? detail?.concentration);
+                                const isRitual = Boolean(detail?.is_ritual ?? detail?.ritual);
                                 return (
                                     <div key={name} className={styles.knownSpellCard}>
                                         <div className={styles.knownSpellRow} onClick={() => setExpandedSpell(isExpanded ? null : name)}>
@@ -224,8 +228,8 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
                                                 <div className={styles.knownSpellMeta}>
                                                     {SCHOOL_IT[detail?.school] || (detail?.school ? detail.school : "Sconosciuta")}
                                                     {detail?.duration && ` • ${detail.duration}`}
-                                                    {detail?.concentration && <span className={styles.concentrationBadge}>Conc</span>}
-                                                    {detail?.ritual && <span className={styles.ritualBadge}>Rito</span>}
+                                                    {needsConcentration && <span className={styles.concentrationBadge}>Concentrazione</span>}
+                                                    {isRitual && <span className={styles.ritualBadge}>Rituale</span>}
                                                 </div>
                                             </div>
                                             <div className={styles.knownSpellActions}>
@@ -249,9 +253,9 @@ function KnownSpellsList({ knownSpells, spellDetails, expandedSpell, setExpanded
                                                             <div className={styles.spellDetailItem}><span className={styles.spellDetailLabel}>Durata</span><span>{detail.duration}</span></div>
                                                         </div>
                                                 {detail.description && <p className={styles.spellDetailDesc}>{detail.description}</p>}
-                                                {getSpellLocalization(detail?.name)?.descriptionIt && (
+                                                {italianSummary && (
                                                     <p className={styles.spellDetailDescTranslated}>
-                                                        {getSpellLocalization(detail?.name)?.descriptionIt}
+                                                        <span>In breve</span>{italianSummary}
                                                     </p>
                                                 )}
                                                     </div>
@@ -504,6 +508,27 @@ export default function CharacterSheetPage() {
     const [slowLoading, setSlowLoading] = useState(false);
 
     const [campaignMasterId, setCampaignMasterId] = useState<string | null>(null);
+
+    const spellBrowserDraftKey = `magehand-spell-browser-${charId}`;
+    const spellBrowserOpenKey = `magehand-spell-browser-open-${charId}`;
+
+    // Resume a spell selection after a mobile browser has reloaded the page in
+    // the background. An explicit close or confirmation removes this marker.
+    useEffect(() => {
+        if (!charId || localStorage.getItem(spellBrowserOpenKey) !== "true") return;
+        setActiveTab("spells");
+        setShowSpellBrowser(true);
+    }, [charId, spellBrowserOpenKey]);
+
+    const openSpellBrowser = useCallback(() => {
+        localStorage.setItem(spellBrowserOpenKey, "true");
+        setShowSpellBrowser(true);
+    }, [spellBrowserOpenKey]);
+
+    const closeSpellBrowser = useCallback(() => {
+        localStorage.removeItem(spellBrowserOpenKey);
+        setShowSpellBrowser(false);
+    }, [spellBrowserOpenKey]);
 
     // Prevent concurrent Supabase writes
     const saveLockRef = useRef(false);
@@ -1774,7 +1799,7 @@ export default function CharacterSheetPage() {
                                 Incantesimi conosciuti: <strong>{char.known_spells?.length ?? 0}</strong>
                             </p>
                             {canEdit && (
-                                <button className="btn btn-primary" onClick={() => setShowSpellBrowser(true)}>
+                                <button className="btn btn-primary" onClick={openSpellBrowser}>
                                     📖 Sfoglia Incantesimi
                                 </button>
                             )}
@@ -1908,12 +1933,13 @@ export default function CharacterSheetPage() {
                         {showSpellBrowser && (
                             <SpellBrowser
                                 knownSpells={char.known_spells ?? []}
+                                draftKey={spellBrowserDraftKey}
                                 onConfirm={(spells) => {
                                     if (!canEdit) return;
                                     setChar((p) => p ? { ...p, known_spells: spells } as Character : null);
                                     quickSave("known_spells", spells);
                                 }}
-                                onClose={() => setShowSpellBrowser(false)}
+                                onClose={closeSpellBrowser}
                             />
                         )}
                     </div>

@@ -1,4 +1,5 @@
 import { GENERATED_SPELL_LOCALIZATIONS } from "./spell-localization.generated";
+import { GENERATED_SPELL_SUMMARIES } from "./spell-summaries.generated";
 
 export interface SpellLocalization {
     nameIt?: string;
@@ -317,7 +318,14 @@ function normalizeSpellName(name: string) {
 export function getSpellLocalization(name: string | null | undefined) {
     if (!name) return undefined;
     const normalized = normalizeSpellName(name);
-    return SPELL_LOCALIZATIONS[normalized] || GENERATED_SPELL_LOCALIZATIONS[normalized];
+    const localized = SPELL_LOCALIZATIONS[normalized] || GENERATED_SPELL_LOCALIZATIONS[normalized];
+    const generatedSummary = GENERATED_SPELL_SUMMARIES[normalized];
+    if (!localized && !generatedSummary) return undefined;
+    return {
+        ...localized,
+        // Curated translations take precedence over the generated summaries.
+        descriptionIt: localized?.descriptionIt || generatedSummary,
+    };
 }
 
 export function formatSpellDisplayName(name: string | null | undefined) {
