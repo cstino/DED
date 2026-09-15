@@ -486,10 +486,12 @@ h4 {
 
   .app-edge-blur-top {
     top: 0;
-    height: calc(env(safe-area-inset-top, 0px) + 64px);
-    background: linear-gradient(to bottom, rgba(16, 14, 13, 0.9), rgba(16, 14, 13, 0.46) 58%, transparent);
-    mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+    height: calc(env(safe-area-inset-top, 0px) + 24px);
+    background: linear-gradient(to bottom, rgba(16, 14, 13, 0.86) 0, rgba(16, 14, 13, 0.58) env(safe-area-inset-top, 0px), transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0, #000 env(safe-area-inset-top, 0px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 env(safe-area-inset-top, 0px), transparent 100%);
+    backdrop-filter: blur(10px) saturate(110%);
+    -webkit-backdrop-filter: blur(10px) saturate(110%);
   }
 
   .app-edge-blur-bottom {
