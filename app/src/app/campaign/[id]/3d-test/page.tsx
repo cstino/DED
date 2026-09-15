@@ -9,6 +9,9 @@ import styles from "./3d-test.module.css";
 import { useRouter, useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
+const MODEL_ASSET_BASE =
+    "https://uwifwwsgwtdbcgqycvyh.supabase.co/storage/v1/object/public/game-assets/models";
+
 const CHARACTERS = [
     {
         id: "corwin",
@@ -17,7 +20,7 @@ const CHARACTERS = [
         position: [0, -0.2, 0],
         rotation: [0, -Math.PI / 2, 0],
         image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Corwin", // Placeholder
-        animations: [{ name: "Respiro", file: "/model/Corwin/corwin.glb" }]
+        animations: [{ name: "Respiro", file: `${MODEL_ASSET_BASE}/corwin.glb` }]
     },
     {
         id: "vaelion",
@@ -26,7 +29,7 @@ const CHARACTERS = [
         position: [0, -0.2, 0],
         rotation: [0, -Math.PI / 2, 0],
         image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Vaelion", // Placeholder
-        animations: [{ name: "Respiro", file: "/model/Vaelion/vaelion (3).glb" }]
+        animations: [{ name: "Respiro", file: `${MODEL_ASSET_BASE}/vaelion.glb` }]
     },
     {
         id: "lou",
@@ -35,7 +38,7 @@ const CHARACTERS = [
         position: [0, -0.2, 0],
         rotation: [0, -Math.PI / 2, 0],
         image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lou", // Placeholder
-        animations: [{ name: "Respiro", file: "/model/Lou/Lou (1).glb" }]
+        animations: [{ name: "Respiro", file: `${MODEL_ASSET_BASE}/lou.glb` }]
     },
     {
         id: "warforged",
@@ -44,7 +47,7 @@ const CHARACTERS = [
         position: [0, -0.2, 0],
         rotation: [0, -Math.PI / 2, 0],
         image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Forgiato", // Placeholder
-        animations: [{ name: "Respiro", file: "/model/warforged/mk cartoon.glb" }]
+        animations: [{ name: "Respiro", file: `${MODEL_ASSET_BASE}/warforged.glb` }]
     }
 ];
 
