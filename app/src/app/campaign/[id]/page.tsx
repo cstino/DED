@@ -11,7 +11,11 @@ import NpcGenerator from "@/components/dm/NpcGenerator";
 import NpcList from "@/components/dm/NpcList";
 import SpellCompendium from "@/components/dm/SpellCompendium";
 import MageHandLogo from "@/components/ui/MageHandLogo";
-import { calculateEquipmentBonuses, type EquipmentItem } from "@/components/character/EquipmentManager";
+import {
+    applyEquipmentAdjustment,
+    calculateEquipmentAdjustments,
+    type EquipmentItem,
+} from "@/components/character/EquipmentManager";
 import { ArrowLeft, Menu } from "lucide-react";
 import styles from "./campaign.module.css";
 
@@ -63,9 +67,14 @@ interface NpcPartyMember {
 }
 
 function getCharacterArmorClass(character: Character): number {
-    const equipmentBonuses = calculateEquipmentBonuses(character.equipment || []);
-    const dexterity = (character.ability_scores?.dex ?? 10) + (equipmentBonuses["dex"] ?? 0);
-    return 10 + Math.floor((dexterity - 10) / 2) + (equipmentBonuses["ac"] ?? 0);
+    const equipmentAdjustments = calculateEquipmentAdjustments(character.equipment || []);
+    const dexterity = applyEquipmentAdjustment(
+        character.ability_scores?.dex ?? 10,
+        "dex",
+        equipmentAdjustments,
+    );
+    const unarmoredAc = 10 + Math.floor((dexterity - 10) / 2);
+    return applyEquipmentAdjustment(unarmoredAc, "ac", equipmentAdjustments);
 }
 
 export default function CampaignPage() {

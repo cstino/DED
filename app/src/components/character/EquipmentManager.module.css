@@ -19,12 +19,17 @@
 .itemCard {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
-    padding: var(--space-sm) var(--space-md);
+    gap: var(--space-sm);
+    padding: 12px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-card);
     border-radius: var(--radius-md);
-    transition: opacity var(--transition-fast);
+    transition: opacity var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.itemCard:has(.itemDisclosure[aria-expanded="true"]) {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(255, 149, 102, 0.25);
 }
 
 .itemUnequipped {
@@ -34,7 +39,34 @@
 .itemHeader {
     display: flex;
     align-items: center;
-    gap: var(--space-sm);
+    gap: 10px;
+}
+
+.itemDisclosure {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+}
+
+.itemDisclosure:focus-visible,
+.equipBtn:focus-visible,
+.editBtn:focus-visible,
+.deleteBtn:focus-visible,
+.chargeDot:focus-visible,
+.addEffectBtn:focus-visible,
+.removeEffectBtn:focus-visible {
+    outline: 2px solid var(--accent-orange);
+    outline-offset: 3px;
 }
 
 .iconWrapper {
@@ -60,8 +92,8 @@
 }
 
 .itemName {
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 700;
 }
 
 .itemDesc {
@@ -78,6 +110,17 @@
     flex-shrink: 0;
 }
 
+.disclosureIcon {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), color var(--transition-fast);
+}
+
+.disclosureIconOpen {
+    transform: rotate(180deg);
+    color: var(--accent-orange);
+}
+
 .equipBtn,
 .editBtn,
 .deleteBtn {
@@ -87,7 +130,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
     border-radius: var(--radius-sm);
     transition: all var(--transition-fast);
     color: var(--text-secondary);
@@ -118,6 +163,15 @@
     padding-left: 40px;
 }
 
+.moreEffects {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 6px;
+}
+
 .effectBadge {
     font-size: 0.65rem;
     font-weight: 600;
@@ -137,22 +191,141 @@
     border: 1px solid rgba(255, 68, 68, 0.2);
 }
 
+.itemChargesBadge {
+    background: rgba(255, 149, 102, 0.1);
+    color: var(--accent-orange);
+    border: 1px solid rgba(255, 149, 102, 0.24);
+}
+
+.itemDetails {
+    margin-left: 42px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    animation: revealDetails 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fullDescription,
+.detailEffect p,
+.noEffects {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+.detailEffects {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.detailEffect {
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.025);
+    border-radius: 10px;
+}
+
+.detailEffectHeader {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--text-primary);
+    font-size: 0.78rem;
+}
+
+.detailEffectHeader span {
+    color: var(--accent-orange);
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.detailEffect p {
+    margin-top: 5px;
+}
+
+.chargeTracker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.itemChargeTracker {
+    margin-top: 12px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.chargeLabel {
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.chargeDots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 7px;
+}
+
+.chargeDot {
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 2px solid #9a654d;
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
+    transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.chargeDot:not(:disabled):active {
+    transform: scale(0.84);
+}
+
+.chargeDotAvailable {
+    background-color: #26c6ff;
+    border-color: #26c6ff;
+}
+
+.chargeDot:disabled {
+    cursor: default;
+}
+
+@keyframes revealDetails {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Add / Edit Form */
 .addForm {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
-    padding: var(--space-md);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-card);
-    border-radius: var(--radius-md);
+    gap: 14px;
+    padding: 20px;
+    background: rgba(22, 18, 16, 0.88);
+    border: 1px solid rgba(255, 149, 102, 0.22);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
 }
 
 .formTitle {
     font-size: 0.9rem;
     font-weight: 700;
-    color: var(--accent-teal);
-    margin: 0 0 var(--space-xs) 0;
+    color: var(--accent-orange);
+    margin: 0 0 2px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -175,51 +348,150 @@
 .effectsEditor {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
-    margin-top: var(--space-xs);
+    gap: 12px;
+    margin-top: 4px;
 }
 
 .effectsHeader {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding-bottom: var(--space-xs);
+    align-items: flex-end;
+    padding-bottom: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    margin-bottom: var(--space-xs);
+    margin-bottom: 0;
 }
 
 .effectsTitle {
+    display: block;
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-secondary);
     text-transform: uppercase;
 }
 
+.effectsHint {
+    display: block;
+    margin-top: 3px;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    line-height: 1.4;
+}
+
 .addEffectBtn {
-    background: rgba(0, 229, 160, 0.1);
-    border: 1px solid rgba(0, 229, 160, 0.2);
-    color: var(--accent-teal);
+    width: 100%;
+    min-height: 44px;
+    background: rgba(255, 149, 102, 0.07);
+    border: 1px dashed rgba(255, 149, 102, 0.38);
+    color: var(--accent-orange);
     font-family: inherit;
-    font-size: 0.7rem;
+    font-size: 0.78rem;
     font-weight: 700;
     cursor: pointer;
-    padding: 3px 10px;
-    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
     transition: all var(--transition-fast);
 }
 
 .addEffectBtn:hover {
-    background: rgba(0, 229, 160, 0.15);
-    border-color: var(--accent-teal);
+    background: rgba(255, 149, 102, 0.12);
+    border-color: var(--accent-orange);
 }
 
-.effectRow {
+.effectBlock {
     display: flex;
-    gap: 8px;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: var(--radius-md);
+}
+
+.effectBlockHeader {
+    display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.02);
-    padding: 4px;
-    border-radius: var(--radius-sm);
+    justify-content: space-between;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.effectFields {
+    display: grid;
+    grid-template-columns: minmax(180px, 1.5fr) minmax(140px, 1fr) minmax(72px, 0.45fr);
+    gap: 10px;
+}
+
+.fieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.fieldGroup small {
+    color: var(--text-muted);
+    font-size: inherit;
+    font-weight: 500;
+}
+
+.fieldGroup textarea {
+    resize: vertical;
+    min-height: 70px;
+    line-height: 1.45;
+}
+
+.valueField input {
+    font-variant-numeric: tabular-nums;
+}
+
+.chargesEditor {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 44px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.itemChargesEditor {
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 149, 102, 0.16);
+    border-radius: var(--radius-md);
+    background: rgba(255, 149, 102, 0.045);
+}
+
+.chargesToggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--text-secondary);
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.chargesToggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-orange);
+}
+
+.maxChargesField {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.maxChargesField input {
+    width: 76px;
 }
 
 .removeEffectBtn {
@@ -230,7 +502,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
     border-radius: var(--radius-sm);
     transition: all var(--transition-fast);
 }
@@ -275,7 +549,57 @@
         flex-direction: column;
     }
 
-    .effectRow {
-        flex-wrap: wrap;
+    .itemHeader {
+        align-items: flex-start;
+    }
+
+    .itemActions {
+        gap: 3px;
+    }
+
+    .equipBtn,
+    .editBtn,
+    .deleteBtn {
+        width: 38px;
+        height: 38px;
+    }
+
+    .effectsList,
+    .itemDetails {
+        margin-left: 0;
+        padding-left: 42px;
+    }
+
+    .effectFields {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .effectFields .fieldGroup:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .chargesEditor {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .chargeTracker {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .chargeDots {
+        justify-content: flex-start;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .itemDetails {
+        animation: none;
+    }
+
+    .disclosureIcon,
+    .chargeDot {
+        transition: none;
     }
 }

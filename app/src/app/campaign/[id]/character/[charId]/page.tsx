@@ -7,7 +7,8 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import EquipmentManager, {
-    calculateEquipmentBonuses,
+    applyEquipmentAdjustment,
+    calculateEquipmentAdjustments,
     type EquipmentItem,
 } from "@/components/character/EquipmentManager";
 import SpellBrowser from "@/components/character/SpellBrowser";
@@ -874,16 +875,32 @@ export default function CharacterSheetPage() {
     const pb = editing ? (editData.proficiency_bonus ?? 2) : (char.proficiency_bonus ?? 2);
     const abs = (editing ? editData.ability_scores : char.ability_scores) as AbilityScores;
     const equip = (editing ? editData.equipment : char.equipment) as EquipmentItem[];
-    const equipBonuses = calculateEquipmentBonuses(equip);
+    const equipAdjustments = calculateEquipmentAdjustments(equip);
     const saveProfs = (editing ? editData.saving_throw_prof : char.saving_throw_prof) as string[];
     const skillProfs = (editing ? editData.skill_proficiencies : char.skill_proficiencies) as string[];
 
     // Unarmored base AC is always 10 + the current Dexterity modifier.
     // Stored `ac` values from older characters are deliberately ignored here.
-    const effectiveDexterity = abs.dex + (equipBonuses["dex"] ?? 0);
-    const effectiveAc = 10 + getMod(effectiveDexterity) + (equipBonuses["ac"] ?? 0);
-    const effectiveSpeed = (editing ? editData.speed ?? char.speed : char.speed) + (equipBonuses["speed"] ?? 0);
-    const hpPercent = char.hp_max > 0 ? Math.max(0, Math.min(100, (char.hp_current / char.hp_max) * 100)) : 0;
+    const effectiveDexterity = applyEquipmentAdjustment(abs.dex, "dex", equipAdjustments);
+    const unarmoredAc = 10 + getMod(effectiveDexterity);
+    const effectiveAc = applyEquipmentAdjustment(unarmoredAc, "ac", equipAdjustments);
+    const effectiveSpeed = applyEquipmentAdjustment(
+        editing ? editData.speed ?? char.speed : char.speed,
+        "speed",
+        equipAdjustments,
+    );
+    const effectiveHpMax = applyEquipmentAdjustment(
+        editing ? editData.hp_max ?? char.hp_max : char.hp_max,
+        "hp_max",
+        equipAdjustments,
+    );
+    const acAdjustment = equipAdjustments.ac;
+    const acAdjustmentLabel = acAdjustment?.setValue !== undefined
+        ? `= ${acAdjustment.setValue}${acAdjustment.bonus ? ` ${fmtMod(acAdjustment.bonus)}` : ""}`
+        : acAdjustment?.bonus
+            ? fmtMod(acAdjustment.bonus)
+            : null;
+    const hpPercent = effectiveHpMax > 0 ? Math.max(0, Math.min(100, (char.hp_current / effectiveHpMax) * 100)) : 0;
 
     return (
         <div className={`page ${styles.sheetPage}`}>
@@ -1160,10 +1177,10 @@ export default function CharacterSheetPage() {
                                     setChar(p => p ? { ...p, hp_current: val } as Character : null);
                                     quickSave("hp_current", val);
                                 }} />
-                                <span>/ {char.hp_max}</span>
+                                <span>/ {effectiveHpMax}</span>
                             </div>
                         ) : (
-                            <span className={styles.hpValue}>{char.hp_current}/{char.hp_max}</span>
+                            <span className={styles.hpValue}>{char.hp_current}/{effectiveHpMax}</span>
                         )}
                     </div>
                     {/* Portrait Gallery Overlay */}
@@ -1255,9 +1272,9 @@ export default function CharacterSheetPage() {
                         </div>
                     )}
                 </div>
-                <div className={styles.statBox}><Shield size={20} /><span className={styles.statLabel}>Armatura</span><span className={styles.statValue}>{effectiveAc}{equipBonuses["ac"] ? <small className={styles.bonusNote}>({fmtMod(equipBonuses["ac"])})</small> : null}</span></div>
+                <div className={styles.statBox}><Shield size={20} /><span className={styles.statLabel}>Armatura</span><span className={styles.statValue}>{effectiveAc}{acAdjustmentLabel ? <small className={styles.bonusNote}>({acAdjustmentLabel})</small> : null}</span></div>
                 <div className={styles.statBox}><Footprints size={20} /><span className={styles.statLabel}>Velocità</span><span className={styles.statValue}>{effectiveSpeed}</span></div>
-                <div className={styles.statBox}><Zap size={20} /><span className={styles.statLabel}>Iniziativa</span><span className={styles.statValue}>{fmtMod(getMod(abs.dex))}</span></div>
+                <div className={styles.statBox}><Zap size={20} /><span className={styles.statLabel}>Iniziativa</span><span className={styles.statValue}>{fmtMod(getMod(effectiveDexterity))}</span></div>
                 <div className={styles.statBox}>
                     <Award size={20} /><span className={styles.statLabel}>Competenza</span>
                     <span className={styles.statValue}>+{pb}</span>
@@ -1291,7 +1308,7 @@ export default function CharacterSheetPage() {
                         <h3 className={styles.sectionTitle}>Caratteristiche</h3>
                         <div className={styles.abilitiesGrid}>
                             {ABILITIES.map(({ key, label, short }) => {
-                                const score = abs[key as keyof AbilityScores] + (equipBonuses[key] ?? 0);
+                                const score = applyEquipmentAdjustment(abs[key as keyof AbilityScores], key, equipAdjustments);
                                 const mod = getMod(score);
                                 return (
                                     <div key={key} className={styles.abilityCard}>
@@ -1312,11 +1329,14 @@ export default function CharacterSheetPage() {
                         <h3 className={styles.sectionTitle}>Tiri Salvezza</h3>
                         <div className={styles.savesList}>
                             {ABILITIES.map(({ key, label, short }) => {
-                                const baseScore = abs[key as keyof AbilityScores] + (equipBonuses[key] ?? 0);
+                                const baseScore = applyEquipmentAdjustment(abs[key as keyof AbilityScores], key, equipAdjustments);
                                 const mod = getMod(baseScore);
                                 const isProf = saveProfs.includes(key);
-                                const saveBonus = equipBonuses[`save_${key}`] ?? 0;
-                                const total = mod + (isProf ? pb : 0) + saveBonus;
+                                const total = applyEquipmentAdjustment(
+                                    mod + (isProf ? pb : 0),
+                                    `save_${key}`,
+                                    equipAdjustments,
+                                );
                                 return (
                                     <div key={key} className={`${styles.saveRow} ${isProf ? styles.saveProf : ""}`}>
                                         {editing ? (
@@ -1343,7 +1363,7 @@ export default function CharacterSheetPage() {
                         <h3 className={styles.sectionTitle}>Abilità</h3>
                         <div className={styles.skillsList}>
                             {SKILLS.map((skill) => {
-                                const baseScore = abs[skill.ability] + (equipBonuses[skill.ability] ?? 0);
+                                const baseScore = applyEquipmentAdjustment(abs[skill.ability], skill.ability, equipAdjustments);
                                 const mod = getMod(baseScore);
                                 const isProf = skillProfs.includes(skill.name);
                                 const total = mod + (isProf ? pb : 0);
